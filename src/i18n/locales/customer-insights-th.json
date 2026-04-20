@@ -1,0 +1,120 @@
+{
+  "customerInsights": {
+    "title": "ข้อมูลเชิงลึกลูกค้า",
+    "subtitle": "การวิเคราะห์ขั้นสูงและข้อมูลเชิงลึกสำหรับลูกค้า",
+    "tabs": {
+      "overview": "ภาพรวม",
+      "behavior": "พฤติกรรมลูกค้า",
+      "opportunities": "โอกาสทางธุรกิจ",
+      "competitors": "คู่แข่ง",
+      "masterInsights": "ข้อมูลเชิงลึกหลัก"
+    },
+    "kpi": {
+      "engagementScore": "คะแนนการมีส่วนร่วม",
+      "increasedThisMonth": "เพิ่มขึ้นเดือนนี้",
+      "totalCustomers": "ลูกค้าทั้งหมด",
+      "newThisQuarter": "ลูกค้าใหม่ไตรมาสนี้",
+      "avgRevenuePerCustomer": "รายได้เฉลี่ย/ลูกค้า",
+      "monthOverMonth": "เทียบเดือนก่อน",
+      "openOpportunities": "โอกาสที่เปิดอยู่",
+      "potential": "มูลค่าที่คาดหวัง",
+      "churnRiskCustomers": "ลูกค้าเสี่ยงสูญเสีย",
+      "needsAttention": "ต้องติดตาม",
+      "winRateVsCompetitors": "อัตราชนะเทียบคู่แข่ง",
+      "aboveTarget": "สูงกว่าเป้า"
+    },
+    "charts": {
+      "engagementTrend": "แนวโน้มการมีส่วนร่วมของลูกค้า",
+      "customerSegmentation": "การแบ่งกลุ่มลูกค้า",
+      "revenueByService": "รายได้ตามประเภทบริการ",
+      "churnRiskDistribution": "การกระจายความเสี่ยงการสูญเสียลูกค้า",
+      "enterprise": "องค์กรใหญ่",
+      "premium": "พรีเมียม",
+      "sme": "SME",
+      "personal": "บุคคลทั่วไป",
+      "low": "ต่ำ",
+      "medium": "กลาง",
+      "high": "สูง"
+    },
+    "behavior": {
+      "title": "การวิเคราะห์พฤติกรรมลูกค้า",
+      "filterBy": "กรองตาม",
+      "exportReport": "ส่งออกรายงาน",
+      "customerId": "รหัสลูกค้า",
+      "lastPurchase": "ซื้อครั้งล่าสุด",
+      "totalRevenue": "รายได้รวม",
+      "frequency": "ความถี่",
+      "monthlyAvg": "เฉลี่ยต่อเดือน",
+      "riskLevel": "ระดับความเสี่ยง",
+      "preferredChannel": "ช่องทางที่ชอบ",
+      "avgOrderValue": "มูลค่าเฉลี่ยต่อคำสั่งซื้อ",
+      "productPreference": "สินค้าที่ชอบ",
+      "viewProfile": "ดูโปรไฟล์"
+    },
+    "opportunities": {
+      "title": "โอกาสในการขายต่อยอดและขายเพิ่ม",
+      "filterBy": "กรองตาม",
+      "prioritize": "จัดลำดับความสำคัญ",
+      "exportList": "ส่งออกรายการ",
+      "customerId": "รหัสลูกค้า",
+      "opportunity": "โอกาส",
+      "currentService": "บริการปัจจุบัน",
+      "suggestedService": "บริการที่แนะนำ",
+      "estimatedValue": "มูลค่าที่คาดการณ์",
+      "successRate": "อัตราความสำเร็จ",
+      "priority": "ลำดับความสำคัญ",
+      "lastContact": "ติดต่อครั้งล่าสุด",
+      "contactCustomer": "ติดต่อลูกค้า"
+    },
+    "competitors": {
+      "title": "ข้อมูลเชิงลึกคู่แข่ง",
+      "competitor": "คู่แข่ง",
+      "marketShare": "ส่วนแบ่งตลาด",
+      "avgPricing": "ราคาเฉลี่ย",
+      "winRate": "อัตราชนะ",
+      "lossRate": "อัตราแพ้",
+      "commonAdvantages": "จุดแข็งทั่วไป",
+      "commonWeaknesses": "จุดอ่อนทั่วไป",
+      "strategy": "กลยุทธ์ของเรา"
+    },
+    "masterInsights": {
+      "title": "ข้อมูลเชิงลึกหลักและคำแนะนำ",
+      "generateReport": "สร้างรายงานข้อมูลเชิงลึก",
+      "insightId": "รหัสข้อมูลเชิงลึก",
+      "category": "หมวดหมู่",
+      "insight": "ข้อมูลเชิงลึก",
+      "impact": "ผลกระทบ",
+      "confidence": "ความเชื่อมั่น",
+      "action": "การดำเนินการที่แนะนำ",
+      "status": "สถานะ",
+      "assign": "มอบหมาย",
+      "categories": {
+        "retention": "การรักษาลูกค้า",
+        "growth": "การเติบโต",
+        "efficiency": "ประสิทธิภาพ",
+        "risk": "ความเสี่ยง"
+      },
+      "impacts": {
+        "high": "สูง",
+        "medium": "ปานกลาง",
+        "critical": "สำคัญมาก"
+      },
+      "statuses": {
+        "new": "ใหม่",
+        "inProgress": "กำลังดำเนินการ",
+        "actioned": "ดำเนินการแล้ว"
+      }
+    },
+    "filters": {
+      "all": "ทั้งหมด",
+      "high": "สูง",
+      "medium": "กลาง",
+      "low": "ต่ำ"
+    },
+    "common": {
+      "customers": "ลูกค้า",
+      "growth": "เติบโต",
+      "decline": "ลดลง"
+    }
+  }
+}

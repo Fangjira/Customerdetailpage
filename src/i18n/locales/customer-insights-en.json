@@ -1,0 +1,120 @@
+{
+  "customerInsights": {
+    "title": "Customer Intelligence",
+    "subtitle": "Advanced analytics and insights for customer intelligence",
+    "tabs": {
+      "overview": "Overview",
+      "behavior": "Customer Behavior",
+      "opportunities": "Opportunities",
+      "competitors": "Competitors",
+      "masterInsights": "Master Insights"
+    },
+    "kpi": {
+      "engagementScore": "Engagement Score",
+      "increasedThisMonth": "Increased this month",
+      "totalCustomers": "Total Customers",
+      "newThisQuarter": "New this quarter",
+      "avgRevenuePerCustomer": "Avg Revenue/Customer",
+      "monthOverMonth": "Month over month",
+      "openOpportunities": "Open Opportunities",
+      "potential": "potential",
+      "churnRiskCustomers": "Churn Risk Customers",
+      "needsAttention": "Needs attention",
+      "winRateVsCompetitors": "Win Rate vs Competitors",
+      "aboveTarget": "Above target"
+    },
+    "charts": {
+      "engagementTrend": "Customer Engagement Trend",
+      "customerSegmentation": "Customer Segmentation",
+      "revenueByService": "Revenue by Service Type",
+      "churnRiskDistribution": "Churn Risk Distribution",
+      "enterprise": "Enterprise",
+      "premium": "Premium",
+      "sme": "SME",
+      "personal": "Personal",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "behavior": {
+      "title": "Customer Behavior Analytics",
+      "filterBy": "Filter by",
+      "exportReport": "Export Report",
+      "customerId": "Customer ID",
+      "lastPurchase": "Last Purchase",
+      "totalRevenue": "Total Revenue",
+      "frequency": "Frequency",
+      "monthlyAvg": "Monthly avg",
+      "riskLevel": "Risk Level",
+      "preferredChannel": "Preferred Channel",
+      "avgOrderValue": "Avg Order Value",
+      "productPreference": "Product Preference",
+      "viewProfile": "View Profile"
+    },
+    "opportunities": {
+      "title": "Cross-sell & Upsell Opportunities",
+      "filterBy": "Filter by",
+      "prioritize": "Prioritize",
+      "exportList": "Export List",
+      "customerId": "Customer ID",
+      "opportunity": "Opportunity",
+      "currentService": "Current Service",
+      "suggestedService": "Suggested Service",
+      "estimatedValue": "Estimated Value",
+      "successRate": "Success Rate",
+      "priority": "Priority",
+      "lastContact": "Last Contact",
+      "contactCustomer": "Contact Customer"
+    },
+    "competitors": {
+      "title": "Competitive Intelligence",
+      "competitor": "Competitor",
+      "marketShare": "Market Share",
+      "avgPricing": "Avg Pricing",
+      "winRate": "Win Rate",
+      "lossRate": "Loss Rate",
+      "commonAdvantages": "Common Advantages",
+      "commonWeaknesses": "Common Weaknesses",
+      "strategy": "Our Strategy"
+    },
+    "masterInsights": {
+      "title": "Master Insights & Recommendations",
+      "generateReport": "Generate Insights Report",
+      "insightId": "Insight ID",
+      "category": "Category",
+      "insight": "Insight",
+      "impact": "Impact",
+      "confidence": "Confidence",
+      "action": "Recommended Action",
+      "status": "Status",
+      "assign": "Assign",
+      "categories": {
+        "retention": "Retention",
+        "growth": "Growth",
+        "efficiency": "Efficiency",
+        "risk": "Risk"
+      },
+      "impacts": {
+        "high": "High",
+        "medium": "Medium",
+        "critical": "Critical"
+      },
+      "statuses": {
+        "new": "New",
+        "inProgress": "In Progress",
+        "actioned": "Actioned"
+      }
+    },
+    "filters": {
+      "all": "All",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "common": {
+      "customers": "customers",
+      "growth": "growth",
+      "decline": "decline"
+    }
+  }
+}

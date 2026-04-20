@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "tickets": "ตั๋วบริการ"
+  },
+  "tickets": {
+    "subtitle": "ตั๋วการสนับสนุนและบริการ",
+    "create_ticket": "สร้างตั๋ว",
+    "no_tickets": "ไม่พบตั๋ว",
+    "no_tickets_description": "สร้างตั๋วแรกของคุณเพื่อเริ่มต้น",
+    "on_time": "ตรงเวลา",
+    "warning": "ใกล้เกินกำหนด",
+    "overdue": "เกินกำหนด",
+    "closed": "ปิด",
+    "title_placeholder": "ป้อนหัวข้อตั๋ว",
+    "description_placeholder": "อธิบายปัญหาหรือคำขอโดยละเอียด"
+  },
+  "common": {
+    "all": "ทั้งหมด",
+    "tickets": "ตั๋ว",
+    "title": "หัวข้อ",
+    "description": "คำอธิบาย",
+    "category": "หมวดหมู่",
+    "select_category": "เลือกหมวดหมู่",
+    "customer": "ลูกค้า",
+    "select_customer": "เลือกลูกค้า",
+    "contact_person": "ผู้ติดต่อ",
+    "name": "ชื่อ",
+    "customer_information": "ข้อมูลลูกค้า",
+    "unassigned": "ยังไม่ได้มอบหมาย",
+    "change_status": "เปลี่ยนสถานะ"
+  }
+}

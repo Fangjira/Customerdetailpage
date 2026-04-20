@@ -1,0 +1,23 @@
+{
+  "import_customers": "นำเข้าข้อมูลลูกค้า",
+  "import_leads": "นำเข้าข้อมูล Leads",
+  "description": "อัปโหลดไฟล์ Excel หรือ CSV เพื่อนำเข้าข้อมูลหลายรายการพร้อมกัน",
+  "step1_download_template": "ขั้นตอนที่ 1: ดาวน์โหลด Template",
+  "template_description": "ดาวน์โหลดไฟล์ Template ที่มีรูปแบบที่ถูกต้อง",
+  "download_template": "ดาวน์โหลด Template",
+  "step2_upload_file": "ขั้นตอนที่ 2: อัปโหลดไฟล์",
+  "click_to_upload": "คลิกเพื่ออัปโหลดหรือลากไฟล์มาวาง",
+  "supported_formats": "รองรับไฟล์: XLSX, XLS, CSV (สูงสุด 10MB)",
+  "preview": "แสดงตัวอย่างข้อมูล (5 แถวแรก)",
+  "showing_preview": "แสดง 5 แถวแรกของข้อมูลที่นำเข้า",
+  "validation_notice": "กรุณาตรวจสอบข้อมูลก่อนนำเข้า:",
+  "validation_1": "ฟิลด์ที่จำเป็นต้องไม่เว้นว่าง",
+  "validation_2": "อีเมลต้องอยู่ในรูปแบบที่ถูกต้อง",
+  "validation_3": "เบอร์โทรศัพท์ควรอยู่ในรูปแบบมาตรฐาน",
+  "processing": "กำลังประมวลผล...",
+  "import": "นำเข้าข้อมูล",
+  "import_success": "นำเข้าข้อมูลสำเร็จ {{count}} รายการ",
+  "error_reading_file": "เกิดข้อผิดพลาดในการอ่านไฟล์ กรุณาตรวจสอบรูปแบบ",
+  "error_importing": "เกิดข้อผิดพลาดในการนำเข้าข้อมูล กรุณาลองใหม่อีกครั้ง",
+  "template_downloaded": "ดาวน์โหลดไฟล์ Template สำเร็จ"
+}

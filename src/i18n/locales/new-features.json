@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "kanban": "Kanban Board"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "unread",
+    "mark_all_read": "Mark all as read",
+    "no_notifications": "No notifications",
+    "all_caught_up": "You're all caught up!",
+    "approval_pending": "Approval Pending",
+    "deal_won": "Deal Won",
+    "task_overdue": "Task Overdue",
+    "new_customer": "New Customer Added",
+    "task_assigned": "Task Assigned",
+    "approval_approved": "Approval Approved",
+    "deal_stale": "Deal Stale",
+    "view_all": "View All Notifications"
+  },
+  "search": {
+    "placeholder": "Search...",
+    "title": "Global Search",
+    "search_everything": "Search deals, customers, quotations, contracts, tasks...",
+    "start_typing": "Start typing to search",
+    "search_hint": "Search across deals, customers, quotations, and more",
+    "no_results": "No results found",
+    "try_different": "Try a different search term",
+    "type_deal": "Deals",
+    "type_customer": "Customers",
+    "type_quotation": "Quotations",
+    "type_contract": "Contracts",
+    "type_task": "Tasks",
+    "navigate": "Navigate",
+    "select": "Select",
+    "close": "Close"
+  },
+  "documents": {
+    "title": "Document Management",
+    "files": "files",
+    "upload": "Upload Files",
+    "search": "Search documents...",
+    "all_categories": "All Categories",
+    "category_invoice": "Invoice",
+    "category_contract": "Contract",
+    "category_quotation": "Quotation",
+    "category_bol": "Bill of Lading",
+    "category_certificate": "Certificate",
+    "category_other": "Other",
+    "no_documents": "No documents found",
+    "upload_first": "Upload your first document"
+  },
+  "deals": {
+    "pipeline_view": "Sales Pipeline",
+    "drag_drop_hint": "Drag and drop deals to move them between stages",
+    "total_pipeline": "Total Pipeline",
+    "weighted_value": "Weighted Value",
+    "stage_lead": "Lead",
+    "stage_contact": "Contact Made",
+    "stage_needs_analysis": "Needs Analysis",
+    "stage_proposal": "Proposal Sent",
+    "stage_negotiation": "Negotiation",
+    "stage_closed_won": "Closed Won",
+    "no_deals": "No deals in this stage",
+    "probability": "Win Probability",
+    "deal_value": "Deal Value",
+    "deals": "Deals"
+  },
+  "serviceNames": {
+      "freight": "Freight",
+      "customs": "Customs",
+      "warehouse": "Warehouse",
+      "transport": "Transport",
+      "crossborder": "Cross-border",
+      "trading": "Trading",
+      "service": "Service",
+      "other": "Other",
+      "unknown": "Unknown"
+  }
+}

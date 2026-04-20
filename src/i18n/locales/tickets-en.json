@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "tickets": "Tickets"
+  },
+  "tickets": {
+    "subtitle": "Support & Service Tickets",
+    "create_ticket": "Create Ticket",
+    "no_tickets": "No tickets found",
+    "no_tickets_description": "Create your first ticket to get started",
+    "on_time": "On Time",
+    "warning": "Warning",
+    "overdue": "Overdue",
+    "closed": "Closed",
+    "title_placeholder": "Enter ticket title",
+    "description_placeholder": "Describe the issue or request in detail"
+  },
+  "common": {
+    "all": "All",
+    "tickets": "tickets",
+    "title": "Title",
+    "description": "Description",
+    "category": "Category",
+    "select_category": "Select Category",
+    "customer": "Customer",
+    "select_customer": "Select Customer",
+    "contact_person": "Contact Person",
+    "name": "Name",
+    "customer_information": "Customer Information",
+    "unassigned": "Unassigned",
+    "change_status": "Change Status"
+  }
+}

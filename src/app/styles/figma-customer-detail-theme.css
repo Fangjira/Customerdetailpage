@@ -1,0 +1,43 @@
+/* Figma Customer Detail Page - Role-based theming */
+
+/* Set CSS variables that will be used throughout the Figma component */
+.figma-customer-detail {
+  --stroke-0: var(--figma-primary, #00BC7D);
+}
+
+/* Override SVG stroke colors */
+.figma-customer-detail svg [stroke*="#00BC7D"],
+.figma-customer-detail svg [stroke*="#00bc7d"],
+.figma-customer-detail svg path[stroke*="#00BC7D"],
+.figma-customer-detail svg path[stroke*="#00bc7d"] {
+  stroke: var(--figma-primary, #00BC7D) !important;
+}
+
+/* Override all inline style gradients */
+.figma-customer-detail > * [style*="linear-gradient(135deg, rgb(74, 222, 128)"],
+.figma-customer-detail [style*="linear-gradient(135deg, rgb(74, 222, 128)"] {
+  background: linear-gradient(135deg, var(--figma-gradient-from, rgb(74, 222, 128)) 0%, var(--figma-gradient-to, rgb(0, 188, 125)) 100%) !important;
+}
+
+.figma-customer-detail [class*="from-[#4ade80]"],
+.figma-customer-detail [class*="to-[#00bc7d]"],
+.figma-customer-detail [class*="bg-gradient-to-r"] {
+  background: linear-gradient(to right, var(--figma-gradient-from, #4ade80), var(--figma-gradient-to, #00bc7d)) !important;
+}
+
+/* Override text colors with class name */
+.figma-customer-detail p.text-\[\#00bc7d\],
+.figma-customer-detail [class*="text-[#00bc7d]"] {
+  color: var(--figma-primary, #00bc7d) !important;
+}
+
+/* Override border colors */
+.figma-customer-detail [class*="border-[rgba(0,188,125"],
+.figma-customer-detail [style*="border-color: rgba(0, 188, 125"] {
+  border-color: var(--figma-border, rgba(0, 188, 125, 0.15)) !important;
+}
+
+/* Specific overrides for known patterns */
+.figma-customer-detail .css-4hzbpn {
+  color: var(--figma-primary, #00bc7d) !important;
+}

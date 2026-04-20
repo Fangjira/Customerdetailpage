@@ -1,0 +1,57 @@
+/* Figma Quotation List Page - Role-based theming */
+
+/* Set CSS variables that will be used throughout the Figma component */
+.figma-quotation-list {
+  --stroke-0: var(--figma-primary, #00BC7D);
+}
+
+/* Override SVG stroke colors - Green to role color */
+.figma-quotation-list svg [stroke*="#00BC7D"],
+.figma-quotation-list svg [stroke*="#00bc7d"],
+.figma-quotation-list svg path[stroke*="#00BC7D"],
+.figma-quotation-list svg path[stroke*="#00bc7d"] {
+  stroke: var(--figma-primary, #00BC7D) !important;
+}
+
+/* Override all inline style gradients - Green gradient to role gradient */
+.figma-quotation-list [style*="linear-gradient(135deg, rgb(74, 222, 128)"],
+.figma-quotation-list [style*="linear-gradient(135deg, rgb(74, 222, 128)"] * {
+  background: linear-gradient(135deg, var(--figma-gradient-from, rgb(74, 222, 128)) 0%, var(--figma-gradient-to, rgb(0, 188, 125)) 100%) !important;
+}
+
+.figma-quotation-list [class*="from-[#4ade80]"],
+.figma-quotation-list [class*="to-[#00bc7d]"],
+.figma-quotation-list [class*="bg-gradient-to-r"] {
+  background: linear-gradient(to right, var(--figma-gradient-from, #4ade80), var(--figma-gradient-to, #00bc7d)) !important;
+}
+
+/* Override text colors with class name */
+.figma-quotation-list p.text-\[\#00bc7d\],
+.figma-quotation-list [class*="text-[#00bc7d]"] {
+  color: var(--figma-primary, #00bc7d) !important;
+}
+
+/* Override border colors */
+.figma-quotation-list [class*="border-[rgba(0,188,125"],
+.figma-quotation-list [style*="border-color: rgba(0, 188, 125"] {
+  border-color: var(--figma-border, rgba(0, 188, 125, 0.15)) !important;
+}
+
+/* Specific overrides for known patterns */
+.figma-quotation-list .css-4hzbpn {
+  color: var(--figma-primary, #00bc7d) !important;
+}
+
+/* Override purple colors (for modal steps) - these should also change */
+.figma-quotation-list [style*="rgb(112, 90, 221)"],
+.figma-quotation-list [class*="bg-[#705add]"],
+.figma-quotation-list svg [stroke*="#705add"] {
+  stroke: var(--figma-primary, #705add) !important;
+  background: var(--figma-primary, #705add) !important;
+  color: var(--figma-primary, #705add) !important;
+}
+
+/* Hover states for buttons */
+.figma-quotation-list button:hover [style*="linear-gradient"] {
+  opacity: 0.9;
+}
