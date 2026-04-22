@@ -62,6 +62,7 @@ import {
 } from "../ui/alert-dialog";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useModuleStore } from "../../store/module-store";
 
 interface Task {
   id: string;
@@ -74,12 +75,18 @@ interface Task {
   assignee: string;
   completed: boolean;
   customer?: string;
+  customers?: string[];
   relatedTo?: string;
   location?: string;
   contactPerson?: string;
   contactPhone?: string;
   contactEmail?: string;
   activityType?: string;
+  isActivity?: boolean;
+  visibility?: "private" | "public" | "organization";
+  sharedWith?: string[];
+  attendees?: string[];
+  createdBy?: { id: string, name: string };
 }
 
 interface TasksScreenProps {
@@ -155,6 +162,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   const [hasMoved, setHasMoved] = useState(false);
 
   const currentUser = "สมชาย วงศ์สกุล";
+  const tasksFromStore = useModuleStore((state) => state.modules.tasks || []);
 
   // Team members list
   const teamMembers = [
@@ -170,729 +178,136 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
     
     if (isEnglish) {
       return [
-        // February 2026 (Current)
         {
-          id: "TASK-001",
-          title: "Follow up with Global Freight Solutions",
-          description: "Discuss contract renewal and pricing adjustment",
+          id: "TASK-EN-001",
+          title: "Visit Customer: SCGJWD Bangsue",
+          description: "Discuss 2026 warehouse expansion plan",
           priority: "high",
           status: "todo",
-          dueDate: "2026-02-19",
-          dueTime: "12:00 PM",
+          dueDate: "2026-04-21",
+          dueTime: "10:00 AM",
           assignee: "สมชาย วงศ์สกุล",
           completed: false,
-          customer: "บริษัท โกลบอล เฟรท โซลูชั่น จำกัด",
-          relatedTo: "Contract Renewal - Freight BU",
-          location: "123 Sukhumvit Road, Bangkok 10110",
-          contactPerson: "Mr. John Anderson",
-          contactPhone: "+66-2-123-4567",
-          contactEmail: "john.anderson@globalfreight.com",
+          customer: "SCGJWD Logistics",
           activityType: "customer_visit",
+          isActivity: true,
         },
         {
-          id: "TASK-002",
-          title: "Review quotation for TransContinental Logistics",
-          description: "Review pricing and scope before sending to customer",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-02-19",
-          dueTime: "02:00 PM",
-          assignee: "อนุชา ศรีสวัสดิ์",
-          completed: false,
-          customer: "บริษัท ทรานส์คอนติเนนทอล โลจิสติกส์ จำกัด",
-          relatedTo: "Quotation Review - Freight BU",
-          location: "456 Silom Road, Bangkok 10500",
-          contactPerson: "Ms. Maria Santos",
-          contactPhone: "+66-2-234-5678",
-          contactEmail: "maria.santos@transcon.com",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-003",
-          title: "Prepare contract amendment for Pacific Distribution",
-          description: "Update service levels and add new distribution center",
+          id: "TASK-EN-002",
+          title: "Weekly Status Sync",
+          description: "Sync with team on weekly targets",
           priority: "medium",
-          status: "in-progress",
-          dueDate: "2026-02-20",
-          dueTime: "03:00 PM",
-          assignee: "สมชาย วงศ์สกุล",
-          completed: false,
-          customer: "บริษัท แปซิฟิค ดิสทริบิวชั่น จำกัด",
-          relatedTo: "Contract Amendment - Commercial BU",
-          location: "789 Rama 4 Road, Bangkok 10330",
-          contactPerson: "Mr. David Lee",
-          contactPhone: "+66-2-345-6789",
-          contactEmail: "david.lee@pacific-dist.com",
-          activityType: "site_survey",
-        },
-        {
-          id: "TASK-004",
-          title: "System demo meeting with FastTrack Express",
-          description: "Present last-mile delivery solution",
-          priority: "low",
-          status: "completed",
-          dueDate: "2026-02-18",
+          status: "todo",
+          dueDate: "2026-04-21",
           dueTime: "04:00 PM",
-          assignee: "อนุชา ศรีสวัสดิ์",
-          completed: true,
-          customer: "บริษัท ฟาสต์แทร็ค เอ็กซ์เพรส จำกัด",
-          relatedTo: "System Demo - B2B2C BU",
-          location: "Online Meeting",
-          contactPerson: "Ms. Sarah Johnson",
-          contactPhone: "+66-2-456-7890",
-          contactEmail: "sarah.johnson@fasttrack.com",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-020",
-          title: "Cold Chain certification follow-up",
-          description: "Follow up on GDP certification for cold storage facility",
-          priority: "high",
-          status: "in-progress",
-          dueDate: "2026-02-21",
-          dueTime: "09:00 AM",
-          assignee: "วิภาวี จันทร์เจริญ",
-          completed: false,
-          customer: "บริษัท ไบโอฟาร์มา (ประเทศไทย) จำกัด",
-          relatedTo: "GDP Certification - Cold Chain BU",
-          location: "Lat Krabang Cold Storage",
-          contactPerson: "Dr. Sumalee Tanaka",
-          contactPhone: "+66-2-789-1234",
-          contactEmail: "sumalee@biopharma.co.th",
-          activityType: "site_survey",
-        },
-        {
-          id: "TASK-022",
-          title: "Automotive parts inventory planning",
-          description: "Plan Q2 inventory for automotive components client",
-          priority: "medium",
-          status: "todo",
-          dueDate: "2026-02-22",
-          dueTime: "10:30 AM",
-          assignee: "ปรีชา อัตตะกุล",
-          completed: false,
-          customer: "บริษัท ออโต้ คอมโพเนนท์ (ไทยแลนด์) จำกัด",
-          relatedTo: "Inventory Planning - Automotive BU",
-          location: "Rayong Factory",
-          contactPerson: "Mr. Takeshi Yamamoto",
-          contactPhone: "+66-38-456-7890",
-          contactEmail: "takeshi@autoparts.co.th",
-          activityType: "customer_visit",
-        },
-        {
-          id: "TASK-023",
-          title: "Team review - Healthcare logistics performance",
-          description: "Review team KPIs for Healthcare & Pharmaceutical BU",
-          priority: "low",
-          status: "todo",
-          dueDate: "2026-02-23",
-          dueTime: "02:00 PM",
-          assignee: "นพ.อภิชาติ ศรีนาค",
-          completed: false,
-          customer: "ภายใน - ทีมเฮลท์แคร์",
-          relatedTo: "Team Review - Healthcare & Pharmaceutical BU",
-          location: "Office Conference Room A",
-          contactPerson: "Healthcare Team",
-          contactPhone: "-",
-          contactEmail: "-",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-024",
-          title: "JTS terminal operations optimization",
-          description: "Review and optimize terminal operations workflow",
-          priority: "high",
-          status: "in-progress",
-          dueDate: "2026-02-24",
-          dueTime: "11:00 AM",
-          assignee: "กมลชนก พลอยงาม",
-          completed: false,
-          customer: "บริษัท เจทีเอส ออเปอเรชั่น จำกัด",
-          relatedTo: "Operations Review - JTS BU",
-          location: "Laem Chabang Terminal",
-          contactPerson: "Mr. Wichai Somboon",
-          contactPhone: "+66-38-123-9999",
-          contactEmail: "wichai@jts-terminal.com",
-          activityType: "site_survey",
-        },
-        {
-          id: "TASK-021",
-          title: "Present new services to Mega Corp",
-          description: "Introduce premium logistics services",
-          priority: "high",
-          status: "completed",
-          dueDate: "2025-12-28",
-          dueTime: "10:00 AM",
-          assignee: "สมชาย วงศ์สกุล",
-          completed: true,
-          customer: "บริษัท เมก้า คอร์ป จำกัด",
-          relatedTo: "New Service - Commercial BU",
-          location: "Customer Office",
-          activityType: "customer_visit",
-        },
-        // March 2026
-        {
-          id: "TASK-005",
-          title: "Q1 Business Review with Asia Logistics",
-          description: "Review quarterly performance and discuss expansion plans",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-05",
-          dueTime: "10:00 AM",
           assignee: "สมชาย วงศ์สกุล",
           completed: false,
-          customer: "บริษัท เอเชีย โลจิสติกส์ กรุ๊ป จำกัด",
-          relatedTo: "Q1 Review - Freight BU",
-          location: "Customer Office, Sathorn",
-          contactPerson: "Mr. Robert Chen",
-          contactPhone: "+66-2-555-1234",
-          contactEmail: "robert.chen@asialogistics.com",
           activityType: "meeting",
-        },
-        {
-          id: "TASK-006",
-          title: "Cold chain facility inspection",
-          description: "Inspect new cold storage facility for pharmaceutical client",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-07",
-          dueTime: "09:00 AM",
-          assignee: "วิภาวี จันทร์เจริญ",
-          completed: false,
-          customer: "บริษัท เมดิซัพพลาย (ประเทศไทย) จำกัด",
-          relatedTo: "Facility Inspection - Cold Chain BU",
-          location: "Lat Krabang Industrial Estate",
-          contactPerson: "Dr. Sumalee Tanaka",
-          contactPhone: "+66-2-555-2345",
-          contactEmail: "sumalee.t@medisupply.co.th",
-          activityType: "site_survey",
-        },
-        {
-          id: "TASK-007",
-          title: "Customs clearance training session",
-          description: "Conduct training for new customs procedures",
-          priority: "medium",
-          status: "in-progress",
-          dueDate: "2026-03-10",
-          dueTime: "02:00 PM",
-          assignee: "อนุชา ศรีสวัสดิ์",
-          completed: false,
-          customer: "บริษัท อิมพอร์ต เอ็กซ์พอร์ต โซลูชั่นส์ จำกัด",
-          relatedTo: "Training - Freight BU",
-          location: "Office Training Room",
-          contactPerson: "Ms. Pacharee Wong",
-          contactPhone: "+66-2-555-3456",
-          contactEmail: "pacharee.w@iesolutions.com",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-008",
-          title: "ASEAN expansion proposal presentation",
-          description: "Present cross-border logistics expansion to Vietnam and Cambodia",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-12",
-          dueTime: "11:00 AM",
-          assignee: "ชนิดา ทองสุข",
-          completed: false,
-          customer: "บริษัท ภูมิภาค เทรด พาร์ทเนอร์ส จำกัด",
-          relatedTo: "ASEAN Expansion - ASEAN Island & Taiwan BU",
-          location: "Online Meeting (Zoom)",
-          contactPerson: "Mr. Nguyen Van Minh",
-          contactPhone: "+84-28-555-4567",
-          contactEmail: "nguyen.minh@rtp.com.vn",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-009",
-          title: "Warehouse automation demo",
-          description: "Demonstrate new WMS system to potential client",
-          priority: "medium",
-          status: "todo",
-          dueDate: "2026-03-15",
-          dueTime: "01:30 PM",
-          assignee: "ภาณุมาส รัตนาวดี",
-          completed: false,
-          customer: "บริษัท สมาร์ท แวร์เฮ้าส์ จำกัด",
-          relatedTo: "WMS Demo - B2B2C BU",
-          location: "Bangna Distribution Center",
-          contactPerson: "Mr. Somchai Pattana",
-          contactPhone: "+66-2-555-5678",
-          contactEmail: "somchai@smartwarehouse.co.th",
-          activityType: "customer_visit",
-        },
-        {
-          id: "TASK-010",
-          title: "Contract negotiation - Automotive Parts",
-          description: "Final round of contract negotiation for automotive logistics",
-          priority: "high",
-          status: "in-progress",
-          dueDate: "2026-03-18",
-          dueTime: "10:30 AM",
-          assignee: "ปรีชา อัตตะกุล",
-          completed: false,
-          customer: "บริษัท ออโต้ คอมโพเนนท์ อินเตอร์เนชั่นแนล จำกัด",
-          relatedTo: "Contract Negotiation - Automotive BU",
-          location: "Customer Headquarters, Rayong",
-          contactPerson: "Mr. Takeshi Yamamoto",
-          contactPhone: "+66-38-555-6789",
-          contactEmail: "t.yamamoto@autocomponents.com",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-011",
-          title: "Freight rate review - Ocean shipping",
-          description: "Review and update ocean freight rates for Q2",
-          priority: "medium",
-          status: "todo",
-          dueDate: "2026-03-20",
-          dueTime: "03:00 PM",
-          assignee: "อนุชา ศรีสวัสดิ์",
-          completed: false,
-          customer: "บริษัท แปซิฟิค ชิปปิ้ง ไลน์ จำกัด",
-          relatedTo: "Rate Review - Freight BU",
-          location: "Office Meeting Room 2",
-          contactPerson: "Ms. Linda Kim",
-          contactPhone: "+66-2-555-7890",
-          contactEmail: "linda.kim@pacificshipping.com",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-012",
-          title: "Commodity trading compliance audit",
-          description: "Conduct compliance audit for commodity trading operations",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-22",
-          dueTime: "09:30 AM",
-          assignee: "วีระพงษ์ สมบัติ",
-          completed: false,
-          customer: "บริษัท โกลบอล คอมมอดิตี้ เทรดดิ้ง จำกัด",
-          relatedTo: "Compliance Audit - Commodity BU",
-          location: "Client Office, Silom",
-          contactPerson: "Mr. James Mitchell",
-          contactPhone: "+66-2-555-8901",
-          contactEmail: "j.mitchell@gct-global.com",
-          activityType: "site_survey",
-        },
-        {
-          id: "TASK-013",
-          title: "E-commerce fulfillment site visit",
-          description: "Visit new B2B2C fulfillment center for assessment",
-          priority: "medium",
-          status: "in-progress",
-          dueDate: "2026-03-25",
-          dueTime: "11:00 AM",
-          assignee: "ภาณุมาส รัตนาวดี",
-          completed: false,
-          customer: "บริษัท อี-คอมเมิร์ซ โลจิสติกส์ ฮับ จำกัด",
-          relatedTo: "Site Assessment - B2B2C BU",
-          location: "Chonburi Warehouse Park",
-          contactPerson: "Ms. Siriwan Techapaiboon",
-          contactPhone: "+66-38-555-9012",
-          contactEmail: "siriwan@ecommhub.co.th",
-          activityType: "site_survey",
-        },
-        {
-          id: "TASK-014",
-          title: "Healthcare logistics partnership meeting",
-          description: "Discuss strategic partnership for pharmaceutical distribution",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-27",
-          dueTime: "02:00 PM",
-          assignee: "ธนพล สุขสมบูรณ์",
-          completed: false,
-          customer: "บริษัท ฟาร์มาแคร์ ดิสทริบิวชั่น จำกัด",
-          relatedTo: "Partnership Discussion - Healthcare & Pharmaceutical BU",
-          location: "Pharma Office, Ramkhamhaeng",
-          contactPerson: "Dr. Ananya Srisawat",
-          contactPhone: "+66-2-555-0123",
-          contactEmail: "ananya@pharmacare.co.th",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-015",
-          title: "Monthly performance review - Team",
-          description: "Conduct monthly team performance review and planning",
-          priority: "low",
-          status: "todo",
-          dueDate: "2026-03-28",
-          dueTime: "04:00 PM",
-          assignee: "นันทวัฒน์ เจริญสุข",
-          completed: false,
-          customer: "ภายใน - ทีมขาย",
-          relatedTo: "Team Review - Commercial BU",
-          location: "Office Conference Room",
-          contactPerson: "Internal Team",
-          contactPhone: "-",
-          contactEmail: "-",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-016",
-          title: "China-Thailand cross-border solution proposal",
-          description: "Prepare proposal for China-Thailand land transport solution",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-29",
-          dueTime: "10:00 AM",
-          assignee: "วีระพงษ์ สมบัติ",
-          completed: false,
-          customer: "บริษัท ไซโน-ไทย เทรดดิ้ง จำกัด",
-          relatedTo: "Cross-border Proposal - CLMV+China BU",
-          location: "Customer Office, Bangkok",
-          contactPerson: "Mr. Zhang Wei",
-          contactPhone: "+66-2-888-9999",
-          contactEmail: "zhang.wei@sinothai.com",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-017",
-          title: "Automotive supply chain review with Manager",
-          description: "Review automotive BU performance with team manager",
-          priority: "medium",
-          status: "in-progress",
-          dueDate: "2026-03-30",
-          dueTime: "03:00 PM",
-          assignee: "สุนิสา วัฒนาชัย",
-          completed: false,
-          customer: "ภายใน - ทีมยานยนต์",
-          relatedTo: "Team Performance Review - Automotive BU",
-          location: "Office Meeting Room B",
-          contactPerson: "ปรีชา อัตตะกุล",
-          contactPhone: "-",
-          contactEmail: "-",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-018",
-          title: "JTS terminal capacity expansion planning",
-          description: "Plan terminal capacity expansion for Q3-Q4 2026",
-          priority: "high",
-          status: "todo",
-          dueDate: "2026-03-31",
-          dueTime: "09:00 AM",
-          assignee: "สุรเชษฐ์ ไพบูลย์",
-          completed: false,
-          customer: "บริษัท เจทีเอส แมเนจเมนท์ จำกัด",
-          relatedTo: "Capacity Planning - JTS BU",
-          location: "JTS Head Office",
-          contactPerson: "กมลชนก พลอยงาม",
-          contactPhone: "-",
-          contactEmail: "-",
-          activityType: "meeting",
-        },
-        {
-          id: "TASK-019",
-          title: "Cold Chain temperature monitoring system upgrade",
-          description: "Coordinate with IT team for IoT sensor deployment",
-          priority: "high",
-          status: "in-progress",
-          dueDate: "2026-03-31",
-          dueTime: "02:30 PM",
-          assignee: "ดร.วิชัย ประสิทธิ์",
-          completed: false,
-          customer: "ภายใน - ฝ่ายปฏิบัติการห่วงโซ่เย็น",
-          relatedTo: "System Upgrade - Cold Chain BU",
-          location: "Cold Chain Warehouse",
-          contactPerson: "วิภาวี จันทร์เจริญ",
-          contactPhone: "-",
-          contactEmail: "-",
-          activityType: "site_survey",
-        },
+          isActivity: true,
+        }
       ];
     }
     
     // Thai version
     return [
-      // กุมภาพันธ์ 2026 (Current)
       {
-        id: "TASK-001",
-        title: "ติดตามลูกค้า Global Freight Solutions",
-        description: "หารือเรื่องการต่ออายุสัญญาและปรับราคา",
-        priority: "high",
-        status: "todo",
-        dueDate: "2026-02-19",
-        dueTime: "12:00 PM",
-        assignee: "สมชาย วงศ์สกุล",
-        completed: false,
-        customer: "Global Freight Solutions Inc.",
-        relatedTo: "ต่ออายุสัญญา",
-        location: "123 ถนนสุขุมวิท กรุงเทพฯ 10110",
-        contactPerson: "คุณจอห์น แอนเดอร์สัน",
-        contactPhone: "+66-2-123-4567",
-        contactEmail: "john.anderson@globalfreight.com",
-        activityType: "customer_visit",
-      },
-      {
-        id: "TASK-002",
-        title: "ตรวจสอบใบเสนอราคาสำหรับ TransContinental Logistics",
-        description: "ตรวจสอบราคาและขอบเขตบริการก่อนส่งให้ลูกค้า",
-        priority: "high",
-        status: "todo",
-        dueDate: "2026-02-19",
-        dueTime: "02:00 PM",
-        assignee: "อนุชา ศรีสวัสดิ์",
-        completed: false,
-        customer: "TransContinental Logistics",
-        relatedTo: "ตรวจสอบใบเสนอราคา",
-        location: "456 ถนนสีลม กรุงเทพฯ 10500",
-        contactPerson: "คุณมาเรีย ซานโตส",
-        contactPhone: "+66-2-234-5678",
-        contactEmail: "maria.santos@transcon.com",
-        activityType: "meeting",
-      },
-      {
-        id: "TASK-003",
-        title: "เตรียมสัญญาแก้ไขสำหรับ Pacific Distribution",
-        description: "อัปเดตระดับการให้บริการและเพิ่มศูนย์กระจายสินค้าใหม่",
+        id: "TASK-PRIVATE-01",
+        title: "ทำรายงานรวมยอดขาย (งานส่วนตัว)",
+        description: "สรุปตัวเพลหายจากทุก BU เพื่อเตรียมส่งเข้าที่ประชุม",
         priority: "medium",
-        status: "in-progress",
-        dueDate: "2026-02-20",
-        dueTime: "03:00 PM",
-        assignee: "สมชาย วงศ์สกุล",
-        completed: false,
-        customer: "Pacific Distribution Co.",
-        relatedTo: "แก้ไขสัญญา",
-        location: "789 ถนนพระราม 4 กรุงเทพฯ 10330",
-        contactPerson: "คุณเดวิด ลี",
-        contactPhone: "+66-2-345-6789",
-        contactEmail: "david.lee@pacific-dist.com",
-        activityType: "site_survey",
-      },
-      {
-        id: "TASK-004",
-        title: "นัดหมายสาธิตระบบกับ FastTrack Express",
-        description: "นำเสนอโซลูชันการส่งของระยะสุดท้าย",
-        priority: "low",
-        status: "completed",
-        dueDate: "2026-02-18",
+        status: "todo",
+        dueDate: "2026-04-21",
         dueTime: "04:00 PM",
-        assignee: "อนุชา ศรีสวัสดิ์",
-        completed: true,
-        customer: "FastTrack Express",
-        relatedTo: "การสาธิตระบบ",
-        location: "ประชุมออนไลน์",
-        contactPerson: "คุณซาราห์ จอห์นสัน",
-        contactPhone: "+66-2-456-7890",
-        contactEmail: "sarah.johnson@fasttrack.com",
-        activityType: "meeting",
-      },
-      {
-        id: "TASK-021",
-        title: "นำเสนอบริการใหม่ให้ Mega Corp",
-        description: "แนะนำบริการขนส่งแบบพิเศษ",
-        priority: "high",
-        status: "completed",
-        dueDate: "2025-12-28",
-        dueTime: "10:00 AM",
-        assignee: "สมชาย วงศ์สกุล",
-        completed: true,
-        customer: "Mega Corp Ltd.",
-        relatedTo: "บริการใหม่",
-        location: "สำนักงานลูกค้า",
-        activityType: "customer_visit",
-      },
-      // มีนาคม 2026
-      {
-        id: "TASK-005",
-        title: "ประชุมสรุปผลไตรมาสที่ 1 กับ Asia Logistics",
-        description: "ทบทวนผลการดำเนินงานไตรมาสและหารือแผนขยายธุรกิจ",
-        priority: "high",
-        status: "todo",
-        dueDate: "2026-03-05",
-        dueTime: "10:00 AM",
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
-        customer: "Asia Logistics Group",
-        relatedTo: "สรุปผล Q1",
-        location: "สำนักงานลูกค้า สาทร",
-        contactPerson: "คุณโรเบิร์ต เฉิน",
-        contactPhone: "+66-2-555-1234",
-        contactEmail: "robert.chen@asialogistics.com",
-        activityType: "meeting",
+        visibility: "private",
+        isActivity: false,
       },
       {
-        id: "TASK-006",
-        title: "ตรวจสอบคลังสินค้าห้องเย็น",
-        description: "ตรวจสอบคลังเย็นใหม่สำหรับลูกค้าเภสัชกรรม",
+        id: "TASK-SHARED-01",
+        title: "เตรียมแผนการขายไตรมาส 2 (แชร์ให้ทีม)",
+        description: "จัดเตรียม Presentation และรายละเอียดโปรโมชั่นใหม่",
         priority: "high",
-        status: "todo",
-        dueDate: "2026-03-07",
+        status: "in-progress",
+        dueDate: "2026-04-21",
         dueTime: "09:00 AM",
-        assignee: "วิภาวี จันทร์เจริญ",
+        assignee: "สมชาย วงศ์สกุล",
         completed: false,
-        customer: "MediSupply Thailand",
-        relatedTo: "ตรวจสอบคลังสินค้า",
-        location: "นิคมอุตสาหกรรมลาดกระบัง",
-        contactPerson: "ดร.สุมาลี ทานากะ",
-        contactPhone: "+66-2-555-2345",
-        contactEmail: "sumalee.t@medisupply.co.th",
-        activityType: "site_survey",
+        visibility: "public",
+        sharedWith: ["sarah-chen", "michael-wong"],
+        isActivity: false,
       },
       {
-        id: "TASK-007",
-        title: "อบรมพิธีการศุลกากร",
-        description: "จัดอบรมขั้นตอนพิธีการศุลกากรใหม่",
-        priority: "medium",
-        status: "in-progress",
-        dueDate: "2026-03-10",
-        dueTime: "02:00 PM",
-        assignee: "อนุชา ศรีสวัสดิ์",
-        completed: false,
-        customer: "Import Export Solutions",
-        relatedTo: "การอบรม",
-        location: "ห้องอบรมบริษัท",
-        contactPerson: "คุณพัชรี วงศ์",
-        contactPhone: "+66-2-555-3456",
-        contactEmail: "pacharee.w@iesolutions.com",
-        activityType: "meeting",
-      },
-      {
-        id: "TASK-008",
-        title: "นำเสนอแผนขยายตลาด ASEAN",
-        description: "นำเสนอการขยายธุรกิจโลจิสติกส์ข้ามพรมแดนไปเวียดนามและกัมพูชา",
+        id: "TASK-DELEGATED-BY-OTHERS",
+        title: "สรุปยอดขายประจำสัปดาห์ (รับมอบหมาย)",
+        description: "รวบรวมข้อมูลยอดขายจากสมาชิกในทีมทุกคน",
         priority: "high",
         status: "todo",
-        dueDate: "2026-03-12",
+        dueDate: "2026-04-21",
         dueTime: "11:00 AM",
-        assignee: "ธนพล รัตนพงษ์",
+        assignee: "สมชาย วงศ์สกุล",
+        createdBy: { id: "manager-id", name: "Manager - วิชัย ประสิทธิ์" },
         completed: false,
-        customer: "Regional Trade Partners",
-        relatedTo: "ขยายตลาด ASEAN",
-        location: "ประชุมออนไลน์ (Zoom)",
-        contactPerson: "คุณเหงวียน ว่าน มินห์",
-        contactPhone: "+84-28-555-4567",
-        contactEmail: "nguyen.minh@rtp.com.vn",
-        activityType: "meeting",
+        isActivity: false,
       },
       {
-        id: "TASK-009",
-        title: "สาธิตระบบคลังสินค้าอัตโนมัติ",
-        description: "สาธิตระบบ WMS ใหม่ให้ลูกค้าที่มีโอกาส",
-        priority: "medium",
+        id: "TASK-VISIT-01",
+        title: "เข้าพบลูกค้า - Visit customer: SCGJWD Bangsue",
+        description: "คุยเรื่องแผนการขยายคลังสินค้าปี 2026",
+        priority: "high",
         status: "todo",
-        dueDate: "2026-03-15",
-        dueTime: "01:30 PM",
-        assignee: "วิภาวี จันทร์เจริญ",
+        dueDate: "2026-04-21",
+        dueTime: "10:00 AM",
+        assignee: "สมชาย วงศ์สกุล",
         completed: false,
-        customer: "Smart Warehouse Co.",
-        relatedTo: "สาธิต WMS",
-        location: "ศูนย์กระจายสินค้าบางนา",
-        contactPerson: "คุณสมชาย พัฒนา",
-        contactPhone: "+66-2-555-5678",
-        contactEmail: "somchai@smartwarehouse.co.th",
+        customer: "SCGJWD Logistics",
         activityType: "customer_visit",
+        isActivity: true,
       },
       {
-        id: "TASK-010",
-        title: "เจรจาสัญญา - ชิ้นส่วนยานยนต์",
-        description: "เจรจาสัญญารอบสุดท้ายสำหรับโลจิสติกส์อุตสาหกรรมยานยนต์",
-        priority: "high",
-        status: "in-progress",
-        dueDate: "2026-03-18",
-        dueTime: "10:30 AM",
-        assignee: "สมชาย วงศ์สกุล",
-        completed: false,
-        customer: "Auto Components International",
-        relatedTo: "เจรจาสัญญา",
-        location: "สำนักงานใหญ่ลูกค้า ระยอง",
-        contactPerson: "คุณทาเคชิ ยามาโมโตะ",
-        contactPhone: "+66-38-555-6789",
-        contactEmail: "t.yamamoto@autocomponents.com",
-        activityType: "meeting",
-      },
-      {
-        id: "TASK-011",
-        title: "ทบทวนอัตราค่าขนส่งทางเรือ",
-        description: "ทบทวนและปรับปรุงอัตราค่าขนส่งทางเรือสำหรับไตรมาสที่ 2",
+        id: "TASK-MEETING-01",
+        title: "นัดหมายลูกค้า - Schedule meeting: CP All",
+        description: "นำเสนอ Solution ระบบจัดการขนส่งใหม่",
         priority: "medium",
         status: "todo",
-        dueDate: "2026-03-20",
-        dueTime: "03:00 PM",
-        assignee: "อนุชา ศรีสวัสดิ์",
-        completed: false,
-        customer: "Pacific Shipping Lines",
-        relatedTo: "ทบทวนอัตราค่าบริการ",
-        location: "ห้องประชุม 2",
-        contactPerson: "คุณลินดา คิม",
-        contactPhone: "+66-2-555-7890",
-        contactEmail: "linda.kim@pacificshipping.com",
-        activityType: "meeting",
-      },
-      {
-        id: "TASK-012",
-        title: "ตรวจสอบการปฏิบัติตามกฎระเบียบการค้าสินค้าโภคภัณฑ์",
-        description: "ตรวจสอบการปฏิบัติตามกฎเกณฑ์ธุรกิจการค้าสินค้าโภคภัณฑ์",
-        priority: "high",
-        status: "todo",
-        dueDate: "2026-03-22",
-        dueTime: "09:30 AM",
-        assignee: "ธนพล รัตนพงษ์",
-        completed: false,
-        customer: "Global Commodities Trading",
-        relatedTo: "ตรวจสอบการปฏิบัติตามกฎ",
-        location: "สำนักงานลูกค้า สีลม",
-        contactPerson: "คุณเจมส์ มิทเชลล์",
-        contactPhone: "+66-2-555-8901",
-        contactEmail: "j.mitchell@gct-global.com",
-        activityType: "site_survey",
-      },
-      {
-        id: "TASK-013",
-        title: "เยี่ยมชมศูนย์กระจายสินค้าอีคอมเมิร์ซ",
-        description: "เยี่ยมชมศูนย์กระจายสินค้า B2B2C ใหม่เพื่อประเมิน",
-        priority: "medium",
-        status: "in-progress",
-        dueDate: "2026-03-25",
-        dueTime: "11:00 AM",
-        assignee: "วิภาวี จันทร์เจริญ",
-        completed: false,
-        customer: "E-Commerce Logistics Hub",
-        relatedTo: "ประเมินสถานที่",
-        location: "คลังสินค้า ชลบุรี",
-        contactPerson: "คุณศิริวรรณ เตชะไพบูลย์",
-        contactPhone: "+66-38-555-9012",
-        contactEmail: "siriwan@ecommhub.co.th",
-        activityType: "site_survey",
-      },
-      {
-        id: "TASK-014",
-        title: "ประชุมหารือความร่วมมือด้านโลจิสติกส์สุขภาพ",
-        description: "หารือความร่วมมือเชิงกลยุทธ์สำหรับการกระจายสินค้าเภสัชกรรม",
-        priority: "high",
-        status: "todo",
-        dueDate: "2026-03-27",
-        dueTime: "02:00 PM",
+        dueDate: "2026-04-21",
+        dueTime: "02:30 PM",
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
-        customer: "PharmaCare Distribution",
-        relatedTo: "หารือความร่วมมือ",
-        location: "สำนักงานฟาร์มา รามคำแหง",
-        contactPerson: "ดร.อนัญญา ศรีสวัสดิ์",
-        contactPhone: "+66-2-555-0123",
-        contactEmail: "ananya@pharmacare.co.th",
+        customer: "CP All Public Company",
         activityType: "meeting",
+        isActivity: true,
       },
       {
-        id: "TASK-015",
-        title: "ประชุมทบทวนผลงานประจำเดือน - ทีม",
-        description: "ทบทวนผลการทำงานของทีมและวางแผนประจำเดือน",
+        id: "TASK-SHARED-VISIT-02",
+        title: "เข้าพบลูกค้า: PTT Group (คนอื่นแชร์มา)",
+        description: "คุยเรื่องงานวางระบบคลังสินค้าอัจฉริยะ คุณจีรพุธแชร์มาให้ร่วมสังเกตการณ์",
+        priority: "medium",
+        status: "todo",
+        dueDate: "2026-04-21",
+        dueTime: "01:00 PM",
+        assignee: "คุณจีรพุธ (Jiraputh)",
+        attendees: ["คุณจีรพุธ (Jiraputh)", "สมชาย วงศ์สกุล"],
+        completed: false,
+        customer: "PTT Public Company Limited",
+        activityType: "customer_visit",
+        isActivity: true,
+        createdBy: { id: "jiraputh-id", name: "คุณจีรพุธ (Jiraputh)" }
+      },
+      {
+        id: "TASK-MULTI-CUST-01",
+        title: "ประชุมกลุ่มนิคมอุตสาหกรรม (ลูกค้าหลายราย)",
+        description: "รวบรวมความต้องการจากกลุ่มลูกค้าในนิคมฯ อมตะ",
         priority: "low",
         status: "todo",
-        dueDate: "2026-03-28",
-        dueTime: "04:00 PM",
+        dueDate: "2026-04-21",
+        dueTime: "03:30 PM",
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
-        customer: "ภายใน - ทีมขาย",
-        relatedTo: "ทบทวนทีม",
-        location: "ห้องประชุมบริษัท",
-        contactPerson: "ทีมภายใน",
-        contactPhone: "-",
-        contactEmail: "-",
+        customers: ["Amata Corp", "WHA Group", "Thai Factory Ltd"],
         activityType: "meeting",
-      },
+        isActivity: true,
+      }
     ];
   };
 
@@ -1032,38 +447,54 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   };
 
   const handleSaveTask = (taskId: string, updatedTask: Partial<Task>) => {
+    const upsertRecord = useModuleStore.getState().upsertRecord;
+    
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              ...updatedTask,
-              completed: updatedTask.status === "completed" || task.completed,
-            }
-          : task
-      )
+      prev.map((task) => {
+        if (task.id === taskId) {
+          const newTask = {
+            ...task,
+            ...updatedTask,
+            completed: updatedTask.status === "completed" || task.completed,
+          };
+          // Persist to store if it exists there
+          upsertRecord('tasks', newTask);
+          return newTask;
+        }
+        return task;
+      })
     );
     toast.success(t("tasks.task_updated"));
     setIsEditTaskDialogOpen(false);
   };
 
   const handleStatusChange = (taskId: string, newStatus: "todo" | "in-progress" | "completed") => {
+    const upsertRecord = useModuleStore.getState().upsertRecord;
+
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              status: newStatus,
-              completed: newStatus === "completed",
-            }
-          : task
-      )
+      prev.map((task) => {
+        if (task.id === taskId) {
+          const newTask = {
+            ...task,
+            status: newStatus,
+            completed: newStatus === "completed",
+          };
+          // Persist to store
+          upsertRecord('tasks', newTask);
+          return newTask;
+        }
+        return task;
+      })
     );
     toast.success(t("tasks.status_updated"));
   };
 
   const handleDeleteTask = (taskId: string) => {
+    const deleteRecord = useModuleStore.getState().deleteRecord;
+    
     setTasks((prev) => prev.filter((task) => task.id !== taskId));
+    deleteRecord('tasks', taskId);
+    
     setIsDeleteDialogOpen(false);
     setTaskToDelete(null);
     toast.success(t("tasks.task_deleted"));
@@ -1085,14 +516,23 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   };
 
   const getFilteredTasks = () => {
-    let filtered = tasks;
+    // Merge mock tasks with store tasks and deduplicate by ID
+    const combined = [...tasksFromStore as Task[], ...tasks];
+    const uniqueTasks = Array.from(new Map(combined.map(t => [t.id, t])).values());
+    let filtered = uniqueTasks;
     
     // Filter out hidden tasks
     filtered = filtered.filter(t => !hiddenTaskIds.includes(t.id));
     
-    // Sales Rep เห็นแค่ของตัวเอง, Manager เห็นของทั้งทีม
+    // Sales Rep เห็นของตัวเอง และงานที่ได้รับมอบหมาย
     if (!isManager) {
-      filtered = filtered.filter(t => t.assignee === currentUser);
+      filtered = filtered.filter(t => 
+        t.assignee === currentUser || 
+        t.assignees?.includes(currentUser) ||
+        t.assignees?.includes("somchai-wongsakul") ||
+        t.attendees?.includes(currentUser) ||
+        t.attendees?.includes("somchai-wongsakul")
+      );
     }
     
     if (searchQuery) {
@@ -1162,7 +602,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   };
 
   // Stats calculations
-  const filteredTasks = useMemo(() => getFilteredTasks(), [tasks, hiddenTaskIds, isManager, currentUser, searchQuery, filterOwner, filterActivityType, filterDateFrom, filterDateTo, sortDirection, sortField]);
+  const filteredTasks = useMemo(() => getFilteredTasks(), [tasks, tasksFromStore, hiddenTaskIds, isManager, currentUser, searchQuery, filterOwner, filterActivityType, filterDateFrom, filterDateTo, sortDirection, sortField]);
   const todoTasks = useMemo(() => filteredTasks.filter(t => t.status === "todo"), [filteredTasks]);
   const inProgressTasks = useMemo(() => filteredTasks.filter(t => t.status === "in-progress"), [filteredTasks]);
   const completedTasks = useMemo(() => filteredTasks.filter(t => t.status === "completed"), [filteredTasks]);
@@ -1177,6 +617,8 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
     meeting: { label: t("tasks.activity_types.meeting", "ประชุม"), color: "purple" },
     site_survey: { label: t("tasks.activity_types.site_survey", "สำรวจสถานที่"), color: "orange" },
     follow_up: { label: t("tasks.activity_types.follow_up", "ติดตามงาน"), color: "green" },
+    "นัดหมายลูกค้า - Schedule meeting": { label: "นัดหมายลูกค้า - Schedule meeting", color: "purple" },
+    "เข้าพบลูกค้า - Visit customer": { label: "เข้าพบลูกค้า - Visit customer", color: "blue" },
   };
 
   const allTasksHistory: HistoryEntry[] = [

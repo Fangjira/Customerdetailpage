@@ -15,8 +15,11 @@ interface Task {
   dueDate: string;
   dueTime: string;
   assignee: string;
+  assignees?: string[];
+  attendees?: string[];
   completed: boolean;
   customer?: string;
+  customers?: string[];
   relatedTo?: string;
   approvers?: string[];
   location?: string;
@@ -24,6 +27,7 @@ interface Task {
   contactPhone?: string;
   contactEmail?: string;
   activityType?: string;
+  isActivity?: boolean;
 }
 
 interface TaskCardProps {
@@ -125,6 +129,9 @@ export function TaskCard({ task, canEdit, canDelete, onCheckIn, onEdit, onDelete
         {/* Header: Title + Status Badge */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              {task.isActivity && <Badge variant="secondary" className="text-[9px] h-4 px-1 bg-amber-50 text-amber-600 border-amber-100">Activity</Badge>}
+            </div>
             <h3 className="font-semibold text-gray-900 text-base mb-1.5 line-clamp-2">
               {task.title}
             </h3>
@@ -203,6 +210,17 @@ export function TaskCard({ task, canEdit, canDelete, onCheckIn, onEdit, onDelete
             <MapPin className="h-4 w-4 mr-1.5" />
             <span>{t("tasks.checkin")}</span>
           </Button>
+
+          {/* Assignee Badge */}
+          <div className="flex items-center gap-1.5 bg-gray-50 text-gray-600 px-2.5 py-1.5 rounded-md border border-gray-100 max-w-[120px]">
+            <Users className="h-3.5 w-3.5 text-gray-400" />
+            <span className="text-xs font-bold truncate">{task.assignee}</span>
+            {((task.assignees?.length || 0) > 1 || (task.attendees?.length || 0) > 1) && (
+              <Badge className="bg-emerald-500 text-white text-[9px] px-1 h-4 min-w-[16px] flex items-center justify-center rounded-full border-none">
+                +{(task.assignees?.length || task.attendees?.length || 0) - 1}
+              </Badge>
+            )}
+          </div>
           
           {/* 3-dots Menu */}
           <div className="relative ml-auto flex-shrink-0" onClick={(e) => e.stopPropagation()}>

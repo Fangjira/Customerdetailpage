@@ -165,6 +165,7 @@ interface Activity {
   customerAddress?: string;
   customerPhone?: string;
   assignedTo: string;
+  createdBy?: { name: string; avatar?: string };
   attendees?: string[];
   notes?: string;
   relatedDeal?: string;
@@ -493,9 +494,14 @@ export function ActivityDetailModal({
         {!isEditMode ? (
           <>
             <DialogHeader className="border-b border-[#ede9fe] pb-3 sm:pb-4 ">
-              <DialogTitle className="text-lg sm:text-xl text-[#4c1d95] font-semibold">
-                {activity.title}
-              </DialogTitle>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded uppercase border border-gray-100">
+                  {activity.id}
+                </span>
+                <DialogTitle className="text-lg sm:text-xl text-[#4c1d95] font-semibold">
+                  {activity.title}
+                </DialogTitle>
+              </div>
               <DialogDescription className="sr-only">
                 {t("calendar.activity_details")}
               </DialogDescription>
@@ -589,6 +595,23 @@ export function ActivityDetailModal({
               </div>
 
               {/* ---------------- เพิ่มส่วนแสดงหัวข้อบริการตรงนี้ ---------------- */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Plus className="h-4 w-4 text-[#705add]" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#4c1d95]">
+                    {t("ผู้มอบหมาย (Created By)")}
+                  </h3>
+                </div>
+                <div className="pl-6 flex items-center gap-3">
+                   <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-700 border border-blue-200">
+                     {activity.createdBy?.name.substring(0, 2).toUpperCase() || "ME"}
+                   </div>
+                   <div>
+                     <p className="text-sm text-gray-900 font-medium">{activity.createdBy?.name || "คุณ (You)"}</p>
+                   </div>
+                </div>
+              </div>
+
               <div className="border-t border-gray-100 my-2"></div>
 
               <div className="space-y-3">
@@ -727,16 +750,16 @@ export function ActivityDetailModal({
 
             <DialogFooter className="border-t border-[#ede9fe] pt-4">
               <div className="flex flex-col sm:flex-row gap-2 w-full justify-end">
-                <Button variant="outline" onClick={() => setIsEditMode(true)} className="border-[#ede9fe] text-[#6b7280] rounded-lg">
+                <Button variant="outline" onClick={() => setIsEditMode(true)} className="border-[#ede9fe] text-[#6b7280] rounded-full px-6">
                   <Edit className="h-4 w-4 mr-2" /> {t("common.edit")}
                 </Button>
                 {currentStatus !== "completed" && (
-                  <Button onClick={handleMarkComplete} className="bg-red-600 hover:bg-red-700 text-white rounded-lg">
+                  <Button onClick={handleMarkComplete} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6">
                     <Check className="h-4 w-4 mr-2" /> {t("calendar.mark_complete")}
                   </Button>
                 )}
                 {currentStatus !== "completed" && (
-                  <Button onClick={handleCheckIn} className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                  <Button onClick={handleCheckIn} className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6">
                     <MapPinCheck className="h-4 w-4 mr-2" /> {t("checkin.checkin")}
                   </Button>
                 )}

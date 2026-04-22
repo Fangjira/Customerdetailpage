@@ -1,5 +1,5 @@
 import { useRoleTheme } from "../hooks/use-role-theme";
-import CustomerDetailPage from "@/imports/CustomerDetailPage-539-2045";
+import CustomerDetailPage from "../../imports/CustomerDetailPage-539-2045";
 import { useEffect } from "react";
 import "../styles/figma-customer-detail-theme.css";
 

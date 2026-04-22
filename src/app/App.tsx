@@ -7,7 +7,6 @@ import { SidebarNav } from "./components/sidebar-nav";
 import { LoginScreen } from "./components/login-screen";
 import { TasksScreen } from "./components/screens/tasks-screen";
 import { TaskDetailScreen } from "./components/screens/task-detail-screen";
-import { DashboardScreen } from "./components/screens/dashboard-screen";
 import { ImprovedDashboardScreen } from "./components/screens/improved-dashboard-screen";
 import { DashboardCatalogScreen } from "./components/screens/dashboard-catalog-screen";
 // EnterpriseDashboardScreen was removed - using DashboardScreen instead
@@ -106,6 +105,7 @@ import { OneLinkCRMDemo } from "./components/screens/onelink-crm-demo";
 import { OneLinkDashboard } from "./components/screens/onelink-dashboard";
 import { OneLinkDealsScreen } from "./components/screens/onelink-deals-screen";
 import { OneLinkWelcome } from "./components/screens/onelink-welcome";
+import { TaskDetailDemo } from "./components/crm-tasks-module/task-detail-demo";
 import { Button } from "./components/ui/button";
 import { 
   LogOut, Search, Menu, Plus, Key, Settings, UserCircle, 
@@ -115,6 +115,7 @@ import {
 import { LanguageSwitcher } from "./components/language-switcher";
 import { ThemeSwitcher } from "./components/theme-switcher";
 import { RoleSwitcher } from "./components/role-switcher";
+import { Toaster } from "sonner";
 import { cn } from "./components/ui/utils";
 import { RoleProvider, useRole } from "./contexts/role-context";
 import { ThemeProvider, useTheme } from "./contexts/theme-context";
@@ -1255,11 +1256,11 @@ function MainApp({
       case currentPath === "/team-activities":
         return <TeamActivitiesScreen onNavigate={handleNavigation} />;
       case currentPath === "/dashboard":
-        return <DashboardScreen />;
+        return <ImprovedDashboardScreen onNavigate={handleNavigation} />;
       case currentPath === "/dashboard-catalog":
         return <DashboardCatalogScreen onNavigate={handleNavigation} />;
       case currentPath === "/enterprise-dashboard":
-        return <DashboardScreen />; // File removed, use DashboardScreen instead
+        return <ImprovedDashboardScreen onNavigate={handleNavigation} />; // File removed, use ImprovedDashboardScreen instead
       case currentPath === "/deals" || currentPath === "/deals/create":
         return <DealsListScreen onDealClick={handleDealClick} shouldOpenAddDialog={shouldOpenActivityModal} setShouldOpenAddDialog={setShouldOpenActivityModal} />;
       case currentPath === "/quotation-create":
@@ -1381,8 +1382,8 @@ function MainApp({
       case currentPath === "/transfer-lead-demo":
         return <TransferLeadDemo />;
       default:
-        console.log("[renderContent] No route matched, rendering DashboardScreen");
-        return <DashboardScreen />;
+        console.log("[renderContent] No route matched, rendering TaskDetailDemo");
+        return <TaskDetailDemo />;
     }
   };
 
@@ -1728,6 +1729,7 @@ export default function App() {
                 <LanguageProvider>
                   <ErrorBoundary>
                     <AppContent />
+                    <Toaster position="top-right" richColors />
                   </ErrorBoundary>
                 </LanguageProvider>
               </CRMProvider>

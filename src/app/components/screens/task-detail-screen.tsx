@@ -26,6 +26,7 @@ import { useRoleTheme } from "../../hooks/use-role-theme";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ScrollArea } from "../ui/scroll-area";
 import { toast } from "sonner";
+import { useModuleStore } from "../../store/module-store";
 
 interface Task {
   id: string;
@@ -241,9 +242,11 @@ function InlineSelectField({
 export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScreenProps) {
   const { t } = useTranslation();
   const roleTheme = useRoleTheme();
+  
+  const tasksFromStore = useModuleStore((state) => state.modules.tasks || []);
 
-  // Mock task data
-  const [task, setTask] = useState<Task>({
+  // Mock task data as fallback or initial state
+  const mockTask: Task = {
     id: "TASK-001",
     title: "Follow up with Global Freight Solutions",
     description: "Discuss contract renewal terms and pricing adjustments. Need to review the current service agreement and propose new pricing structure based on volume increases. Also discuss potential expansion to new routes.",
@@ -261,7 +264,19 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
     contactEmail: "john.anderson@globalfreight.com",
     activityType: "customer_visit",
     approvers: ["Sarah Chen", "Michael Park"],
-  });
+  };
+
+  const [task, setTask] = useState<Task>(mockTask);
+
+  // Load task from store if taskId matches
+  useEffect(() => {
+    const foundTask = tasksFromStore.find(t => t.id === taskId);
+    if (foundTask) {
+      setTask(foundTask as Task);
+    } else if (taskId === "TASK-001") {
+      setTask(mockTask);
+    }
+  }, [taskId, tasksFromStore]);
 
   const [newComment, setNewComment] = useState("");
 
@@ -369,9 +384,14 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex-1 min-w-0">
               {/* Title */}
-              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-3 leading-tight">
-                {task.title}
-              </h1>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded uppercase border border-gray-100">
+                  {task.id}
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 leading-tight inline">
+                  {task.title}
+                </h1>
+              </div>
 
               {/* Status and Priority */}
               <div className="flex items-center gap-2 flex-wrap mb-3">
@@ -408,7 +428,7 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
               </div>
 
               <p className="text-sm text-gray-500">
-                {task.id} • สร้างเมื่อ {new Date(task.dueDate).toLocaleDateString("th-TH")}
+                สร้างเมื่อ {new Date(task.dueDate).toLocaleDateString("th-TH")}
               </p>
             </div>
 

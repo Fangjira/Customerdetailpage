@@ -3,6 +3,8 @@ import {
   Calendar, Users, Lock, Globe, Check, ChevronDown, X, Plus, 
   Link2, CheckCircle2, Briefcase, Building2, UserPlus, Search 
 } from "lucide-react";
+import { toast } from "sonner";
+import { useModuleStore } from "../store/module-store";
 
 // ==========================================
 // 🔴 ส่วนที่ 1: MOCK UTILITIES & LIBRARIES 
@@ -38,11 +40,6 @@ const useTranslation = () => {
 
 // Event Target สำหรับจำลอง Toast
 const toastEmitter = new EventTarget();
-const toast = {
-  success: (msg: string) => toastEmitter.dispatchEvent(new CustomEvent('show-toast', { detail: { msg, type: 'success' } })),
-  error: (msg: string) => toastEmitter.dispatchEvent(new CustomEvent('show-toast', { detail: { msg, type: 'error' } })),
-  info: (msg: string) => toastEmitter.dispatchEvent(new CustomEvent('show-toast', { detail: { msg, type: 'info' } }))
-};
 
 // ==========================================
 // 🔴 ส่วนที่ 2: MOCK UI COMPONENTS 
@@ -303,9 +300,9 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
   const [leadData, setLeadData] = useState({ email: "", phone: "" });
 
   const teamMembers = [
-    { id: "you", name: t("common.you") || "คุณ (You)" },
-    { id: "sarah-chen", name: "Sarah Chen" },
-    { id: "michael-wong", name: "Michael Wong" },
+    { id: "somchai-wongsakul", name: "สมชาย วงศ์สกุล" }, // Matches TasksScreen currentUser
+    { id: "anucha-srisawat", name: "อนุชา ศรีสวัสดิ์" },
+    { id: "wipawee-chancharoen", name: "วิภาวี จันทร์เจริญ" },
   ];
 
   // เป็นโหมด Activity หากใน Array ของหัวข้องาน มีคำว่า "นัดหมายลูกค้า" หรือ "เข้าพบลูกค้า"
@@ -406,6 +403,27 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
       toast.error("โปรดเลือกพนักงานที่ต้องการ 'มอบหมายให้' อย่างน้อย 1 คน");
       return;
     }
+
+    // New Validations
+    if (!isActivityMode && !formData.dueDate) {
+      toast.error("โปรดระบุวันกำหนดส่งงาน");
+      return;
+    }
+
+    if (isActivityMode) {
+      if (!formData.date) {
+        toast.error("โปรดระบุวันที่ของกิจกรรม");
+        return;
+      }
+      if (!formData.startTime || !formData.endTime) {
+        toast.error("โปรดระบุเวลาเริ่มและสิ้นสุดกิจกรรม");
+        return;
+      }
+      if (!formData.customer) {
+        toast.error("โปรดเลือกลูกค้าหรือลีดที่เกี่ยวข้องกับกิจกรรม");
+        return;
+      }
+    }
     
     if (isActivityMode && formData.attendees.length === 0) {
       toast.error("โปรดเลือก 'ผู้รับผิดชอบ / เข้าร่วม' กิจกรรม อย่างน้อย 1 คน");
@@ -421,6 +439,40 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
       selectedLabels.push(formData.customTitle);
     }
     const finalTitle = selectedLabels.join(", ") || "ไม่มีหัวข้อ";
+    const upsertRecord = useModuleStore.getState().upsertRecord;
+
+    let activityType = "";
+    if (formData.titleType.includes("นัดหมายลูกค้า")) {
+      activityType = "นัดหมายลูกค้า - Schedule meeting";
+    } else if (formData.titleType.includes("เข้าพบลูกค้า")) {
+      activityType = "เข้าพบลูกค้า - Visit customer";
+    }
+
+    // Find customer name from ID
+    const customerObj = [...MOCK_ENTITIES.customer, ...MOCK_ENTITIES.lead].find(c => c.id === formData.customer);
+    const customerName = customerObj ? customerObj.name : formData.customer;
+
+    const taskData = {
+      title: finalTitle,
+      description: formData.description,
+      priority: formData.priority,
+      status: 'todo',
+      dueDate: isActivityMode ? formData.date : formData.dueDate,
+      dueTime: isActivityMode ? formData.startTime : '',
+      assignees: formData.assignees,
+      // Map the first assignee ID to the singular name expected by TasksScreen
+      assignee: teamMembers.find(m => m.id === formData.assignees[0])?.name || "สมชาย วงศ์สกุล",
+      attendees: formData.attendees,
+      isActivity: isActivityMode,
+      activityType: activityType,
+      linkedEntities: linkedEntities,
+      customer: customerName,
+      location: formData.location,
+      serviceTopics: formData.services,
+      customerContacts: formData.customerContacts,
+    };
+
+    upsertRecord('tasks', taskData);
 
     if (isActivityMode) {
       // Data Mockup for submission
@@ -498,7 +550,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-1">
+        <form onSubmit={handleSubmit} noValidate className="space-y-6 mt-1">
           
           {/* ========================================= */}
           {/* แถวที่ 1: Task Title & Priority */}
@@ -574,7 +626,6 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                     onChange={(e) => updateField("customTitle", e.target.value)}
                     placeholder="โปรดระบุหัวข้องานอื่นๆ..."
                     className="border-gray-200 shadow-sm"
-                    required
                     autoFocus
                   />
                 </div>
@@ -689,7 +740,6 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                     value={formData.dueDate}
                     onChange={(e) => updateField("dueDate", e.target.value)}
                     className="border-gray-200 shadow-sm"
-                    required={!isActivityMode}
                   />
                   <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                 </div>
@@ -707,15 +757,15 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
               <div className="grid grid-cols-[1.5fr_1fr_1fr] gap-3 sm:col-span-1 w-full">
                 <div className="space-y-1.5">
                   <Label className="text-emerald-900 text-xs">วันที่ <span className="text-red-500">*</span></Label>
-                  <Input type="date" value={formData.date} onChange={(e) => updateField("date", e.target.value)} required className="h-9 px-2 text-sm border-gray-200" />
+                  <Input type="date" value={formData.date} onChange={(e) => updateField("date", e.target.value)} className="h-9 px-2 text-sm border-gray-200" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-emerald-900 text-xs">เริ่ม <span className="text-red-500">*</span></Label>
-                  <Input type="time" value={formData.startTime} onChange={(e) => updateField("startTime", e.target.value)} required className="h-9 px-2 text-sm border-gray-200" />
+                  <Input type="time" value={formData.startTime} onChange={(e) => updateField("startTime", e.target.value)} className="h-9 px-2 text-sm border-gray-200" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-emerald-900 text-xs">สิ้นสุด <span className="text-red-500">*</span></Label>
-                  <Input type="time" value={formData.endTime} onChange={(e) => updateField("endTime", e.target.value)} required className="h-9 px-2 text-sm border-gray-200" />
+                  <Input type="time" value={formData.endTime} onChange={(e) => updateField("endTime", e.target.value)} className="h-9 px-2 text-sm border-gray-200" />
                 </div>
               </div>
               <div className="hidden sm:block"></div> {/* Spacer for right side of Row 1 */}

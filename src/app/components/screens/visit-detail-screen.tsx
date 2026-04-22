@@ -158,6 +158,9 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
           <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 space-y-8">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
+                <span className="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded uppercase border border-gray-100 block w-fit mb-2">
+                  {visitData.id}
+                </span>
                 <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">ลูกค้า</p>
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg font-bold text-gray-900">{visitData.customer}</h2>

@@ -19,14 +19,18 @@ interface Task {
   dueDate: string;
   dueTime: string;
   assignee: string;
+  assignees?: string[];
+  attendees?: string[];
   completed: boolean;
   customer?: string;
+  customers?: string[];
   relatedTo?: string;
   location?: string;
   contactPerson?: string;
   contactPhone?: string;
   contactEmail?: string;
   activityType?: string;
+  isActivity?: boolean;
 }
 
 interface TasksTableViewProps {
@@ -143,6 +147,9 @@ export function TasksTableView({ tasks, onTaskClick, onEditTask }: TasksTableVie
               >
                 <td className="px-4 py-3">
                   <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      {task.isActivity && <span className="text-[9px] text-amber-600 font-bold uppercase tracking-tighter">Activity</span>}
+                    </div>
                     <p className="text-sm font-medium text-gray-900">{task.title}</p>
                     {task.relatedTo && (
                       <p className="text-xs text-gray-500 mt-0.5">{task.relatedTo}</p>
@@ -150,10 +157,17 @@ export function TasksTableView({ tasks, onTaskClick, onEditTask }: TasksTableVie
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  {task.customer && (
-                    <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-700">{task.customer}</span>
+                  {(task.customer || (task.customers && task.customers.length > 0)) && (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-700">{task.customer || (task.customers && task.customers[0])}</span>
+                      </div>
+                      {task.customers && task.customers.length > 1 && (
+                        <span className="text-[10px] text-emerald-600 font-bold ml-6">
+                          +{task.customers.length - 1} more customers
+                        </span>
+                      )}
                     </div>
                   )}
                 </td>
@@ -177,7 +191,14 @@ export function TasksTableView({ tasks, onTaskClick, onEditTask }: TasksTableVie
                         {getInitials(task.assignee)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-gray-700">{task.assignee}</span>
+                    <div className="flex flex-col">
+                      <span className="text-sm text-gray-700 font-medium">{task.assignee}</span>
+                      {((task.assignees?.length || 0) > 1 || (task.attendees?.length || 0) > 1) && (
+                        <span className="text-[10px] text-emerald-600 font-bold">
+                          +{ (task.assignees?.length || task.attendees?.length || 0) - 1 } others
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right">

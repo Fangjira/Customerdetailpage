@@ -41,6 +41,8 @@ interface Task {
   dueDate: string;
   dueTime: string;
   assignee: string;
+  assignees?: string[];
+  attendees?: string[];
   completed: boolean;
   customer?: string;
   relatedTo?: string;
@@ -257,13 +259,20 @@ const TaskCard = ({ task, onMove, onEdit, onView, onHide, onDelete }: TaskCardPr
 
               {/* Assignee */}
               <div className="pt-3 border-t border-gray-100">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 bg-gradient-to-br from-[#7BC9A6] to-[#5FB592] rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-[10px] font-bold">
-                      {getInitials(task.assignee)}
-                    </span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="h-7 w-7 bg-gradient-to-br from-[#7BC9A6] to-[#5FB592] rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-[10px] font-bold">
+                        {getInitials(task.assignee)}
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-700 font-medium truncate max-w-[100px]">{task.assignee}</span>
                   </div>
-                  <span className="text-xs text-gray-700 font-medium truncate">{task.assignee}</span>
+                  {((task.assignees?.length || 0) > 1 || (task.attendees?.length || 0) > 1) && (
+                    <div className="h-6 w-6 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[9px] font-bold text-emerald-600">
+                      +{(task.assignees?.length || task.attendees?.length || 0) - 1}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

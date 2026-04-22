@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { 
   Calendar, 
@@ -28,6 +28,7 @@ import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { advancedMockData } from "../../../data/advancedMockData";
 import { extendedMasterData } from "../../../data/extendedMasterData";
 import { useRoleTheme } from "../../hooks/use-role-theme";
+import { useModuleStore } from "../../store/module-store";
 
 interface ActivitiesScreenProps {
   onActivityClick?: (activityId: string) => void;
@@ -42,7 +43,34 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
   const [showQuickVisitModal, setShowQuickVisitModal] = useState(false);
 
-  const activities = advancedMockData.activities;
+  const storeTasks = useModuleStore((state) => state.modules.tasks || []);
+
+  const activities = useMemo(() => {
+    const mockActivities = advancedMockData.activities;
+    
+    // Map store tasks that are activities
+    const taskActivities = storeTasks
+      .filter(t => t.isActivity)
+      .map(t => {
+        let type = "meeting";
+        if (t.activityType?.includes("เข้าพบลูกค้า")) type = "visit";
+        else if (t.activityType?.includes("นัดหมายลูกค้า")) type = "meeting";
+
+        return {
+          id: t.id,
+          title: t.title,
+          description: t.description || "",
+          customer: t.customer || "N/A",
+          type: type as any,
+          status: t.status === "completed" ? "completed" : "planned",
+          scheduledDate: t.dueDate || new Date().toISOString().split('T')[0],
+          scheduledTime: t.dueTime || "00:00",
+          owner: t.assignee || "You",
+        };
+      });
+
+    return [...taskActivities, ...mockActivities];
+  }, [storeTasks]);
 
   const getActivityIcon = (type: string) => {
     const iconMap: Record<string, any> = {
