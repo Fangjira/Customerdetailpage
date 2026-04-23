@@ -1,5 +1,5 @@
 // v2.3.0 - AdminSidebarNav removed, using unified SidebarNav with role-based menus
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { APP_VERSION } from "./build-info";
 // Core navigation components
 import { SidebarNav } from "./components/sidebar-nav";
@@ -105,7 +105,6 @@ import { OneLinkCRMDemo } from "./components/screens/onelink-crm-demo";
 import { OneLinkDashboard } from "./components/screens/onelink-dashboard";
 import { OneLinkDealsScreen } from "./components/screens/onelink-deals-screen";
 import { OneLinkWelcome } from "./components/screens/onelink-welcome";
-import { TaskDetailDemo } from "./components/crm-tasks-module/task-detail-demo";
 import { Button } from "./components/ui/button";
 import { 
   LogOut, Search, Menu, Plus, Key, Settings, UserCircle, 
@@ -119,8 +118,8 @@ import { Toaster } from "sonner";
 import { cn } from "./components/ui/utils";
 import { RoleProvider, useRole } from "./contexts/role-context";
 import { ThemeProvider, useTheme } from "./contexts/theme-context";
-import { CRMProvider } from "../context/CRMContext";
-import { LanguageProvider } from "../contexts/language-context";
+import { CRMProvider } from "./contexts/CRMContext";
+import { LanguageProvider } from "./contexts/language-context";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { useTranslation } from "react-i18next";
 import { useRoleTheme } from "./hooks/use-role-theme";
@@ -140,7 +139,7 @@ function AppContent() {
   console.log("[AppContent] Rendering - isAuthenticated:", isAuthenticated);
 
   // Core navigation state
-  const [currentPath, setCurrentPath] = useState("/dashboard");
+  const [currentPath, setCurrentPath] = useState("/tasks");
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   
   // Debug state initialization
@@ -506,7 +505,7 @@ function MenuButton({ icon, label, subLabel, onClick }: any) {
 // =========================================
 // MainApp Component
 // =========================================
-function MainApp({
+const MainApp = React.memo<any>(function MainApp({
   userMode,
   userRole,
   userEmail,
@@ -554,7 +553,7 @@ function MainApp({
   setVisitPreviousPath,
   proposalPreviousPath,
   setProposalPreviousPath,
-}: any) {
+}) {
   console.log("[MainApp] Rendering - currentPath:", currentPath);
   
   const { t } = useTranslation();
@@ -584,42 +583,42 @@ function MainApp({
   }, [fabPosition]);
 
   // Handle FAB drag
-  const handleFabDragStart = (clientX: number, clientY: number) => {
+  const handleFabDragStart = useCallback((clientX: number, clientY: number) => {
     setIsDragging(true);
     setHasMoved(false);
     setDragStart({ x: clientX, y: clientY });
-  };
+  }, []);
 
-  const handleFabDragMove = (clientX: number, clientY: number) => {
+  const handleFabDragMove = useCallback((clientX: number, clientY: number) => {
     if (!isDragging) return;
-    
+
     const dx = clientX - dragStart.x;
     const dy = dragStart.y - clientY;
-    
+
     // Mark as moved if dragged more than 5px
     if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
       setHasMoved(true);
     }
-    
+
     if (hasMoved) {
       setFabPosition(prev => {
         const newBottom = Math.max(16, Math.min(window.innerHeight - 70, prev.bottom + dy));
         const newRight = Math.max(16, Math.min(window.innerWidth - 70, prev.right - dx));
         return { bottom: newBottom, right: newRight };
       });
-      
+
       setDragStart({ x: clientX, y: clientY });
     }
-  };
+  }, [isDragging, dragStart, hasMoved]);
 
-  const handleFabDragEnd = () => {
+  const handleFabDragEnd = useCallback(() => {
     if (isDragging && hasMoved) {
       // Snap to nearest edge (left or right)
       setFabPosition(prev => {
         const screenWidth = window.innerWidth;
         const buttonCenterX = screenWidth - prev.right - 28;
         const snapToRight = buttonCenterX > screenWidth / 2;
-        
+
         return {
           bottom: prev.bottom,
           right: snapToRight ? 24 : screenWidth - 80,
@@ -628,11 +627,11 @@ function MainApp({
     }
     setIsDragging(false);
     setHasMoved(false);
-  };
+  }, [isDragging, hasMoved]);
 
-  const handleNavigation = (path: string, action?: string) => {
+  const handleNavigation = useCallback((path: string, action?: string) => {
     console.log("handleNavigation called with:", { path, action });
-    
+
     // Handle proposal navigation with ID
     if (path === "/proposal-preview" && action) {
       setSelectedProposalId(action); // action is actually the ID here
@@ -789,9 +788,9 @@ function MainApp({
     setSelectedNDAId(null);
     setSelectedTaskId(null);
     setShouldOpenActivityModal(false);
-  };
+  }, [setCurrentPath, setSelectedDealId, setSelectedCustomerId, setSelectedApprovalId, setSelectedContractId, setSelectedActivityId, setSelectedVisitId, setSelectedQuotationId, setSelectedProposalId, setSelectedNDAId, setSelectedTaskId, setShouldOpenActivityModal]);
 
-  const handleNavigationWithActivity = (path: string, activityId: string) => {
+  const handleNavigationWithActivity = useCallback((path: string, activityId: string) => {
     setCurrentPath(path);
     setSelectedActivityId(activityId);
     setSelectedDealId(null);
@@ -803,17 +802,17 @@ function MainApp({
     setSelectedProposalId(null);
     setSelectedNDAId(null);
     setSelectedTaskId(null);
-  };
+  }, [setCurrentPath, setSelectedActivityId, setSelectedDealId, setSelectedCustomerId, setSelectedApprovalId, setSelectedContractId, setSelectedVisitId, setSelectedQuotationId, setSelectedProposalId, setSelectedNDAId, setSelectedTaskId]);
 
-  const handleDealClick = (dealId: string) => {
+  const handleDealClick = useCallback((dealId: string) => {
     setSelectedDealId(dealId);
     setCurrentPath("/deal-detail");
-  };
+  }, [setSelectedDealId, setCurrentPath]);
 
-  const handleBackFromDeal = () => {
+  const handleBackFromDeal = useCallback(() => {
     setSelectedDealId(null);
     setCurrentPath("/deals");
-  };
+  }, [setSelectedDealId, setCurrentPath]);
 
   // Handle customer click navigation
   const handleCustomerClick = useCallback((customerId: string) => {
@@ -821,52 +820,52 @@ function MainApp({
     setCurrentPath("/customer-detail");
   }, [setSelectedCustomerId, setCurrentPath]);
 
-  const handleBackFromCustomer = () => {
+  const handleBackFromCustomer = useCallback(() => {
     setSelectedCustomerId(null);
     setCurrentPath("/customers");
-  };
+  }, [setSelectedCustomerId, setCurrentPath]);
 
-  const handleMyCustomerClick = (customerId: string) => {
+  const handleMyCustomerClick = useCallback((customerId: string) => {
     setSelectedCustomerId(customerId);
     setCurrentPath("/my-customer-detail");
-  };
+  }, [setSelectedCustomerId, setCurrentPath]);
 
-  const handleBackFromMyCustomer = () => {
+  const handleBackFromMyCustomer = useCallback(() => {
     setSelectedCustomerId(null);
     setCurrentPath("/customers/my");
-  };
+  }, [setSelectedCustomerId, setCurrentPath]);
 
-  const handleApprovalClick = (approvalId: string) => {
+  const handleApprovalClick = useCallback((approvalId: string) => {
     setSelectedApprovalId(approvalId);
     setCurrentPath("/approval-detail");
-  };
+  }, [setSelectedApprovalId, setCurrentPath]);
 
-  const handleBackFromApproval = () => {
+  const handleBackFromApproval = useCallback(() => {
     setSelectedApprovalId(null);
     setCurrentPath("/approvals");
-  };
+  }, [setSelectedApprovalId, setCurrentPath]);
 
-  const handleContractClick = (contractId: string) => {
+  const handleContractClick = useCallback((contractId: string) => {
     setSelectedContractId(contractId);
     setCurrentPath("/contract-detail");
-  };
+  }, [setSelectedContractId, setCurrentPath]);
 
-  const handleContractPreview = (contractId: string) => {
+  const handleContractPreview = useCallback((contractId: string) => {
     setSelectedContractId(contractId);
     setCurrentPath("/contract-preview");
-  };
+  }, [setSelectedContractId, setCurrentPath]);
 
-  const handleBackFromContract = () => {
+  const handleBackFromContract = useCallback(() => {
     setSelectedContractId(null);
     setCurrentPath("/overall");
-  };
+  }, [setSelectedContractId, setCurrentPath]);
 
-  const handleBackFromContractPreview = () => {
+  const handleBackFromContractPreview = useCallback(() => {
     // Don't reset selectedContractId, just navigate back to editor
     setCurrentPath("/contract-editor");
-  };
+  }, [setCurrentPath]);
 
-  const handleQuotationClick = (quotationId: string) => {
+  const handleQuotationClick = useCallback((quotationId: string) => {
     setSelectedQuotationId(quotationId);
     // Check quotation type and navigate to appropriate screen
     // For now, check if it's QT-2024-008 (uploaded type)
@@ -875,14 +874,14 @@ function MainApp({
     } else {
       setCurrentPath("/quotation-detail");
     }
-  };
+  }, [setSelectedQuotationId, setCurrentPath]);
 
-  const handleViewQuotationUploadDetail = (quotationId: string) => {
+  const handleViewQuotationUploadDetail = useCallback((quotationId: string) => {
     setSelectedQuotationId(quotationId);
     setCurrentPath("/quotation-upload-detail");
-  };
+  }, [setSelectedQuotationId, setCurrentPath]);
 
-  const handleQuotationPreview = (quotationId: string, templateType?: string) => {
+  const handleQuotationPreview = useCallback((quotationId: string, templateType?: string) => {
     console.log("handleQuotationPreview called with:", { quotationId, templateType });
     setSelectedQuotationId(quotationId);
     if (templateType) {
@@ -892,83 +891,83 @@ function MainApp({
       console.log("No templateType provided, using default:", selectedQuotationTemplate);
     }
     setCurrentPath("/quotation-preview");
-  };
+  }, [setSelectedQuotationId, setSelectedQuotationTemplate, selectedQuotationTemplate, setCurrentPath]);
 
-  const handleBackFromQuotation = () => {
+  const handleBackFromQuotation = useCallback(() => {
     setSelectedQuotationId(null);
     setCurrentPath("/quotations");
-  };
+  }, [setSelectedQuotationId, setCurrentPath]);
 
-  const handleBackFromQuotationPreview = () => {
+  const handleBackFromQuotationPreview = useCallback(() => {
     setSelectedQuotationId(null);
     setCurrentPath("/quotations");  // กลับไปหน้ารายการทั้งหมด
-  };
+  }, [setSelectedQuotationId, setCurrentPath]);
 
-  const handleProposalClick = (proposalId: string) => {
+  const handleProposalClick = useCallback((proposalId: string) => {
     setSelectedProposalId(proposalId);
     // Save the current path so we can return to it later
     setProposalPreviousPath(currentPath);
     setCurrentPath("/proposal-detail");
-  };
+  }, [setSelectedProposalId, setProposalPreviousPath, currentPath, setCurrentPath]);
 
-  const handleBackFromProposal = () => {
+  const handleBackFromProposal = useCallback(() => {
     setSelectedProposalId(null);
     const pathToReturn = proposalPreviousPath;
     // Reset to default after using
     setProposalPreviousPath("/proposals-contracts");
     setCurrentPath(pathToReturn);
-  };
+  }, [setSelectedProposalId, proposalPreviousPath, setProposalPreviousPath, setCurrentPath]);
 
-  const handleNDAClick = (ndaId: string) => {
+  const handleNDAClick = useCallback((ndaId: string) => {
     setSelectedNDAId(ndaId);
     setCurrentPath("/nda-preview");
-  };
+  }, [setSelectedNDAId, setCurrentPath]);
 
-  const handleBackFromNDA = () => {
+  const handleBackFromNDA = useCallback(() => {
     setSelectedNDAId(null);
     setCurrentPath("/proposals-contracts");
-  };
+  }, [setSelectedNDAId, setCurrentPath]);
 
-  const handleTaskClick = (taskId: string) => {
+  const handleTaskClick = useCallback((taskId: string) => {
     setSelectedTaskId(taskId);
     setCurrentPath("/task-detail");
-  };
+  }, [setSelectedTaskId, setCurrentPath]);
 
-  const handleBackFromTask = () => {
+  const handleBackFromTask = useCallback(() => {
     setSelectedTaskId(null);
     setCurrentPath("/tasks");
-  };
+  }, [setSelectedTaskId, setCurrentPath]);
 
-  const handleUserClick = (userId: string) => {
+  const handleUserClick = useCallback((userId: string) => {
     setSelectedUserId(userId);
     setCurrentPath("/admin/user-detail");
-  };
+  }, [setSelectedUserId, setCurrentPath]);
 
-  const handleBackFromUser = () => {
+  const handleBackFromUser = useCallback(() => {
     setSelectedUserId(null);
     setCurrentPath("/admin/users");
-  };
+  }, [setSelectedUserId, setCurrentPath]);
 
-  const handleVisitClick = (visitId: string) => {
+  const handleVisitClick = useCallback((visitId: string) => {
     setSelectedVisitId(visitId);
     // Save the current path so we can return to it later
     setVisitPreviousPath(currentPath);
     setCurrentPath("/visit-detail");
-  };
+  }, [setSelectedVisitId, setVisitPreviousPath, currentPath, setCurrentPath]);
 
-  const handleBackFromVisit = () => {
+  const handleBackFromVisit = useCallback(() => {
     setSelectedVisitId(null);
     const pathToReturn = visitPreviousPath;
     // Reset to default after using
     setVisitPreviousPath("/customer-detail");
     setCurrentPath(pathToReturn);
-  };
+  }, [setSelectedVisitId, visitPreviousPath, setVisitPreviousPath, setCurrentPath]);
 
-  const handleBackToMain = () => {
+  const handleBackToMain = useCallback(() => {
     setCurrentPath("/dashboard");
-  };
+  }, [setCurrentPath]);
 
-  const handleSearchNavigate = (type: string, id: string) => {
+  const handleSearchNavigate = useCallback((type: string, id: string) => {
     // Navigate based on search result type
     switch (type) {
       case "deal":
@@ -993,11 +992,11 @@ function MainApp({
         break;
     }
     setIsSearchOpen(false);
-  };
+  }, [handleDealClick, handleCustomerClick, handleQuotationClick, handleContractClick, handleApprovalClick, setCurrentPath, setIsSearchOpen]);
 
-  const renderContent = () => {
+  const content = useMemo(() => {
     console.log("[renderContent] Called with currentPath:", currentPath, "userMode:", userMode);
-    
+
     // Sales Mode - existing logic
     // Deal detail view
     if (currentPath === "/deal-detail" && selectedDealId) {
@@ -1382,10 +1381,22 @@ function MainApp({
       case currentPath === "/transfer-lead-demo":
         return <TransferLeadDemo />;
       default:
-        console.log("[renderContent] No route matched, rendering TaskDetailDemo");
-        return <TaskDetailDemo />;
+        console.log("[renderContent] No route matched, rendering TasksScreen");
+        return <TasksScreen onNavigate={handleNavigation} onNavigateWithActivity={handleNavigationWithActivity} shouldOpenCreateDialog={shouldOpenActivityModal} userMode={userMode} />;
     }
-  };
+  }, [
+    currentPath, userMode, selectedDealId, selectedCustomerId, selectedApprovalId,
+    selectedContractId, selectedQuotationId, selectedQuotationTemplate, selectedProposalId,
+    selectedNDAId, selectedTaskId, selectedVisitId, selectedActivityId, selectedLeadId,
+    shouldOpenActivityModal, handleDealClick, handleCustomerClick, handleQuotationClick,
+    handleContractClick, handleApprovalClick, handleProposalClick, handleNDAClick,
+    handleTaskClick, handleVisitClick, handleLeadClick, handleNavigation, handleNavigationWithActivity,
+    handleBackFromDeal, handleBackFromCustomer, handleBackFromMyCustomer, handleBackFromApproval,
+    handleBackFromContract, handleBackFromQuotation, handleBackFromQuotationPreview,
+    handleBackFromProposal, handleBackFromNDA, handleBackFromTask, handleBackFromVisit,
+    handleQuotationPreview, handleContractPreview, handleViewQuotationUploadDetail,
+    setCurrentPath, setSelectedDealId, setSelectedQuotationId
+  ]);
 
   const getPageTitle = () => {
     if (currentPath === "/deal-detail") return t("deals.deal_details");
@@ -1630,20 +1641,23 @@ function MainApp({
             </div>
           }
         >
-          {renderContent()}
+          {content}
         </ErrorBoundary>
 
         {/* Quick Actions FAB - Show in all pages for Sales Mode */}
         {userMode === 'sales' && (
           <>
-            <div 
-              className="fixed z-50 touch-none select-none"
+            <div
+              className="fixed z-40"
               style={{
                 bottom: `${fabPosition.bottom}px`,
                 right: `${fabPosition.right}px`,
                 cursor: isDragging ? 'grabbing' : 'grab',
                 transition: hasMoved ? 'none' : 'all 300ms ease-out',
                 willChange: isDragging ? 'bottom, right' : 'auto',
+                touchAction: 'none',
+                userSelect: 'none',
+                pointerEvents: 'auto',
               }}
               onMouseDown={(e) => {
                 e.preventDefault();
@@ -1713,7 +1727,7 @@ function MainApp({
       </main>
     </div>
   );
-}
+});
 
 export default function App() {
   console.log("[APP-ROOT] App component rendering - v2.3.1");

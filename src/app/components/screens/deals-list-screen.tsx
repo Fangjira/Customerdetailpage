@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useRole } from "../../contexts/role-context";
 import { QuickAddDealModal } from "../modals/quick-add-deal-modal";
@@ -430,7 +430,7 @@ export function DealsListScreen({ onDealClick, shouldOpenAddDialog, setShouldOpe
     },
   ];
 
-  const getStageColor = (stage: string) => {
+  const getStageColor = useCallback((stage: string) => {
     switch (stage) {
       case "Win":
         return "bg-green-100 text-green-700";
@@ -445,17 +445,17 @@ export function DealsListScreen({ onDealClick, shouldOpenAddDialog, setShouldOpe
       default:
         return "bg-gray-100 text-gray-700";
     }
-  };
+  }, []);
 
-  const getProgressColor = (progress: number) => {
+  const getProgressColor = useCallback((progress: number) => {
     if (progress >= 76) return "bg-green-100 text-green-700 border-green-200";
     if (progress >= 51) return "bg-blue-100 text-blue-700 border-blue-200";
     if (progress >= 26) return "bg-yellow-100 text-yellow-700 border-yellow-200";
     return "bg-red-100 text-red-700 border-red-200";
-  };
+  }, []);
 
   // Format deal size to readable format
-  const formatDealSize = (size: number) => {
+  const formatDealSize = useCallback((size: number) => {
     if (size >= 1000000) {
       return `${(size / 1000000).toFixed(1)} ล้าน`;
     }
@@ -463,10 +463,10 @@ export function DealsListScreen({ onDealClick, shouldOpenAddDialog, setShouldOpe
       return `${(size / 1000).toFixed(0)} พัน`;
     }
     return size.toLocaleString();
-  };
+  }, []);
 
   // Filter deals based on search and filters
-  const filteredDeals = deals.filter((deal) => {
+  const filteredDeals = useMemo(() => deals.filter((deal) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch = 
       searchTerm === "" ||
@@ -495,17 +495,17 @@ export function DealsListScreen({ onDealClick, shouldOpenAddDialog, setShouldOpe
       deal.customerType === filterCustomerType;
 
     return matchesSearch && matchesService && matchesStatus && matchesOwner && matchesCustomerType;
-  });
+  }), [deals, searchTerm, filterService, filterProjectStatus, filterOwner, filterCustomerType]);
 
   // Calculate stats
-  const stats = {
+  const stats = useMemo(() => ({
     total: filteredDeals.length,
     win: filteredDeals.filter(d => d.projectStatus === "Win").length,
     negotiating: filteredDeals.filter(d => d.projectStatus === "Negotiating Process").length,
     quotation: filteredDeals.filter(d => d.projectStatus === "Quotation").length,
     lose: filteredDeals.filter(d => d.projectStatus === "Lose").length,
     highProbability: filteredDeals.filter(d => d.probabilityOfDeal === "High").length,
-  };
+  }), [filteredDeals]);
 
   const totalPages = Math.ceil(filteredDeals.length / itemsPerPage);
   const currentDeals = filteredDeals.slice(

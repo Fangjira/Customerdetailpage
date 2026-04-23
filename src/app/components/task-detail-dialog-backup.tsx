@@ -533,11 +533,7 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
               <Card className="border-gray-200 shadow-sm rounded-2xl bg-white overflow-hidden p-5 space-y-6">
                 <h4 className="text-[11px] font-bold text-gray-900 border-b border-gray-50 pb-2 uppercase tracking-widest">ข้อมูลสรุป</h4>
                 <div className="space-y-5">
-                  <Editable 
-                    field="dueDate" 
-                    label="วันที่กำหนด" 
-                    icon={Calendar} 
-                    value={task.dueDate ? new Date(task.dueDate).toLocaleDateString("th-TH") : "-"} />
+                  <Editable field="dueDate" label="วันที่กำหนด" icon={Calendar} value={new Date(task.dueDate).toLocaleDateString("th-TH")} />
                   <Editable field="dueTime" label="เวลา" icon={Clock} value={task.dueTime} />
                   <Editable field="assignee" label="ผู้รับผิดชอบ" icon={User} value={task.assignee || "คุณ (You)"} />
                   <div className="flex items-center gap-4"><Plus className="h-5 w-5 text-blue-400" /><div><p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">ผู้สร้าง</p><p className="text-xs font-bold text-gray-800">{mockData.createdBy}</p></div></div>

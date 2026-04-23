@@ -16,44 +16,63 @@ const filterFigmaProps = (props: any) => {
   return filtered;
 };
 
-function Popover(
-  props: React.ComponentProps<typeof PopoverPrimitive.Root>
-) {
-  return <PopoverPrimitive.Root data-slot="popover" {...filterFigmaProps(props)} />;
-}
+// Root ไม่เรนเดอร์ DOM เป็นเพียง Provider ไม่ต้องใช้ forwardRef
+const Popover = (props: React.ComponentProps<typeof PopoverPrimitive.Root>) => {
+  return <PopoverPrimitive.Root data-slot="popover" {...props} />;
+};
 
-function PopoverTrigger(
-  props: React.ComponentProps<typeof PopoverPrimitive.Trigger>
-) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...filterFigmaProps(props)} />;
-}
+// Trigger ต้องใช้ forwardRef
+const PopoverTrigger = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>
+>((props, ref) => {
+  return (
+    <PopoverPrimitive.Trigger
+      ref={ref}
+      data-slot="popover-trigger"
+      {...props}
+    />
+  );
+});
+PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName;
 
-function PopoverContent({
-  className,
-  align = "center",
-  sideOffset = 4,
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+// Content ต้องใช้ forwardRef
+const PopoverContent = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
+        ref={ref}
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
         className={cn(
+          // คลาส Tailwind v4 ที่คุณใช้เขียนมาถูกต้องและอัปเดตแล้วครับ (เช่น outline-hidden, origin-(...))
           "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
           className,
         )}
-        {...filterFigmaProps(props)}
+        {...props}
       />
     </PopoverPrimitive.Portal>
   );
-}
+});
+PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-function PopoverAnchor(
-  props: React.ComponentProps<typeof PopoverPrimitive.Anchor>
-) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...filterFigmaProps(props)} />;
-}
+// Anchor ต้องใช้ forwardRef
+const PopoverAnchor = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Anchor>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Anchor>
+>((props, ref) => {
+  return (
+    <PopoverPrimitive.Anchor
+      ref={ref}
+      data-slot="popover-anchor"
+      {...props}
+    />
+  );
+});
+PopoverAnchor.displayName = PopoverPrimitive.Anchor.displayName;
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };

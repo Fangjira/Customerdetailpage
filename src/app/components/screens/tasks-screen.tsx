@@ -81,7 +81,7 @@ interface Task {
   contactPerson?: string;
   contactPhone?: string;
   contactEmail?: string;
-  activityType?: string;
+  titleType?: string;
   isActivity?: boolean;
   visibility?: "private" | "public" | "organization";
   sharedWith?: string[];
@@ -189,7 +189,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
           assignee: "สมชาย วงศ์สกุล",
           completed: false,
           customer: "SCGJWD Logistics",
-          activityType: "customer_visit",
+          titleType: "customer_visit",
           isActivity: true,
         },
         {
@@ -202,7 +202,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
           dueTime: "04:00 PM",
           assignee: "สมชาย วงศ์สกุล",
           completed: false,
-          activityType: "meeting",
+          titleType: "meeting",
           isActivity: true,
         }
       ];
@@ -261,7 +261,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
         customer: "SCGJWD Logistics",
-        activityType: "customer_visit",
+        titleType: "customer_visit",
         isActivity: true,
       },
       {
@@ -275,7 +275,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
         customer: "CP All Public Company",
-        activityType: "meeting",
+        titleType: "meeting",
         isActivity: true,
       },
       {
@@ -290,7 +290,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         attendees: ["คุณจีรพุธ (Jiraputh)", "สมชาย วงศ์สกุล"],
         completed: false,
         customer: "PTT Public Company Limited",
-        activityType: "customer_visit",
+        titleType: "customer_visit",
         isActivity: true,
         createdBy: { id: "jiraputh-id", name: "คุณจีรพุธ (Jiraputh)" }
       },
@@ -305,7 +305,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
         customers: ["Amata Corp", "WHA Group", "Thai Factory Ltd"],
-        activityType: "meeting",
+        titleType: "meeting",
         isActivity: true,
       }
     ];
@@ -407,13 +407,13 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
       customerAddress: task.location,
       title: task.title,
       notes: task.description,
-      purpose: task.activityType === "customer_visit" ? "เยี่ยมลูกค้า" : 
-               task.activityType === "meeting" ? "การประชุม/พูดคุย" :
-               task.activityType === "follow_up" ? "ติดตามงาน" : "",
-      visitType: task.activityType === "customer_visit" ? "เยี่ยมลูกค้า" :
-                  task.activityType === "meeting" ? "นัดหมาย" :
-                  task.activityType === "site_survey" ? "สำรวจ" :
-                  task.activityType === "follow_up" ? "งานบริการ" : "",
+      purpose: task.titleType === "customer_visit" ? "เยี่ยมลูกค้า" : 
+               task.titleType === "meeting" ? "การประชุม/พูดคุย" :
+               task.titleType === "follow_up" ? "ติดตามงาน" : "",
+      visitType: task.titleType === "customer_visit" ? "เยี่ยมลูกค้า" :
+                  task.titleType === "meeting" ? "นัดหมาย" :
+                  task.titleType === "site_survey" ? "สำรวจ" :
+                  task.titleType === "follow_up" ? "งานบริการ" : "",
     });
     setIsQuickVisitModalOpen(true);
   };
@@ -427,7 +427,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
       contactPerson: task.contactPerson,
       contactPhone: task.contactPhone,
       contactEmail: task.contactEmail,
-      activityType: task.activityType,
+      titleType: task.titleType,
     });
     setIsQuickVisitModalOpen(true);
   };
@@ -552,7 +552,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
 
     // Filter by activity type
     if (filterActivityType !== "all") {
-      filtered = filtered.filter(t => t.activityType === filterActivityType);
+      filtered = filtered.filter(t => t.titleType === filterActivityType);
     }
 
     // Filter by date range
@@ -612,7 +612,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   }, [filteredTasks]);
 
   // Activity type config
-  const activityTypeConfig: Record<string, { label: string; color: string }> = {
+  const titleTypeConfig: Record<string, { label: string; color: string }> = {
     customer_visit: { label: t("tasks.activity_types.customer_visit", "เยี่ยมลูกค้า"), color: "blue" },
     meeting: { label: t("tasks.activity_types.meeting", "ประชุม"), color: "purple" },
     site_survey: { label: t("tasks.activity_types.site_survey", "สำรวจสถานที่"), color: "orange" },
@@ -937,12 +937,12 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
                       <div className="flex items-center gap-1.5 overflow-hidden">
                         <List className="h-4 w-4 text-gray-600 flex-shrink-0" />
                         {/* ใช้ SelectValue แทน span เดิม เพื่อให้มันเปลี่ยนข้อความตามที่เลือกอัตโนมัติ */}
-                        <SelectValue placeholder={t('tasks.filters.activityType')} />
+                        <SelectValue placeholder={t('tasks.filters.titleType')} />
                       </div>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('ทั้งหมด')}</SelectItem>
-                      {Object.entries(activityTypeConfig).map(([type, config]) => (
+                      {Object.entries(titleTypeConfig).map(([type, config]) => (
                         <SelectItem key={type} value={type}>
                           {config.label}
                         </SelectItem>

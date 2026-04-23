@@ -44,7 +44,7 @@ import { useTranslation } from "react-i18next";
 import { useRole, UserRole } from "../contexts/role-context";
 import { useState, useEffect } from "react";
 import { useRoleTheme, getRoleLabel } from "../hooks/use-role-theme";
-import { useLanguage } from "../../contexts/language-context";
+import { useLanguage } from "../contexts/language-context";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 
 interface NavItem {
@@ -64,30 +64,10 @@ interface SidebarNavProps {
 
 const mainNavItems: NavItem[] = [
   {
-    translationKey: "nav.dashboard",
-    iconType: "LayoutDashboard",
-    href: "/dashboard",
-    roles: ["Sales Support", "Sales Manager" , "Admin"],
-    submenu: [
-      {
-        translationKey: "nav.dashboard_catalog",
-        iconType: "Layers",
-        href: "/dashboard",
-        roles: ["Sales Support", "Sales Manager" , "Admin"],
-      },
-      {
-        translationKey: "nav.customer_insights",
-        iconType: "TrendingUp",
-        href: "/customers/insights",
-        roles: ["Sales Manager" , "Admin"],
-      },
-      {
-        translationKey: "nav.customer_intelligence",
-        iconType: "Brain",
-        href: "/customers/insights-bel",
-        roles: ["Sales Support", "Sales Manager" , "Admin"],
-      },
-    ],
+    translationKey: "nav.tasks",
+    iconType: "ListChecks",
+    href: "/tasks",
+    roles: ["Sales Support" , "Admin"],
   },
   {
     translationKey: "nav.reports_performance",
@@ -108,12 +88,6 @@ const mainNavItems: NavItem[] = [
         roles: ["Sales Manager" , "Admin"],
       },
     ],
-  },
-  {
-    translationKey: "nav.tasks",
-    iconType: "ListChecks",
-    href: "/tasks",
-    roles: ["Sales Support" , "Admin"],
   },
   {
     translationKey: "nav.calendar",
@@ -223,6 +197,32 @@ const mainNavItems: NavItem[] = [
     iconType: "History",
     href: "/admin/audit",
     roles: ["Admin"],
+  },
+  {
+    translationKey: "nav.dashboard",
+    iconType: "LayoutDashboard",
+    href: "/dashboard",
+    roles: ["Sales Support", "Sales Manager" , "Admin"],
+    submenu: [
+      {
+        translationKey: "nav.dashboard_catalog",
+        iconType: "Layers",
+        href: "/dashboard",
+        roles: ["Sales Support", "Sales Manager" , "Admin"],
+      },
+      {
+        translationKey: "nav.customer_insights",
+        iconType: "TrendingUp",
+        href: "/customers/insights",
+        roles: ["Sales Manager" , "Admin"],
+      },
+      {
+        translationKey: "nav.customer_intelligence",
+        iconType: "Brain",
+        href: "/customers/insights-bel",
+        roles: ["Sales Support", "Sales Manager" , "Admin"],
+      },
+    ],
   },
 ];
 

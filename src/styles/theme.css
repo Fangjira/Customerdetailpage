@@ -62,7 +62,7 @@
   --accent-foreground: #ffffff;
   --destructive: #E65520;
   --destructive-foreground: #ffffff;
-  --border: rgba(123, 201, 166, 0.15);
+  --border: rgb(123 201 166 / 0.15);
   --input: transparent;
   --input-background: #F5F9FF;
   --switch-background: #B8E6D5;
@@ -87,7 +87,7 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #F5F9FF;
   --sidebar-accent-foreground: #9B9BB5;
-  --sidebar-border: rgba(0, 102, 255, 0.12);
+  --sidebar-border: rgb(0 102 255 / 0.12);
   --sidebar-ring: #0066FF;
 }
 
@@ -128,7 +128,7 @@
   --destructive-foreground: #1e1b2e;
   
   /* Border - ชัดเจนพอดี */
-  --border: rgba(167, 139, 250, 0.25);
+  --border: rgb(167 139 250 / 0.25);
   
   /* Input */
   --input: #352d4a;
@@ -155,7 +155,7 @@
   --sidebar-primary-foreground: #1e1b2e;
   --sidebar-accent: #352d4a;
   --sidebar-accent-foreground: #f0eef6;
-  --sidebar-border: rgba(167, 139, 250, 0.2);
+  --sidebar-border: rgb(167 139 250 / 0.2);
   --sidebar-ring: #a78bfa;
   
   /* Table specific colors */
@@ -163,7 +163,7 @@
   --table-header-text: #f0eef6;
   --table-row-bg: #2a2440;
   --table-row-hover: #352d4a;
-  --table-border: rgba(167, 139, 250, 0.15);
+  --table-border: rgb(167 139 250 / 0.15);
 }
 
 @theme inline {
@@ -338,8 +338,4 @@
     transform: translateY(0);
     opacity: 1;
   }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
 }

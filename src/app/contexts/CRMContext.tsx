@@ -1,29 +1,29 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { 
-  Customer, 
-  Lead, 
-  Deal, 
-  Quotation, 
-  Contract, 
-  Ticket, 
-  Task, 
+import {
+  Customer,
+  Lead,
+  Deal,
+  Quotation,
+  Contract,
+  Ticket,
+  Task,
   Approval,
   HistoryEntry,
   User,
   Notification
-} from '../types/crm';
-import { 
-  mockCustomers, 
-  mockLeads, 
-  mockDeals, 
-  mockQuotations, 
-  mockContracts, 
-  mockTickets, 
-  mockTasks, 
+} from '../../types/crm';
+import {
+  mockCustomers,
+  mockLeads,
+  mockDeals,
+  mockQuotations,
+  mockContracts,
+  mockTickets,
+  mockTasks,
   mockApprovals,
-  mockHistory 
-} from '../data/mockData';
-import { loadFromLocalStorage, saveToLocalStorage, generateId } from '../utils/helpers';
+  mockHistory
+} from '../../data/mockData';
+import { loadFromLocalStorage, saveToLocalStorage, generateId } from '../../utils/helpers';
 
 interface CRMContextType {
   // Data

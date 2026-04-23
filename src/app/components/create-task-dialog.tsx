@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { 
-  Calendar, Users, Lock, Globe, Check, ChevronDown, X, Plus, 
-  Link2, CheckCircle2, Briefcase, Building2, UserPlus, Search 
+import {
+  Calendar, Users, Lock, Globe, Check, ChevronDown, X, Plus,
+  Link2, CheckCircle2, Briefcase, Building2, UserPlus, Search
 } from "lucide-react";
 import { toast } from "sonner";
 import { useModuleStore } from "../store/module-store";
+import { TITLE_TYPES } from "../constants/task-constants";
 
 // ==========================================
 // 🔴 ส่วนที่ 1: MOCK UTILITIES & LIBRARIES 
@@ -30,7 +31,7 @@ const useTranslation = () => {
       "priority.medium": "ปานกลาง",
       "priority.low": "ต่ำ",
       "tasks.assignee": "ผู้รับผิดชอบ",
-      "common.you": "คุณ (You)",
+      "common.you": "คุณ",
       "common.cancel": "ยกเลิก",
       "common.save": "บันทึก"
     };
@@ -185,24 +186,6 @@ const ENTITY_TYPES = [
   { value: "lead", label: "ลีด", icon: "✨" },
   { value: "quotation", label: "ใบเสนอราคา", icon: "📄" },
   { value: "todo", label: "To-Do อื่น", icon: "✅" },
-];
-
-const TASK_TYPES = [
-  { value: "ติดตามลูกค้า", label: "ติดตามลูกค้า - Follow up customer" },
-  { value: "เตรียมใบเสนอราคา", label: "เตรียมใบเสนอราคา - Prepare quotation" },
-  { value: "นัดหมายลูกค้า", label: "📅 นัดหมายลูกค้า - Schedule meeting" },
-  { value: "เข้าพบลูกค้า", label: "📍 เข้าพบลูกค้า - Visit customer" },
-  { value: "ส่งเอกสาร", label: "ส่งเอกสาร - Send documents" },
-  { value: "ตรวจสอบสถานะดีล", label: "ตรวจสอบสถานะดีล - Check deal status" },
-  { value: "โทรติดต่อลูกค้า", label: "โทรติดต่อลูกค้า - Call customer" },
-  { value: "ส่งอีเมล", label: "ส่งอีเมล - Send email" },
-  { value: "ทำสัญญา", label: "ทำสัญญา - Prepare contract" },
-  { value: "ส่งมอบสินค้า/บริการ", label: "ส่งมอบสินค้า/บริการ - Deliver service" },
-  { value: "แก้ไขปัญหา", label: "แก้ไขปัญหา - Resolve issue" },
-  { value: "ประชุมทีม", label: "ประชุมทีม - Team meeting" },
-  { value: "ทำรายงาน", label: "ทำรายงาน - Prepare report" },
-  { value: "อัพเดทข้อมูล", label: "อัพเดทข้อมูล - Update information" },
-  { value: "other", label: "📝 อื่นๆ (กรอกเอง)" },
 ];
 
 const MOCK_ENTITIES = {
@@ -433,7 +416,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
     // สร้างชื่อจากหัวข้อหลายๆ อันมารวมกัน
     const selectedLabels = formData.titleType
       .filter(t => t !== "other")
-      .map(t => TASK_TYPES.find(tt => tt.value === t)?.label.split(' - ')[0]);
+      .map(t => TITLE_TYPES.find(tt => tt.value === t)?.label.split(' - ')[0]);
     
     if (formData.titleType.includes("other") && formData.customTitle) {
       selectedLabels.push(formData.customTitle);
@@ -441,11 +424,11 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
     const finalTitle = selectedLabels.join(", ") || "ไม่มีหัวข้อ";
     const upsertRecord = useModuleStore.getState().upsertRecord;
 
-    let activityType = "";
+    let titleType = "";
     if (formData.titleType.includes("นัดหมายลูกค้า")) {
-      activityType = "นัดหมายลูกค้า - Schedule meeting";
+      titleType = "นัดหมายลูกค้า - Schedule meeting";
     } else if (formData.titleType.includes("เข้าพบลูกค้า")) {
-      activityType = "เข้าพบลูกค้า - Visit customer";
+      titleType = "เข้าพบลูกค้า - Visit customer";
     }
 
     // Find customer name from ID
@@ -464,7 +447,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
       assignee: teamMembers.find(m => m.id === formData.assignees[0])?.name || "สมชาย วงศ์สกุล",
       attendees: formData.attendees,
       isActivity: isActivityMode,
-      activityType: activityType,
+      titleType: titleType,
       linkedEntities: linkedEntities,
       customer: customerName,
       location: formData.location,
@@ -570,7 +553,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                       {formData.titleType.length === 0 
                         ? "เลือกประเภทงาน..." 
                         : formData.titleType.length === 1 
-                          ? TASK_TYPES.find(t => t.value === formData.titleType[0])?.label.split(' - ')[0] 
+                          ? TITLE_TYPES.find(t => t.value === formData.titleType[0])?.label.split(' - ')[0] 
                           : `${formData.titleType.length} หัวข้อที่เลือก`}
                     </span>
                     <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
@@ -578,7 +561,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                 </PopoverTrigger>
                 <PopoverContent className="p-2 w-[340px] sm:w-[400px]" align="start">
                   <div className="max-h-[280px] overflow-y-auto space-y-1">
-                    {TASK_TYPES.map((type) => (
+                    {TITLE_TYPES.map((type) => (
                       <div 
                         key={type.value} 
                         className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md text-sm"
@@ -604,7 +587,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {formData.titleType.map((tt) => {
                     if (tt === "other") return null;
-                    const typeObj = TASK_TYPES.find(t => t.value === tt);
+                    const typeObj = TITLE_TYPES.find(t => t.value === tt);
                     return (
                       <Badge key={tt} variant="outline" className="bg-gray-100 text-gray-800 border-gray-200 font-medium rounded-md px-2 py-1">
                         {typeObj ? typeObj.label.split(' - ')[0] : tt}
