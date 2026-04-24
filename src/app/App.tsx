@@ -333,7 +333,7 @@ function UserProfile({ email, onLogout }: { email?: string; onLogout?: () => voi
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 border-2 border-white overflow-hidden relative z-50"
+        className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 border-2 border-white overflow-hidden relative z-30"
         style={{ background: `linear-gradient(to bottom right, ${roleTheme.gradientFrom}, ${roleTheme.gradientTo})` }}
         aria-label="User Profile"
       >
@@ -342,9 +342,9 @@ function UserProfile({ email, onLogout }: { email?: string; onLogout?: () => voi
       
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-40 bg-transparent" onClick={resetAndClose} />
-          
-          <div className="absolute right-0 mt-3 w-72 sm:w-85 bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in zoom-in duration-200 origin-top-right">
+          <div className="fixed inset-0 z-20 bg-transparent" onClick={resetAndClose} />
+
+          <div className="absolute right-0 mt-3 w-72 sm:w-85 bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden z-30 animate-in fade-in zoom-in duration-200 origin-top-right">
             
             {/* View 1: Main Home Menu */}
             {activeView === 'home' && (
@@ -566,7 +566,7 @@ const MainApp = React.memo<any>(function MainApp({
     if (role === "Sales Manager" && currentPath === "/tasks") {
       setCurrentPath("/reports");
     }
-  }, [role, currentPath, setCurrentPath]);
+  }, [role]); // Only depend on role to prevent infinite loop
 
   // FAB dragging state
   const [fabPosition, setFabPosition] = useState(() => {
@@ -1491,15 +1491,15 @@ const MainApp = React.memo<any>(function MainApp({
 
           {/* Mobile Sidebar Overlay */}
           {isMobileSidebarOpen && (
-            <div className="fixed inset-0 z-50 md:hidden">
+            <div className="fixed inset-0 z-40 md:hidden">
               {/* Backdrop */}
-              <div 
-                className="absolute inset-0 bg-black/50" 
+              <div
+                className="absolute inset-0 bg-black/50"
                 onClick={() => setIsMobileSidebarOpen(false)}
               />
-              
+
               {/* Sidebar */}
-              <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl">
+              <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl z-50">
                 <SidebarNav currentPath={currentPath} onNavigate={(path, action) => {
                   handleNavigation(path, action);
                   setIsMobileSidebarOpen(false);
@@ -1581,15 +1581,18 @@ const MainApp = React.memo<any>(function MainApp({
                     <Search className="h-4 w-4" />
                     <span className="hidden sm:inline">Search</span>
                   </button>
-                  {/* Global Search Dialog */}
-                  <GlobalSearch 
-                    isOpen={isSearchOpen} 
-                    onClose={() => setIsSearchOpen(false)} 
-                    onNavigate={handleSearchNavigate}
-                  />
                 </>
               )}
             </div>
+
+            {/* Global Search Dialog - Outside of fragment but still in sales mode */}
+            {userMode === 'sales' && (
+              <GlobalSearch
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                onNavigate={handleSearchNavigate}
+              />
+            )}
 
             {/* Right Side: Notifications + Controls + User */}
             <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
@@ -1700,15 +1703,19 @@ const MainApp = React.memo<any>(function MainApp({
               onClose={() => setShowQuickActionsMenu(false)}
               onQuickVisit={() => {
                 setShowQuickActionsMenu(false);
-                setShowQuickVisitModal(true);
+                // Delay to let QuickActionsMenu close animation finish
+                setTimeout(() => setShowQuickVisitModal(true), 150);
               }}
               onQuickDeal={() => {
+                setShowQuickActionsMenu(false);
                 handleNavigation("/deals", "add");
               }}
               onQuickActivity_Visit={() => {
+                setShowQuickActionsMenu(false);
                 handleNavigation('/calendar', 'add');
               }}
               onQuickCreatetask={() => {
+                setShowQuickActionsMenu(false);
                 handleNavigation('/tasks', 'add');
               }}
               />
