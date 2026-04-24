@@ -33,8 +33,10 @@ const DialogOverlay = React.forwardRef<
     <DialogPrimitive.Overlay
       ref={ref}
       className={cn(
-        // 🔥 FIX: ยก z-index ให้สูง + กันโดน block
-        "fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm",
+        // 🔥 FIX: ยก z-index ให้สูง + กันโดน block + ใช้ !important
+        "!fixed !inset-0 !z-[1000]",
+        "!top-0 !left-0 !right-0 !bottom-0",
+        "bg-black/40 backdrop-blur-sm",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
         "pointer-events-auto",
@@ -64,30 +66,33 @@ const DialogContent = React.forwardRef<
         className={cn(
           fullScreen
             ? // 🔥 FULLSCREEN MODE
-              "fixed inset-0 z-[1001] bg-white overflow-auto"
+              [
+                "!fixed !inset-0 !z-[1001]",
+                "!top-0 !left-0 !right-0 !bottom-0",
+                "!transform-none !translate-x-0 !translate-y-0",
+                "!w-full !h-full !max-w-none !max-h-none",
+                "bg-white overflow-auto",
+                className
+              ].join(" ")
             : // 🔥 CENTER MODAL MODE (FIX หลัก)
               [
-                "fixed z-[1001]",
-                "top-1/2 left-1/2",
-                "-translate-x-1/2 -translate-y-1/2",
-                "w-[95vw] max-w-2xl",
-                "max-h-[90vh] overflow-auto",
+                "!fixed !z-[1001]",
+                "!top-[50%] !left-[50%]",
+                "!-translate-x-1/2 !-translate-y-1/2",
                 "bg-white rounded-xl shadow-2xl border",
-                "p-6",
                 "duration-200",
                 // animation
                 "data-[state=open]:animate-in data-[state=closed]:animate-out",
                 "data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
                 "data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95",
-              ].join(" "),
-          // 🔥 ป้องกัน class จากข้างนอก override layout สำคัญ
-          className
+                className
+              ].join(" ")
         )}>
         {children}
 
         {/* Close button */}
         <DialogPrimitive.Close
-          className="absolute right-4 top-4 rounded-md opacity-70 hover:opacity-100 focus:outline-none"
+          className="absolute right-4 top-4 rounded-md opacity-70 hover:opacity-100 focus:outline-none z-10"
         >
           <XIcon className="h-4 w-4" />
         </DialogPrimitive.Close>

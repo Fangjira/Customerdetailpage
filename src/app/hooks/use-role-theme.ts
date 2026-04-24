@@ -37,7 +37,7 @@ export function useRoleTheme(): RoleTheme {
         textColor: "#2563eb",     // blue-600
         borderColor: "rgba(37, 99, 235, 0.15)",
       };
-    case "Sales Representative":
+    case "Sales Support":
       return {
         primary: "#00BC7D",       // Custom green
         light: "#10d68f",         
@@ -68,8 +68,8 @@ export function getRoleLabel(role: UserRole): string {
       return "Admin";
     case "Sales Manager":
       return "Sales Manager";
-    case "Sales Representative":
-      return "Sales Rep";
+    case "Sales Support":
+      return "Sales Support";
     default:
       return "User";
   }
