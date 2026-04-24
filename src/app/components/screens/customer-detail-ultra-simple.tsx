@@ -1036,7 +1036,6 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* Add Service Modal */}
@@ -1154,7 +1153,6 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* Add Contact Modal */}
@@ -1309,7 +1307,6 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* Edit Info Modal */}
@@ -1444,7 +1441,6 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* Edit Customer Insight Modal */}
@@ -1492,7 +1488,6 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* Confirm Modal */}
@@ -1523,7 +1518,6 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </button>
             </div>
           </div>
-        </div>
       )}
     </div>
   );

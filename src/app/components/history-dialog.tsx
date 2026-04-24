@@ -9,18 +9,7 @@ import {
 import { ScrollArea } from "./ui/scroll-area";
 import { Clock, User, FileEdit, X } from "lucide-react";
 import { Button } from "./ui/button";
-
-export interface HistoryEntry {
-  id: string;
-  action: string;
-  entity?: string;
-  user: string;
-  timestamp: string;
-  description?: string;
-  field?: string;
-  oldValue?: string;
-  newValue?: string;
-}
+import { HistoryEntry } from "@/types/crm";
 
 interface HistoryDialogProps {
   isOpen: boolean;

@@ -29,6 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import {

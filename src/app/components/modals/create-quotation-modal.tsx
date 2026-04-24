@@ -106,6 +106,5 @@ export function CreateQuotationModal({ isOpen, onClose, onSelectTemplate }: Crea
           </Card>
         </div>
       </div>
-    </div>
   );
 }

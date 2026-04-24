@@ -1,10 +1,5 @@
 import { useTranslation } from "react-i18next";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { X, Download, Send, ChevronLeft, FileText, Building2, DollarSign } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";

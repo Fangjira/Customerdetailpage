@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useModuleManager } from '../hooks/use-module-manager';
-import { Task } from '../store/mock-data-initializer';
+import { Task } from '@/types/crm';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { CheckCircle2, Circle, Trash2 } from 'lucide-react';

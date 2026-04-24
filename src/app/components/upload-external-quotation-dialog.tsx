@@ -519,6 +519,5 @@ export function UploadExternalQuotationDialog({
           </Button>
         </div>
       </div>
-    </div>
   );
 }

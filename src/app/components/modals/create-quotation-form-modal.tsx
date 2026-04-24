@@ -197,11 +197,11 @@ export interface QuotationFormData {
   
   // International Freight - Rate Tables
   airFreightExportRateData?: string; // JSON stringified AirFreightRateTableData
-  airFreightImportRateData?: string; // JSON stringified AirFreightRateTableData (optional)
-  seaFreightExportRateData?: string; // JSON stringified AirFreightRateTableData
-  seaFreightImportRateData?: string; // JSON stringified AirFreightRateTableData (optional)
+  airFreightImportRateData?: string; // JSON stringified RateTableData for AIR FREIGHT RATE (IMPORT)
+  seaFreightExportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (EXPORT)
+  seaFreightImportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (IMPORT)
   freightRateRemarks?: string; // Combined remarks for rate section
-  
+
   // International Freight SCOPE OF WORK - New Fields
   internationalServices?: string[]; // Array of selected services
   internationalWarehouseSite?: string;
@@ -217,9 +217,6 @@ export interface QuotationFormData {
   internationalSeaFreightIncoterm?: string;
   internationalCustomServices?: { name: string; details: string; }[]; // Dynamic custom services
   internationalRateData?: string; // JSON stringified RateTableData for AIR FREIGHT RATE (EXPORT)
-  airFreightImportRateData?: string; // JSON stringified RateTableData for AIR FREIGHT RATE (IMPORT)
-  seaFreightExportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (EXPORT)
-  seaFreightImportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (IMPORT)
   internationalCustomsRateData?: string; // JSON stringified RateTableData for CUSTOMS RATE
   internationalLicenseRateData?: string; // JSON stringified RateTableData for LICENSE RATE
   internationalTermsAndConditions?: string; // Terms & Conditions for International Freight

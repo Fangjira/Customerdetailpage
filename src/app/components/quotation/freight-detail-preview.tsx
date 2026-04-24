@@ -1,4 +1,4 @@
-import { FreightDetail, LanguageType } from "../quotation-types";
+import { FreightDetail, LanguageType } from "./quotation-types";
 
 interface FreightDetailPreviewProps {
   data: FreightDetail | undefined;

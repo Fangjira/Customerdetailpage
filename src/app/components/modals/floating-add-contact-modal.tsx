@@ -198,6 +198,5 @@ export function FloatingAddContactModal({
           </div>
         </div>
       </div>
-    </div>
   );
 }

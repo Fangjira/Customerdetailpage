@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { initializeMockData } from '../store/mock-data-initializer';
+// import { initializeMockData } from '../store/mock-data-initializer';
 import { TaskManagerExample } from './task-manager-example';
 import { CustomerListExample } from './customer-list-example';
 import { Button } from '../components/ui/button';
@@ -21,7 +21,7 @@ export function UniversalCrudDemo() {
   // Initialize mock data on mount
   useEffect(() => {
     if (!initialized) {
-      initializeMockData();
+      // initializeMockData();
       setInitialized(true);
     }
   }, [initialized]);

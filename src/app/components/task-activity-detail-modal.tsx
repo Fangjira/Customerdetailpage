@@ -1,5 +1,5 @@
 import { X, Calendar, Clock, MapPin, Users, FileText, Briefcase, Building2, Mail, Phone, Globe, Lock, Eye, Tag, User, Video, MessageSquare, CheckCircle2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback } from "./ui/avatar";

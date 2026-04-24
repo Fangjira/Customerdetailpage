@@ -12,6 +12,13 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Combobox, ComboboxOption } from "./ui/combobox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { useTranslation } from "react-i18next";
 import { Loader2, X, Save, DollarSign, User, Package, TrendingUp, Building2, Briefcase, Plus } from "lucide-react";
 import { Badge } from "./ui/badge";

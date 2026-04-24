@@ -63,6 +63,7 @@ import {
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useModuleStore } from "../../store/module-store";
+import { HistoryEntry } from "@/types/crm";
 
 interface Task {
   id: string;
@@ -94,18 +95,6 @@ interface TasksScreenProps {
   onNavigateWithActivity?: (path: string, activityId: string) => void;
   shouldOpenCreateDialog?: boolean;
   userMode?: 'sales' | 'customer';
-}
-
-interface HistoryEntry {
-  id: string;
-  action: string;
-  entity: string;
-  user: string;
-  timestamp: string;
-  description?: string;
-  field?: string;
-  oldValue?: string;
-  newValue?: string;
 }
 
 type SortDirection = 'asc' | 'desc' | null;

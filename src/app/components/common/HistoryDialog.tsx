@@ -7,7 +7,7 @@ import {
 } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
 import { useTranslation } from "react-i18next";
-import { useCRM } from "../../../context/CRMContext";
+import { useCRM } from "../../contexts/CRMContext";
 import { formatDateTime } from "../../../utils/helpers";
 import { 
   FileEdit, 

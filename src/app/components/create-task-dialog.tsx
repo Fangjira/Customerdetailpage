@@ -6,13 +6,20 @@ import {
 import { toast } from "sonner";
 import { useModuleStore } from "../store/module-store";
 import { TITLE_TYPES } from "../constants/task-constants";
+import { cn } from "./ui/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { Checkbox } from "./ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Badge } from "./ui/badge";
+import { Combobox } from "./ui/combobox";
 
 // ==========================================
-// 🔴 ส่วนที่ 1: MOCK UTILITIES & LIBRARIES 
-// (ลบส่วนนี้ออกเมื่อนำไปใช้ในโปรเจกต์จริง แล้วใช้ import เดิมของคุณ)
+// 🔴 ส่วนที่ 1: Mock translations
 // ==========================================
-
-const cn = (...classes: (string | undefined | null | false)[]) => classes.filter(Boolean).join(' ');
 
 // จำลองการแปลภาษา
 const useTranslation = () => {
@@ -41,133 +48,6 @@ const useTranslation = () => {
 
 // Event Target สำหรับจำลอง Toast
 const toastEmitter = new EventTarget();
-
-// ==========================================
-// 🔴 ส่วนที่ 2: MOCK UI COMPONENTS 
-// (ลบส่วนนี้ออกเมื่อนำไปใช้ในโปรเจกต์จริง)
-// ==========================================
-
-const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'outline' | 'ghost', size?: 'default' | 'sm' | 'lg' }>(({ className, variant = 'default', size = 'default', ...props }, ref) => {
-  const variants = {
-    default: "bg-emerald-600 text-white hover:bg-emerald-700",
-    outline: "border border-gray-200 bg-white hover:bg-gray-50 text-gray-900",
-    ghost: "hover:bg-gray-100 text-gray-700"
-  };
-  const sizes = { default: "h-10 px-4 py-2", sm: "h-8 px-3 text-xs", lg: "h-12 px-8" };
-  return <button ref={ref} type={props.type || "button"} className={cn("inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:pointer-events-none disabled:opacity-50", variants[variant], sizes[size], className)} {...props} />;
-});
-Button.displayName = "Button";
-
-const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(({ className, type, ...props }, ref) => (
-  <input type={type} className={cn("flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 transition-colors", className)} ref={ref} {...props} />
-));
-Input.displayName = "Input";
-
-const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(({ className, ...props }, ref) => (
-  <label ref={ref} className={cn("text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700", className)} {...props} />
-));
-Label.displayName = "Label";
-
-const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({ className, ...props }, ref) => (
-  <textarea className={cn("flex min-h-[80px] w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 focus-visible:border-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 transition-colors", className)} ref={ref} {...props} />
-));
-Textarea.displayName = "Textarea";
-
-const Badge = ({ className, variant = "default", ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: 'default' | 'outline' }) => (
-  <div className={cn("inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500", variant === 'outline' ? "text-gray-950" : "border-transparent bg-gray-900 text-gray-50", className)} {...props} />
-);
-
-const Checkbox = React.forwardRef<HTMLInputElement, Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> & { onCheckedChange?: (checked: boolean) => void }>(({ className, onCheckedChange, ...props }, ref) => (
-  <input type="checkbox" ref={ref} onChange={(e) => onCheckedChange?.(e.target.checked)} className={cn("peer h-4 w-4 shrink-0 rounded-sm border border-gray-200 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 accent-emerald-500", className)} {...props} />
-));
-Checkbox.displayName = "Checkbox";
-
-const Dialog = ({ open, onOpenChange, children }: any) => {
-  if (!open) return null;
-  return (
-    <>
-      <div className="fixed inset-0 bg-black/50 z-50" onClick={() => onOpenChange(false)} />
-      <div className="relative z-50 w-full flex justify-center animate-in fade-in zoom-in-95 duration-200">
-        {React.Children.map(children, child => React.cloneElement(child, { onClose: () => onOpenChange(false) }))}
-      </div>
-    </>
-  );
-};
-const DialogContent = ({ className, children, onClose }: any) => (
-  <div className={cn("flex flex-col bg-white rounded-2xl w-full max-h-[90vh] overflow-hidden relative shadow-xl", className)}>
-    <div className="flex-1 overflow-y-auto p-6 md:p-8">{children}</div>
-    <button type="button" onClick={onClose} className="absolute right-6 top-6 rounded-sm opacity-50 transition-opacity hover:opacity-100 bg-gray-100 p-1.5 hover:bg-gray-200">
-      <X className="h-5 w-5 text-gray-700" />
-    </button>
-  </div>
-);
-const DialogHeader = ({ className, children }: any) => <div className={cn("flex flex-col space-y-1.5 text-left mb-6", className)}>{children}</div>;
-const DialogTitle = ({ className, children }: any) => <h2 className={cn("text-xl font-bold leading-none tracking-tight", className)}>{children}</h2>;
-const DialogDescription = ({ className, children }: any) => <p className={cn("text-sm text-gray-500", className)}>{children}</p>;
-
-const Combobox = ({ options, value, onValueChange, placeholder, className, searchPlaceholder }: any) => {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const selected = options.find((o: any) => o.value === value);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) setOpen(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const filteredOptions = options.filter((o: any) => o.label.toLowerCase().includes(search.toLowerCase()));
-
-  return (
-    <div ref={wrapperRef} className="relative w-full">
-      <div className={cn("flex h-10 w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm cursor-pointer transition-colors focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", className)} onClick={() => setOpen(!open)}>
-        <span className={cn("flex-1 truncate text-left", !selected && "text-gray-400")}>{selected ? selected.label : placeholder}</span>
-        <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
-      </div>
-      {open && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg flex flex-col">
-          <div className="overflow-y-auto py-1">
-            {filteredOptions.length === 0 ? (
-              <div className="p-4 text-center text-sm text-gray-500">ไม่พบข้อมูล</div>
-            ) : (
-              filteredOptions.map((opt: any) => (
-                <div key={opt.value} className="relative flex cursor-pointer select-none items-center rounded-md py-2.5 pl-8 pr-2 mx-1 text-sm outline-none hover:bg-gray-100" onClick={() => { onValueChange(opt.value); setOpen(false); setSearch(""); }}>
-                  <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                    {value === opt.value && <Check className="h-4 w-4 text-emerald-600" />}
-                  </span>
-                  {opt.label}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const Popover = ({ open, onOpenChange, children }: any) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (open && wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        onOpenChange(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open, onOpenChange]);
-  return <div ref={wrapperRef} className="relative w-full">{React.Children.map(children, child => React.cloneElement(child, { open, onOpenChange }))}</div>;
-};
-const PopoverTrigger = ({ asChild, children, open, onOpenChange }: any) => React.cloneElement(children, { onClick: () => onOpenChange(!open) });
-const PopoverContent = ({ children, align = "center", className, open, style }: any) => {
-  if (!open) return null;
-  const aligns: any = { start: "left-0", center: "left-1/2 -translate-x-1/2", end: "right-0" };
-  return <div style={style} className={cn("absolute z-50 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden", aligns[align], className)}>{children}</div>;
-};
 
 // ==========================================
 // 🔵 ส่วนที่ 3: CORE LOGIC & CONSTANTS

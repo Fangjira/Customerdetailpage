@@ -41,6 +41,13 @@ export function useModuleManager<T extends BaseRecord = BaseRecord>(moduleName: 
     [records]
   );
 
+  const findRecords = useCallback(
+    (predicate: (record: T) => boolean) => {
+      return records.filter(predicate);
+    },
+    [records]
+  );
+
   // Return CRUD API
   return {
     records,             // The array of records for this module
@@ -49,6 +56,7 @@ export function useModuleManager<T extends BaseRecord = BaseRecord>(moduleName: 
     updateRecord,
     deleteRecord,
     getRecordById,
+    findRecords,
     isLoading: false,    // In-memory is always "loaded"
   };
 }

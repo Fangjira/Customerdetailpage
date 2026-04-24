@@ -132,7 +132,6 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
               )}
               <div className="flex flex-col gap-1">
                 <button onClick={() => handleSaveField(field)} className="bg-emerald-500 text-white p-1 rounded hover:bg-emerald-600"><Check className="h-3 w-3" /></button>
-                <button onClick={() => setEditingField(null)} className="bg-gray-100 text-gray-400 p-1 rounded hover:bg-gray-200"><X className="h-3 w-3" /></button>
               </div>
             </div>
           ) : (
@@ -149,9 +148,8 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
     <Dialog open={isOpen && !!task} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#F9FAFB] border-none shadow-2xl font-['IBM_Plex_Sans_Thai',_'Inter',_sans-serif]">
         <DialogHeader>
-          <DialogTitle>Title</DialogTitle>
+          <DialogTitle></DialogTitle>
           <DialogDescription className="sr-only">
-            Dialog description
           </DialogDescription>
         </DialogHeader>
         {task ? (() => {
@@ -312,7 +310,6 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
                           </Select>
                           <div className="flex flex-col gap-1">
                             <button onClick={() => handleSaveField(field)} className="bg-emerald-500 text-white p-1 rounded hover:bg-emerald-600"><Check className="h-3 w-3" /></button>
-                            <button onClick={() => setEditingField(null)} className="bg-gray-100 text-gray-400 p-1 rounded hover:bg-gray-200"><X className="h-3 w-3" /></button>
                           </div>
                         </div>
                       ) : (

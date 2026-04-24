@@ -15,6 +15,7 @@ import {
   MoreVertical,
   Edit,
   Trash2,
+  X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

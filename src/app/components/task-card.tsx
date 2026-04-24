@@ -154,7 +154,9 @@ export function TaskCard({ task, canEdit, canDelete, onCheckIn, onEdit, onDelete
             
             {openStatusMenu && (
               <>
-                setOpenStatusMenu(false)}
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setOpenStatusMenu(false)}
                 />
                 <div className="absolute left-0 top-full z-20 mt-2 flex flex-col gap-1 p-2 border border-gray-200 rounded-lg bg-white shadow-lg min-w-[140px]">
                   <Badge
@@ -233,7 +235,9 @@ export function TaskCard({ task, canEdit, canDelete, onCheckIn, onEdit, onDelete
             
             {openMenu && (
               <>
-                setOpenMenu(false)}
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setOpenMenu(false)}
                 />
                 <Card className="absolute right-0 top-full z-20 mt-2 w-44 border border-gray-200 rounded-lg bg-white shadow-lg">
                   <CardContent className="p-2">

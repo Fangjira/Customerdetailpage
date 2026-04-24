@@ -34,7 +34,9 @@ export function QuickActions({ actions, primaryColor = "#705add" }: QuickActions
     <>
       {/* Overlay */}
       {isOpen && (
-        setIsOpen(false)}
+        <div
+          className="fixed inset-0 bg-black/20 z-40"
+          onClick={() => setIsOpen(false)}
         />
       )}
 

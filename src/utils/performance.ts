@@ -9,7 +9,7 @@
  * Logs warning if render exceeds 16.67ms (60fps threshold)
  */
 export const measureRender = (componentName: string) => {
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV) {
     const startMark = `${componentName}-render-start`;
     const endMark = `${componentName}-render-end`;
     const measureName = `${componentName}-render`;
@@ -53,7 +53,7 @@ export const measureRender = (componentName: string) => {
  * ```
  */
 export const useRenderPerformance = (componentName: string) => {
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV) {
     const renderCount = React.useRef(0);
     const startTime = React.useRef(performance.now());
 
@@ -180,7 +180,7 @@ export const trackOperation = async <T>(
  * Reports imported module sizes
  */
 export const trackBundleSize = (moduleName: string, module: any) => {
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV) {
     const size = new TextEncoder().encode(JSON.stringify(module)).length;
     const sizeKB = (size / 1024).toFixed(2);
 
@@ -203,7 +203,7 @@ export const logProfilerData = (
   startTime: number,
   commitTime: number
 ) => {
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV) {
     console.log(`[Profiler] ${id} ${phase}:`, {
       actualDuration: `${actualDuration.toFixed(2)}ms`,
       baseDuration: `${baseDuration.toFixed(2)}ms`,

@@ -209,6 +209,5 @@ export function LayoutPreviewModal({ onClose, siteVisitId, branch }: LayoutPrevi
           </div>
         </div>
       </div>
-    </div>
   );
 }

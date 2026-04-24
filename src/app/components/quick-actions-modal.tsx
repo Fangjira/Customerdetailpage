@@ -1,4 +1,4 @@
-import { X, ClipboardList, TrendingUp, Users, MapPinCheck, UserPlus , layoutlist ,telescope } from "lucide-react";
+import { X, ClipboardList, TrendingUp, Users, MapPinCheck, UserPlus, LayoutList, Telescope } from "lucide-react";
 import { useRoleTheme } from "../hooks/use-role-theme";
 
 interface QuickActionsModalProps {
@@ -62,7 +62,7 @@ export function QuickActionsModal({
       id: "Tasks",
       label: "Quick Tasks",
       labelTh: "สร้าง TO-DO",
-      icon: layoutlist,
+      icon: LayoutList,
       gradient: `linear-gradient(135deg, ${roleTheme.gradientFrom}, ${roleTheme.gradientTo})`,
       onClick: () => {
         onNavigate?.("/tasks/create");
@@ -73,7 +73,7 @@ export function QuickActionsModal({
       id: "Acitivity_visit",
       label: "Quick Acitivity_visit",
       labelTh: "สร้างกิจกรรม",
-      icon: telescope,
+      icon: Telescope,
       gradient: "linear-gradient(135deg, #f59e0b, #d97706)",
       onClick: () => {
         onNavigate?.("/calendar/add");
