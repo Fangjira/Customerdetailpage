@@ -85,12 +85,12 @@ Checkbox.displayName = "Checkbox";
 const Dialog = ({ open, onOpenChange, children }: any) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={() => onOpenChange(false)} />
+    <>
+      <div className="fixed inset-0 bg-black/50 z-50" onClick={() => onOpenChange(false)} />
       <div className="relative z-50 w-full flex justify-center animate-in fade-in zoom-in-95 duration-200">
         {React.Children.map(children, child => React.cloneElement(child, { onClose: () => onOpenChange(false) }))}
       </div>
-    </div>
+    </>
   );
 };
 const DialogContent = ({ className, children, onClose }: any) => (

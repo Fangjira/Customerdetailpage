@@ -59,8 +59,8 @@ const DialogContent = React.forwardRef<
 
       <DialogPrimitive.Content
         ref={ref}
-        aria-describedby={undefined}
         {...props}
+        aria-describedby={props["aria-describedby"] ?? undefined}
         className={cn(
           fullScreen
             ? // 🔥 FULLSCREEN MODE
@@ -82,8 +82,7 @@ const DialogContent = React.forwardRef<
               ].join(" "),
           // 🔥 ป้องกัน class จากข้างนอก override layout สำคัญ
           className
-        )}
-      >
+        )}>
         {children}
 
         {/* Close button */}

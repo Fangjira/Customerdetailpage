@@ -172,7 +172,10 @@ export function CustomerListExample() {
             <DialogTitle>
               {editingCustomer ? 'Edit Customer' : 'Create New Customer'}
             </DialogTitle>
-          </DialogHeader>
+          
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
           <div className="space-y-4">
             <div>

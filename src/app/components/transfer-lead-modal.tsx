@@ -107,9 +107,9 @@ export function TransferLeadModal({
   const policy = getPolicy();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 font-sans antialiased">
+    <>
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-all duration-300"
         onClick={onClose}
       />
@@ -584,7 +584,7 @@ export function TransferLeadModal({
           border-radius: 20px;
         }
       `}} />
-    </div>
+    </>
   );
 }
 

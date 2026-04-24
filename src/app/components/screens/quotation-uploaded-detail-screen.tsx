@@ -563,8 +563,7 @@ export function QuotationUploadedDetailScreen({
 
       {/* Upload Dialog */}
       {showUploadDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Upload className="h-5 w-5 text-blue-600" />
@@ -637,7 +636,6 @@ export function QuotationUploadedDetailScreen({
               </div>
             </div>
           </div>
-        </div>
       )}
     </div>
   );

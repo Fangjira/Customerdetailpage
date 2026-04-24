@@ -274,7 +274,10 @@ export function TaskActivityDetailModal({ isOpen, onClose, scenario }: TaskActiv
               </div>
             </div>
           )}
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
         {/* Main Content */}
         <div className="space-y-6 py-4">

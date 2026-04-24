@@ -65,7 +65,10 @@ export function ProposalPreviewDialog({
       <DialogContent className="max-w-[95vw] h-[95vh] p-0 gap-0">
         <DialogHeader className="sr-only">
           <DialogTitle>Proposal Preview</DialogTitle>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
         
         {/* Mobile Header */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4 flex-shrink-0">

@@ -685,7 +685,10 @@ function CreateTicketDialog({ open, onClose, onSubmit }: any) {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
         <DialogHeader>
           <DialogTitle className="text-foreground">{t("tickets.create_ticket")}</DialogTitle>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
@@ -897,7 +900,10 @@ function TicketDetailDialog({ ticket, open, onClose, onStatusChange, onViewHisto
               {t("common.history")}
             </Button>
           </div>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
         
         <ScrollArea className="h-[600px] pr-4">
           <div className="space-y-6">

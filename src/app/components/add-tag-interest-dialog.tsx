@@ -101,7 +101,10 @@ export function AddTagInterestDialog({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">จัดการ Tags & Interest</DialogTitle>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
         <div className="space-y-6">
           {/* Tags Section */}

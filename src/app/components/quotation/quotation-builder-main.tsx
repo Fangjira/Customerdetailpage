@@ -62,8 +62,8 @@ export function QuotationBuilderMain({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
-        fullScreen 
+      <DialogContent
+        fullScreen
         className="p-0"
         onPointerDownOutside={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
@@ -76,7 +76,7 @@ export function QuotationBuilderMain({
         <DialogTitle className="sr-only">
           {selectedTemplate ? "กรอกข้อมูลใบเสนอราคาโลจิสติกส์" : "เลือกแบบฟอร์มใบเสนอราคา"}
         </DialogTitle>
-        
+
         <QuotationCreatorScreen
           templateType={selectedTemplate}
           mode={mode}

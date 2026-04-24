@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -132,7 +133,10 @@ export function QuickStatusUpdateDialog({
               <div className="text-xs font-normal text-gray-500">{dealName}</div>
             </div>
           </DialogTitle>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* Step 1: Select Status */}

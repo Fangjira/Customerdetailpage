@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -131,7 +132,10 @@ export function DealWinLossDialog({
             <p className="text-sm text-gray-600 font-medium">{dealName}</p>
             <p className="text-xs text-gray-500 mt-0.5">รหัสดีล: {dealId}</p>
           </div>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
         <div className="py-4 space-y-4">
           {/* Step 1: Select Win or Loss */}

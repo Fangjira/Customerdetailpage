@@ -342,8 +342,6 @@ function UserProfile({ email, onLogout }: { email?: string; onLogout?: () => voi
       
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-20 bg-transparent" onClick={resetAndClose} />
-
           <div className="absolute right-0 mt-3 w-72 sm:w-85 bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden z-30 animate-in fade-in zoom-in duration-200 origin-top-right">
             
             {/* View 1: Main Home Menu */}

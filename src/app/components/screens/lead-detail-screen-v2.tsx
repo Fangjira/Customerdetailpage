@@ -416,7 +416,7 @@ export function TransferCustomerModal({
   const policy = getPolicy();
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 font-sans antialiased">
+    <>
       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-all duration-300" onClick={onClose} />
       <div className="relative bg-white rounded-[20px] shadow-2xl w-full max-w-[760px] max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300 ring-1 ring-slate-900/5">
         <div className="px-6 py-4 flex items-center justify-between border-b border-slate-100">
@@ -621,7 +621,7 @@ export function TransferCustomerModal({
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

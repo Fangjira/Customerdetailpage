@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -147,7 +148,10 @@ export function OrganizationFormModal({
             <Building2 className="h-5 w-5" style={{ color: roleTheme.primary }} />
             {organization ? "Edit Organization" : "Create New Organization"}
           </DialogTitle>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Company Information */}

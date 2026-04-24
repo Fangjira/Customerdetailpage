@@ -148,6 +148,12 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
   return (
     <Dialog open={isOpen && !!task} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#F9FAFB] border-none shadow-2xl font-['IBM_Plex_Sans_Thai',_'Inter',_sans-serif]">
+        <DialogHeader>
+          <DialogTitle>Title</DialogTitle>
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription>
+        </DialogHeader>
         {task ? (() => {
               // 1. Dynamic Layout Logic
               const isSpecialActivity = task.titleType === "นัดหมายลูกค้า" ||

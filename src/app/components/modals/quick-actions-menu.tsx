@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../ui/dialog";
 
 
@@ -73,7 +74,10 @@ export function QuickActionsMenu({
               <X className="h-4 w-4" />
             </button>
           </div>
-        </DialogHeader>
+        
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
 
         <div className="grid grid-cols-2 gap-4 pb-2">
           {actions.map((action, index) => {

@@ -350,7 +350,10 @@ export function AdminUserManagement() {
                 ? (i18n.language === "th" ? "แก้ไขผู้ใช้" : "Edit User")
                 : (i18n.language === "th" ? "สร้างผู้ใช้ใหม่" : "Create New User")}
             </DialogTitle>
-          </DialogHeader>
+          
+          <DialogDescription className="sr-only">
+            Dialog description
+          </DialogDescription></DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
