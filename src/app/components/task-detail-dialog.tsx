@@ -147,11 +147,7 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
   return (
     <Dialog open={isOpen && !!task} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#F9FAFB] border-none shadow-2xl font-['IBM_Plex_Sans_Thai',_'Inter',_sans-serif]">
-        <DialogHeader>
-          <DialogTitle></DialogTitle>
-          <DialogDescription className="sr-only">
-          </DialogDescription>
-        </DialogHeader>
+
         {task ? (() => {
               // 1. Dynamic Layout Logic
               const isSpecialActivity = task.titleType === "นัดหมายลูกค้า" ||
@@ -533,10 +529,10 @@ export function TaskDetailDialog({ isOpen, onClose, task, onEdit, onDelete, onSt
 
             {/* --- RIGHT SIDEBAR --- */}
             <div className="lg:col-span-4 space-y-4">
-              <Card className="border-gray-200 shadow-sm rounded-2xl bg-white overflow-hidden p-5 space-y-6">
-                <h4 className="text-[11px] font-bold text-gray-900 border-b border-gray-50 pb-2 uppercase tracking-widest">ข้อมูลสรุป</h4>
-                <div className="space-y-5">
-                  <Editable 
+                <Card className="border border-gray-200 shadow-sm">
+                <h3 className="text-xs font-semibold text-gray-900 border-b border-gray-200 pb-1.5 mb-2">ข้อมูลสรุป</h3>
+                  <div className="mb-2">                  
+                   <Editable 
                     field="dueDate" 
                     label="วันที่กำหนด" 
                     icon={Calendar} 

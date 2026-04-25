@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { XIcon } from "lucide-react";
 
 import { cn } from "./utils";
 import { VisuallyHidden } from "./visually-hidden";
@@ -23,6 +22,7 @@ function DialogPortal(props: React.ComponentProps<typeof DialogPrimitive.Portal>
 function DialogClose(props: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close {...props} />;
 }
+
 
 /* ----------------------------- Overlay ----------------------------- */
 const DialogOverlay = React.forwardRef<
@@ -94,7 +94,6 @@ const DialogContent = React.forwardRef<
         <DialogPrimitive.Close
           className="absolute right-4 top-4 rounded-md opacity-70 hover:opacity-100 focus:outline-none z-10"
         >
-          <XIcon className="h-4 w-4" />
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DialogPortal>
@@ -105,7 +104,26 @@ DialogContent.displayName = "DialogContent";
 /* ----------------------------- Header ----------------------------- */
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div className={cn("flex flex-col gap-2 text-left", className)} {...props} />
+    <div
+      className={cn(
+        "px-6 pt-6 pb-4 border-b flex flex-col gap-1",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+/* ----------------------------- Body ----------------------------- */
+function DialogBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "px-6 py-5 overflow-y-auto",
+        className
+      )}
+      {...props}
+    />
   );
 }
 
@@ -114,14 +132,13 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-2",
+        "px-6 py-4 border-t flex justify-end gap-2",
         className
       )}
       {...props}
     />
   );
 }
-
 /* ----------------------------- Title ----------------------------- */
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
@@ -160,8 +177,11 @@ export {
   DialogOverlay,
   DialogContent,
   DialogHeader,
+  DialogBody,
   DialogFooter,
   DialogTitle,
   DialogDescription,
   DialogClose,
 };
+
+
