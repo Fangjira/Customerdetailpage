@@ -26,7 +26,6 @@ import { PageContainer } from "../common/PageContainer";
 import { PageHeader } from "../common/PageHeader";
 import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { advancedMockData } from "../../../data/advancedMockData";
-import { extendedMasterData } from "../../../data/extendedMasterData";
 import { useRoleTheme } from "../../hooks/use-role-theme";
 import { useModuleData } from "../../contexts/module-data-context";
 
