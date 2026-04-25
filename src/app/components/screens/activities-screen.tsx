@@ -26,9 +26,8 @@ import { PageContainer } from "../common/PageContainer";
 import { PageHeader } from "../common/PageHeader";
 import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { advancedMockData } from "../../../data/advancedMockData";
-import { extendedMasterData } from "../../../data/extendedMasterData";
 import { useRoleTheme } from "../../hooks/use-role-theme";
-import { useModuleStore } from "../../store/module-store";
+import { useModuleData } from "../../contexts/module-data-context";
 
 interface ActivitiesScreenProps {
   onActivityClick?: (activityId: string) => void;
@@ -43,15 +42,13 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
   const [showQuickVisitModal, setShowQuickVisitModal] = useState(false);
 
-  const storeTasks = useModuleStore((state) => state.modules.tasks || []);
+  const { taskActivities } = useModuleData();
 
   const activities = useMemo(() => {
     const mockActivities = advancedMockData.activities;
     
     // Map store tasks that are activities
-    const taskActivities = storeTasks
-      .filter(t => t.isActivity)
-      .map(t => {
+    const taskActivitiesFromStore = taskActivities.map(t => {
         let type = "meeting";
         const activityType = String(t.activityType || t.titleType || "").toLowerCase();
         if (activityType.includes("visit") || activityType.includes("เข้าพบ")) type = "visit";

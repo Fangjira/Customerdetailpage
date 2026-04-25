@@ -34,7 +34,7 @@ import { QuickActionsMenu } from "../modals/quick-actions-menu";
 import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { useRoleTheme } from "../../hooks/use-role-theme";
 import { useRole } from "../../contexts/role-context";
-import { useModuleStore } from "../../store/module-store";
+import { useModuleData } from "../../contexts/module-data-context";
 
 type DisplayMode = "month" | "week" | "day" | "list";
 
@@ -129,7 +129,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     return holidays[dateStr];
   };
 
-  const storeTasks = useModuleStore((state) => state.modules.tasks || []);
+  const { taskActivities } = useModuleData();
 
   // Combine Mock activities data with store tasks
   const activities = useMemo(() => {
@@ -662,9 +662,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     ];
 
     // Map store tasks that are activities
-    const taskActivities = storeTasks
-      .filter(t => t.isActivity)
-      .map(t => {
+    const mappedTaskActivities = taskActivities.map(t => {
         let type: ActivityType = "sales_meeting";
         if (t.activityType?.includes("เข้าพบลูกค้า")) type = "customer_visit";
         else if (t.activityType?.includes("นัดหมายลูกค้า")) type = "sales_meeting";
@@ -687,8 +685,8 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
         };
       });
 
-    return [...taskActivities, ...mockActivities];
-  }, [storeTasks]);
+    return [...mappedTaskActivities, ...mockActivities];
+  }, [taskActivities]);
 
   useEffect(() => {
     if (shouldOpenActivityModal) {

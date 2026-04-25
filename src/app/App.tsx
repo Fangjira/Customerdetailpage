@@ -119,6 +119,7 @@ import { cn } from "./components/ui/utils";
 import { RoleProvider, useRole } from "./contexts/role-context";
 import { ThemeProvider, useTheme } from "./contexts/theme-context";
 import { CRMProvider } from "./contexts/CRMContext";
+import { ModuleDataProvider } from "./contexts/module-data-context";
 import { LanguageProvider } from "./contexts/language-context";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { useTranslation } from "react-i18next";
@@ -127,27 +128,22 @@ import { ErrorBoundary } from "./components/error-boundary";
 import "../i18n/config";
 
 // Debug: Module initialization  
-console.log("[APP-INIT] Loading App.tsx v2.3.2", APP_VERSION, "with ErrorBoundary support");
 
 function AppContent() {
-  console.log("[AppContent] Component called");
 
   // Hooks must be called at the top level, outside try-catch
   const { t } = useTranslation();
   const { user, isAuthenticated, login, logout } = useAuth();
 
-  console.log("[AppContent] Rendering - isAuthenticated:", isAuthenticated);
 
   // Core navigation state
   const [currentPath, setCurrentPath] = useState("/tasks");
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   
   // Debug state initialization
-  console.log("[APP-STATE] setSelectedLeadId defined:", typeof setSelectedLeadId === 'function');
   
   // User configuration
   const [userMode, setUserMode] = useState<'sales' | 'customer'>('sales');
-  const [userRole, setUserRole] = useState('sales');
   const [userEmail, setUserEmail] = useState('sales@onelink.com');
   
   // Entity selections
@@ -171,22 +167,11 @@ function AppContent() {
   const [visitPreviousPath, setVisitPreviousPath] = useState<string>("/customer-detail");
   const [proposalPreviousPath, setProposalPreviousPath] = useState<string>("/proposals-contracts");
 
-  // Debug: Log lead state changes
-  useEffect(() => {
-    if (selectedLeadId) {
-      console.log("[APP] Lead ID updated:", selectedLeadId);
-    }
-  }, [selectedLeadId]);
-
   // Lead navigation handler with useCallback (defined early for renderContent)
   const handleLeadClick = useCallback((leadId: string) => {
-    console.log("[LEAD-CLICK] Navigating to lead:", leadId);
     setSelectedLeadId(leadId);
     setCurrentPath("/lead-detail");
   }, []);
-
-  // Verify callback is created
-  console.log("[APP-RENDER] Lead handler type:", typeof handleLeadClick);
 
   const handleLogin = (email: string, password: string, mode: "staff" | "customer") => {
     login(email, password, mode);
@@ -200,7 +185,6 @@ function AppContent() {
   const handleLogout = () => {
     logout();
     setUserMode('sales');
-    setUserRole('sales');
     setUserEmail('');
     setCurrentPath("/tasks");
     setSelectedDealId(null);
@@ -229,17 +213,14 @@ function AppContent() {
 
   // Show login screen if not authenticated
   if (!isAuthenticated) {
-    console.log("[AppContent] Rendering LoginScreen");
     return <LoginScreen onLogin={handleLogin} />;
   }
 
-  console.log("[AppContent] Rendering MainApp");
   
   // Otherwise show main app
   return (
     <MainApp
       userMode={userMode}
-      userRole={userRole}
       userEmail={userEmail}
       currentPath={currentPath}
       setCurrentPath={setCurrentPath}
@@ -505,7 +486,6 @@ function MenuButton({ icon, label, subLabel, onClick }: any) {
 // =========================================
 const MainApp = React.memo<any>(function MainApp({
   userMode,
-  userRole,
   userEmail,
   currentPath,
   setCurrentPath,
@@ -552,7 +532,6 @@ const MainApp = React.memo<any>(function MainApp({
   proposalPreviousPath,
   setProposalPreviousPath,
 }) {
-  console.log("[MainApp] Rendering - currentPath:", currentPath);
   
   const { t } = useTranslation();
   const { theme } = useTheme();
@@ -564,7 +543,7 @@ const MainApp = React.memo<any>(function MainApp({
     if (role === "Sales Manager" && currentPath === "/tasks") {
       setCurrentPath("/reports");
     }
-  }, [role]); // Only depend on role to prevent infinite loop
+  }, [role, currentPath, setCurrentPath]);
 
   // FAB dragging state
   const [fabPosition, setFabPosition] = useState(() => {
@@ -628,7 +607,6 @@ const MainApp = React.memo<any>(function MainApp({
   }, [isDragging, hasMoved]);
 
   const handleNavigation = useCallback((path: string, action?: string) => {
-    console.log("handleNavigation called with:", { path, action });
 
     // Handle proposal navigation with ID
     if (path === "/proposal-preview" && action) {
@@ -727,7 +705,6 @@ const MainApp = React.memo<any>(function MainApp({
     
     // Handle add quotation action
     if (action === "add" && path.includes("/quotations")) {
-      console.log("Setting quotations path with add action");
       setCurrentPath("/quotations?action=add");
       setShouldOpenActivityModal(true); // Reuse this state for quotations modal
       return;
@@ -735,7 +712,6 @@ const MainApp = React.memo<any>(function MainApp({
     
     // Handle add-activity from quotations menu
     if (action === "add-activity" && path.includes("/quotations")) {
-      console.log("Setting quotations path with add-activity action");
       setCurrentPath("/quotations?action=add-activity");
       setShouldOpenActivityModal(true); // Will trigger quotation-specific activity modal
       return;
@@ -743,7 +719,6 @@ const MainApp = React.memo<any>(function MainApp({
     
     // Handle add contract action
     if (action === "add" && path.includes("/contracts")) {
-      console.log("Setting contracts path with add action");
       setCurrentPath("/contracts?action=add");
       setShouldOpenActivityModal(true); // Reuse this state for contracts modal
       return;
@@ -752,7 +727,6 @@ const MainApp = React.memo<any>(function MainApp({
     // Handle admin tab switching
     if (action?.startsWith("tab-") && path.includes("/admin")) {
       const tabName = action.replace("tab-", "");
-      console.log("Setting admin path with tab:", tabName);
       setCurrentPath(`/admin?tab=${tabName}`);
       return;
     }
@@ -880,13 +854,10 @@ const MainApp = React.memo<any>(function MainApp({
   }, [setSelectedQuotationId, setCurrentPath]);
 
   const handleQuotationPreview = useCallback((quotationId: string, templateType?: string) => {
-    console.log("handleQuotationPreview called with:", { quotationId, templateType });
     setSelectedQuotationId(quotationId);
     if (templateType) {
-      console.log("Setting templateType to:", templateType);
       setSelectedQuotationTemplate(templateType);
     } else {
-      console.log("No templateType provided, using default:", selectedQuotationTemplate);
     }
     setCurrentPath("/quotation-preview");
   }, [setSelectedQuotationId, setSelectedQuotationTemplate, selectedQuotationTemplate, setCurrentPath]);
@@ -993,7 +964,6 @@ const MainApp = React.memo<any>(function MainApp({
   }, [handleDealClick, handleCustomerClick, handleQuotationClick, handleContractClick, handleApprovalClick, setCurrentPath, setIsSearchOpen]);
 
   const content = useMemo(() => {
-    console.log("[renderContent] Called with currentPath:", currentPath, "userMode:", userMode);
 
     // Sales Mode - existing logic
     // Deal detail view
@@ -1207,7 +1177,6 @@ const MainApp = React.memo<any>(function MainApp({
           ndaId={selectedNDAId} 
           onBack={() => setCurrentPath("/nda-preview")}
           onSave={(data) => {
-            console.log("Saving NDA data:", data);
             // TODO: Save to backend
             setCurrentPath("/nda-preview");
           }}
@@ -1232,13 +1201,11 @@ const MainApp = React.memo<any>(function MainApp({
 
     // Check for /quotations/create before the switch statement
     if (currentPath.startsWith("/quotations/create")) {
-      console.log("[APP-RENDER] Rendering QuotationBuilderScreen for:", currentPath);
       return <QuotationBuilderScreen onNavigate={handleNavigation} currentPath={currentPath} />;
     }
 
     // Check for /quotation-builder before the switch statement  
     if (currentPath.startsWith("/quotation-builder")) {
-      console.log("[APP-RENDER] Rendering QuotationBuilderScreen for:", currentPath);
       return <QuotationBuilderScreen onNavigate={handleNavigation} currentPath={currentPath} />;
     }
 
@@ -1379,7 +1346,6 @@ const MainApp = React.memo<any>(function MainApp({
       case currentPath === "/transfer-lead-demo":
         return <TransferLeadDemo />;
       default:
-        console.log("[renderContent] No route matched, rendering TasksScreen");
         return <TasksScreen onNavigate={handleNavigation} onNavigateWithActivity={handleNavigationWithActivity} shouldOpenCreateDialog={shouldOpenActivityModal} userMode={userMode} />;
     }
   }, [
@@ -1723,7 +1689,6 @@ const MainApp = React.memo<any>(function MainApp({
               isOpen={showQuickVisitModal}
               onClose={() => setShowQuickVisitModal(false)}
               onSave={(data) => {
-                console.log("Quick Visit saved:", data);
                 // TODO: Save visit data to backend
               }}
             />
@@ -1735,7 +1700,6 @@ const MainApp = React.memo<any>(function MainApp({
 });
 
 export default function App() {
-  console.log("[APP-ROOT] App component rendering - v2.3.1");
   
   // Simple fallback to ensure SOMETHING always renders
   try {
@@ -1745,12 +1709,14 @@ export default function App() {
           <RoleProvider>
             <ThemeProvider>
               <CRMProvider>
-                <LanguageProvider>
-                  <ErrorBoundary>
-                    <AppContent />
-                    <Toaster position="top-right" richColors />
-                  </ErrorBoundary>
-                </LanguageProvider>
+                <ModuleDataProvider>
+                  <LanguageProvider>
+                    <ErrorBoundary>
+                      <AppContent />
+                      <Toaster position="top-right" richColors />
+                    </ErrorBoundary>
+                  </LanguageProvider>
+                </ModuleDataProvider>
               </CRMProvider>
             </ThemeProvider>
           </RoleProvider>

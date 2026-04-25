@@ -23,3 +23,7 @@ export { LanguageProvider, useLanguage } from './language-context';
 // CRM context
 export * from './CRMContext';
 export { CRMProvider, useCRM } from './CRMContext';
+
+// Module data context
+export * from './module-data-context';
+export { ModuleDataProvider, useModuleData } from './module-data-context';

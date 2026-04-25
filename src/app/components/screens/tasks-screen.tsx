@@ -63,6 +63,7 @@ import {
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useModuleStore } from "../../store/module-store";
+import { useModuleData } from "../../contexts/module-data-context";
 import { HistoryEntry } from "@/types/crm";
 
 interface Task {
@@ -153,7 +154,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   const [hasMoved, setHasMoved] = useState(false);
 
   const currentUser = "สมชาย วงศ์สกุล";
-  const tasksFromStore = useModuleStore((state) => state.modules.tasks || []);
+  const { tasks: tasksFromStore } = useModuleData();
 
   // Team members list
   const teamMembers = [
