@@ -78,8 +78,8 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
       });
 
     // Keep a single canonical record per id; store-backed tasks take precedence.
-    return Array.from(new Map([...mockActivities, ...taskActivitiesFromStore].map((a) => [a.id, a])).values());
-  }, [taskActivities]);
+    return Array.from(new Map([...mockActivities, ...taskActivities].map((a) => [a.id, a])).values());
+  }, [storeTasks]);
 
   const getActivityIcon = (type: string) => {
     const iconMap: Record<string, any> = {
