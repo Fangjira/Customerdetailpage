@@ -10,7 +10,7 @@
  * - Mobile responsive
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { OneLinkMainLayout } from "../layout/onelink-main-layout";
 import { OneLinkDashboard } from "./onelink-dashboard";
 import { OneLinkDealsScreen } from "./onelink-deals-screen";
@@ -22,23 +22,25 @@ interface OneLinkCRMDemoProps {
 }
 
 export function OneLinkCRMDemo({ initialScreen = "dashboard" }: OneLinkCRMDemoProps) {
-  const [currentScreen, setCurrentScreen] = useState<Screen>(initialScreen);
-  const [currentPath, setCurrentPath] = useState("/dashboard");
+  const initialPathByScreen: Record<Screen, string> = {
+    dashboard: "/dashboard",
+    deals: "/deals",
+    customers: "/customers",
+    reports: "/reports",
+  };
+  const [currentPath, setCurrentPath] = useState(initialPathByScreen[initialScreen] || "/dashboard");
+
+  const currentScreen = useMemo<Screen>(() => {
+    if (currentPath.startsWith("/dashboard") || currentPath === "/") return "dashboard";
+    if (currentPath.startsWith("/deals") || currentPath.startsWith("/deal-detail")) return "deals";
+    if (currentPath.startsWith("/customers")) return "customers";
+    if (currentPath.startsWith("/reports")) return "reports";
+    return "dashboard";
+  }, [currentPath]);
 
   const handleNavigate = (path: string, action?: string) => {
     console.log("Navigate to:", path, action);
     setCurrentPath(path);
-    
-    // Map paths to screens
-    if (path.startsWith("/dashboard") || path === "/") {
-      setCurrentScreen("dashboard");
-    } else if (path.startsWith("/deals") || path.startsWith("/deal-detail")) {
-      setCurrentScreen("deals");
-    } else if (path.startsWith("/customers")) {
-      setCurrentScreen("customers");
-    } else if (path.startsWith("/reports")) {
-      setCurrentScreen("reports");
-    }
   };
 
   const handleLogout = () => {

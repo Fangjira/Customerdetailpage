@@ -87,7 +87,9 @@ interface Task {
   visibility?: "private" | "public" | "organization";
   sharedWith?: string[];
   attendees?: string[];
+  assignees?: string[];
   createdBy?: { id: string, name: string };
+  activityType?: string;
 }
 
 interface TasksScreenProps {
@@ -300,13 +302,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
     ];
   };
 
-  // Use useMemo to regenerate tasks when language changes
   const [tasks, setTasks] = useState<Task[]>(() => getMockTasks());
-
-  // Update tasks when language changes
-  useEffect(() => {
-    setTasks(getMockTasks());
-  }, [i18n.language]);
 
   // Save FAB position to localStorage
   useEffect(() => {
@@ -504,11 +500,23 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
     toast.success("Task hidden");
   };
 
-  const getFilteredTasks = () => {
-    // Merge mock tasks with store tasks and deduplicate by ID
-    const combined = [...tasksFromStore as Task[], ...tasks];
-    const uniqueTasks = Array.from(new Map(combined.map(t => [t.id, t])).values());
-    let filtered = uniqueTasks;
+  const sourceTasks = useMemo(() => {
+    // Merge local tasks with store tasks and deduplicate by ID.
+    // Store records should win over local/mock records for consistency.
+    const combined = [...tasks, ...(tasksFromStore as Task[])];
+    const deduped = Array.from(new Map(combined.map((t) => [t.id, t])).values());
+
+    // Normalize API shape differences between mock/local and store records
+    // so filtering/counting logic reads from one canonical field set.
+    return deduped.map((task) => ({
+      ...task,
+      titleType: task.titleType || task.activityType,
+      completed: task.completed ?? task.status === "completed",
+    }));
+  }, [tasks, tasksFromStore]);
+
+  const visibleTasks = useMemo(() => {
+    let filtered = sourceTasks;
     
     // Filter out hidden tasks
     filtered = filtered.filter(t => !hiddenTaskIds.includes(t.id));
@@ -588,17 +596,23 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
     }
 
     return filtered;
-  };
+  }, [sourceTasks, hiddenTaskIds, isManager, currentUser, searchQuery, filterOwner, filterActivityType, filterDateFrom, filterDateTo, sortDirection, sortField]);
 
-  // Stats calculations
-  const filteredTasks = useMemo(() => getFilteredTasks(), [tasks, tasksFromStore, hiddenTaskIds, isManager, currentUser, searchQuery, filterOwner, filterActivityType, filterDateFrom, filterDateTo, sortDirection, sortField]);
-  const todoTasks = useMemo(() => filteredTasks.filter(t => t.status === "todo"), [filteredTasks]);
-  const inProgressTasks = useMemo(() => filteredTasks.filter(t => t.status === "in-progress"), [filteredTasks]);
-  const completedTasks = useMemo(() => filteredTasks.filter(t => t.status === "completed"), [filteredTasks]);
-  const overdueTasks = useMemo(() => {
+  // Stats calculations (single source/single pass to guarantee consistency with tab count)
+  const taskMetrics = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
-    return filteredTasks.filter(t => t.dueDate < today && t.status !== "completed");
-  }, [filteredTasks]);
+    return visibleTasks.reduce(
+      (acc, task) => {
+        acc.total += 1;
+        if (task.status === "todo") acc.todo += 1;
+        if (task.status === "in-progress") acc.inProgress += 1;
+        if (task.status === "completed") acc.completed += 1;
+        if (task.dueDate < today && task.status !== "completed") acc.overdue += 1;
+        return acc;
+      },
+      { total: 0, todo: 0, inProgress: 0, completed: 0, overdue: 0 }
+    );
+  }, [visibleTasks]);
 
   // Activity type config
   const titleTypeConfig: Record<string, { label: string; color: string }> = {
@@ -764,7 +778,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
             <CardContent className="p-2">
               <div className="flex flex-col">
                 <p className="text-xs text-gray-500 font-medium mb-1">{t("tasks.todo")}</p>
-                <p className="text-4XL font-bold text-gray-900 text-[24px]">{todoTasks.length}</p>
+                <p className="text-4XL font-bold text-gray-900 text-[24px]">{taskMetrics.todo}</p>
               </div>
             </CardContent>
           </Card>
@@ -773,7 +787,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
             <CardContent className="p-2">
               <div className="flex flex-col">
                 <p className="text-xs text-gray-500 font-medium mb-1">{t("tasks.in_progress")}</p>
-                <p className="text-4XL font-bold text-gray-900 text-[24px]">{inProgressTasks.length}</p>
+                <p className="text-4XL font-bold text-gray-900 text-[24px]">{taskMetrics.inProgress}</p>
               </div>
             </CardContent>
           </Card>
@@ -782,7 +796,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
             <CardContent className="p-2">
               <div className="flex flex-col">
                 <p className="text-xs text-gray-500 font-medium mb-1">{t("tasks.completed")}</p>
-                <p className="text-4XL font-bold text-gray-900">{completedTasks.length}</p>
+                <p className="text-4XL font-bold text-gray-900">{taskMetrics.completed}</p>
               </div>
             </CardContent>
           </Card>
@@ -791,7 +805,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
             <CardContent className="p-2">
               <div className="flex flex-col">
                 <p className="text-xs text-gray-500 font-medium mb-1">{t("tasks.overdue")}</p>
-                <p className="text-4XL font-bold text-gray-900">{overdueTasks.length}</p>
+                <p className="text-4XL font-bold text-gray-900">{taskMetrics.overdue}</p>
               </div>
             </CardContent>
           </Card>
@@ -810,7 +824,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
                     : "border-transparent text-gray-500 hover:text-gray-900"
                 }`}
               >
-                {t("tasks.all_tasks")} ({tasks.length})
+                {t("tasks.all_tasks")} ({taskMetrics.total})
               </button>
 
               {/* View Switcher */}
@@ -940,12 +954,12 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
                   </Select>
 
                   {/* Date Range Filter */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Input
                       type="date"
                       value={filterDateFrom}
                       onChange={(e) => setFilterDateFrom(e.target.value)}
-                      className="h-10 sm:h-11 px-3 text-xs sm:text-sm border-gray-300 rounded-lg w-[160px]"
+                      className="h-10 sm:h-11 px-3 text-xs sm:text-sm border-gray-300 rounded-lg w-full sm:w-[160px]"
                       placeholder={t('tasks.filters.from')}
                     />
                     <span className="text-gray-500 text-sm">{t('tasks.filters.to')}</span>
@@ -953,7 +967,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
                       type="date"
                       value={filterDateTo}
                       onChange={(e) => setFilterDateTo(e.target.value)}
-                      className="h-10 sm:h-11 px-3 text-xs sm:text-sm border-gray-300 rounded-lg w-[160px]"
+                      className="h-10 sm:h-11 px-3 text-xs sm:text-sm border-gray-300 rounded-lg w-full sm:w-[160px]"
                       placeholder={t('tasks.filters.to')}
                     />
                     {(filterDateFrom || filterDateTo) && (
@@ -1009,7 +1023,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
             {displayMode === "kanban" ? (
               <div className="p-0">
                 <TasksKanbanView
-                  tasks={filteredTasks}
+                  tasks={visibleTasks}
                   onStatusChange={handleStatusChange}
                   onAddTask={() => setIsCreateTaskDialogOpen(true)}
                   onEditTask={handleEditTask}
@@ -1021,14 +1035,14 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
             ) : displayMode === "calendar" ? (
               <div className="p-3">
                 <TasksCalendarView
-                  tasks={filteredTasks}
+                  tasks={visibleTasks}
                   onTaskClick={handleViewDetails}
                 />
               </div>
             ) : (
               <div className="p-3">
                 <TasksTableView
-                  tasks={filteredTasks}
+                  tasks={visibleTasks}
                   onTaskClick={handleViewDetails}
                   onEditTask={handleEditTask}
                 />

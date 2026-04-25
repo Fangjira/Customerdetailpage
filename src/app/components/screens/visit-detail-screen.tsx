@@ -61,6 +61,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
   const visitData = visitDataMap[visitId] || visitDataMap['V001'];
 
   const [editingNotes, setEditingNotes] = useState(false);
+  const [visitNotes, setVisitNotes] = useState(visitData.notes);
   const [newNotes, setNewNotes] = useState(visitData.notes);
 
   const [shortNotes, setShortNotes] = useState<Array<{
@@ -92,7 +93,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSaveNotes = () => {
-    visitData.notes = newNotes;
+    setVisitNotes(newNotes);
     setEditingNotes(false);
   };
 
@@ -121,7 +122,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
         size: (file.size / 1024).toFixed(1) + " KB"
       }))
     };
-    setShortNotes([newNote, ...shortNotes]);
+    setShortNotes((prev) => [newNote, ...prev]);
     setNewShortNoteText("");
     setSelectedFiles([]);
     setIsAddingNote(false);
@@ -289,7 +290,15 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                 <FileText className="w-5 h-5" />
                 <h3 className="font-bold text-sm">รายละเอียด</h3>
               </div>
-              <button onClick={() => setEditingNotes(true)} className="text-blue-500 text-sm font-bold hover:underline">แก้ไข</button>
+              <button
+                onClick={() => {
+                  setNewNotes(visitNotes);
+                  setEditingNotes(true);
+                }}
+                className="text-blue-500 text-sm font-bold hover:underline"
+              >
+                แก้ไข
+              </button>
             </div>
             
             {editingNotes ? (
@@ -300,13 +309,22 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                   className="min-h-[120px] rounded-xl border-gray-200 focus:ring-[#705add]"
                 />
                 <div className="flex justify-end gap-3">
-                  <Button variant="outline" onClick={() => setEditingNotes(false)} className="rounded-full px-6">ยกเลิก</Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setNewNotes(visitNotes);
+                      setEditingNotes(false);
+                    }}
+                    className="rounded-full px-6"
+                  >
+                    ยกเลิก
+                  </Button>
                   <Button onClick={handleSaveNotes} className="bg-[#705add] hover:bg-[#5b46c2] text-white rounded-full px-6">บันทึก</Button>
                 </div>
               </div>
             ) : (
               <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                {visitData.notes}
+                {visitNotes}
               </p>
             )}
           </section>
