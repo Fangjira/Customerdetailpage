@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { 
   Search, 
   Filter, 
@@ -535,25 +535,27 @@ export function CheckInHistoryScreen({ onVisitClick }: CheckInHistoryScreenProps
     }
   ];
 
-  // Get unique sales people and business units (filtered by current user's BU)
-  const salesPeople = Array.from(new Set(visits.filter(v => v.businessUnit === currentUserBU).map(v => v.salesPerson)));
-  const businessUnits = Array.from(new Set(visits.filter(v => v.businessUnit === currentUserBU).map(v => v.businessUnit)));
+  const scopedVisits = useMemo(() => {
+    // Manager can inspect all BUs; Sales sees only own BU and own records.
+    if (isManager) return visits;
+    return visits.filter((visit) => visit.businessUnit === currentUserBU && visit.salesPerson === currentUserName);
+  }, [isManager, currentUserBU, currentUserName]);
+
+  // Get filter options from scoped dataset to keep dropdown choices consistent with visible permissions.
+  const salesPeople = useMemo(
+    () => Array.from(new Set(scopedVisits.map((v) => v.salesPerson))),
+    [scopedVisits]
+  );
+  const businessUnits = useMemo(
+    () => Array.from(new Set(scopedVisits.map((v) => v.businessUnit).filter(Boolean))) as string[],
+    [scopedVisits]
+  );
 
   // Filter logic
-  const filteredVisits = visits.filter(visit => {
+  const filteredVisits = useMemo(() => scopedVisits.filter(visit => {
     const now = new Date();
     const visitDate = new Date(visit.date);
-    
-    // Business Unit filter: Only show visits from user's own BU
-    if (visit.businessUnit !== currentUserBU) {
-      return false;
-    }
-    
-    // Role-based filter: Sales Rep sees only their visits
-    if (!isManager && visit.salesPerson !== currentUserName) {
-      return false;
-    }
-    
+
     // Search filter
     const matchesSearch = searchQuery === "" || 
       visit.projectCustomer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -572,6 +574,7 @@ export function CheckInHistoryScreen({ onVisitClick }: CheckInHistoryScreenProps
       const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
       matchesDate = visitDate >= monthAgo;
     } else if (selectedFilter === 'custom') {
+      if (!customStartDate || !customEndDate) return false;
       const startDate = new Date(customStartDate);
       const endDate = new Date(customEndDate);
       matchesDate = visitDate >= startDate && visitDate <= endDate;
@@ -587,13 +590,18 @@ export function CheckInHistoryScreen({ onVisitClick }: CheckInHistoryScreenProps
     const matchesStatus = selectedStatus === 'all' || visit.status === selectedStatus;
     
     return matchesSearch && matchesDate && matchesSalesPerson && matchesBusinessUnit && matchesStatus;
-  });
+  }), [scopedVisits, searchQuery, selectedFilter, customStartDate, customEndDate, selectedSalesPerson, selectedBusinessUnit, selectedStatus]);
 
   // Calculate statistics
-  const totalVisits = filteredVisits.length;
-  const completedVisits = filteredVisits.filter(v => v.status === 'completed').length;
-  const followUpRequired = filteredVisits.filter(v => v.status === 'follow_up_required').length;
-  const inProgress = filteredVisits.filter(v => v.status === 'in_progress').length;
+  const { totalVisits, completedVisits, followUpRequired, inProgress } = useMemo(() => {
+    return filteredVisits.reduce((acc, visit) => {
+      acc.totalVisits += 1;
+      if (visit.status === "completed") acc.completedVisits += 1;
+      if (visit.status === "follow_up_required") acc.followUpRequired += 1;
+      if (visit.status === "in_progress") acc.inProgress += 1;
+      return acc;
+    }, { totalVisits: 0, completedVisits: 0, followUpRequired: 0, inProgress: 0 });
+  }, [filteredVisits]);
 
   const formatThaiDate = (dateString: string) => {
     const date = new Date(dateString);

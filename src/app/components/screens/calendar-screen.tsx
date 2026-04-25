@@ -34,7 +34,7 @@ import { QuickActionsMenu } from "../modals/quick-actions-menu";
 import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { useRoleTheme } from "../../hooks/use-role-theme";
 import { useRole } from "../../contexts/role-context";
-import { useModuleStore } from "../../store/module-store";
+import { useModuleData } from "../../contexts/module-data-context";
 
 type DisplayMode = "month" | "week" | "day" | "list";
 
@@ -96,6 +96,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
   const [monthViewType, setMonthViewType] = useState<"grid" | "list">("grid");
   const [showQuickVisitModal, setShowQuickVisitModal] = useState(false);
+  const currentUserAliases = useMemo(() => new Set(["You", "สมชาย วงศ์สกุล", "somchai-wongsakul"]), []);
 
   // Thai Holidays and Important Days
   const holidays: { [key: string]: { name: string; nameEn: string; type: 'holiday' | 'important' } } = {
@@ -128,7 +129,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     return holidays[dateStr];
   };
 
-  const storeTasks = useModuleStore((state) => state.modules.tasks || []);
+  const { taskActivities } = useModuleData();
 
   // Combine Mock activities data with store tasks
   const activities = useMemo(() => {
@@ -661,9 +662,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     ];
 
     // Map store tasks that are activities
-    const taskActivities = storeTasks
-      .filter(t => t.isActivity)
-      .map(t => {
+    const mappedTaskActivities = taskActivities.map(t => {
         let type: ActivityType = "sales_meeting";
         if (t.activityType?.includes("เข้าพบลูกค้า")) type = "customer_visit";
         else if (t.activityType?.includes("นัดหมายลูกค้า")) type = "sales_meeting";
@@ -686,8 +685,8 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
         };
       });
 
-    return [...taskActivities, ...mockActivities];
-  }, [storeTasks]);
+    return [...mappedTaskActivities, ...mockActivities];
+  }, [taskActivities]);
 
   useEffect(() => {
     if (shouldOpenActivityModal) {
@@ -795,22 +794,40 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     });
   };
 
-  const getFilteredActivities = () => {
-    return activities.filter((activity) => {
-      if (!isManager && activity.assignedTo !== "You") return false;
-      if (searchTerm) {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-          activity.title.toLowerCase().includes(searchLower) ||
-          activity.customer?.toLowerCase().includes(searchLower) ||
-          activity.location?.toLowerCase().includes(searchLower)
-        );
-      }
-      return true;
-    });
-  };
+  const filteredActivities = useMemo(() => {
+    const searchLower = searchTerm.trim().toLowerCase();
 
-  const filteredActivities = getFilteredActivities();
+    return activities.filter((activity) => {
+      if (!isManager) {
+        const isAssignedToMe = currentUserAliases.has(activity.assignedTo);
+        const isAttendee = activity.attendees?.some((attendee) => currentUserAliases.has(attendee));
+        if (!isAssignedToMe && !isAttendee) return false;
+      }
+
+      if (!searchLower) return true;
+
+      return (
+        activity.title.toLowerCase().includes(searchLower) ||
+        activity.customer?.toLowerCase().includes(searchLower) ||
+        activity.location?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [activities, currentUserAliases, isManager, searchTerm]);
+
+  const activitiesByDate = useMemo(() => {
+    const grouped = new Map<string, Activity[]>();
+    filteredActivities.forEach((activity) => {
+      const activityDate = new Date(activity.startTime);
+      const dateKey = `${activityDate.getFullYear()}-${String(activityDate.getMonth() + 1).padStart(2, "0")}-${String(activityDate.getDate()).padStart(2, "0")}`;
+      if (!grouped.has(dateKey)) grouped.set(dateKey, []);
+      grouped.get(dateKey)!.push(activity);
+    });
+
+    grouped.forEach((dayActivities) => {
+      dayActivities.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    });
+    return grouped;
+  }, [filteredActivities]);
 
   // Get days in current month for Month View
   const getDaysInMonth = () => {
@@ -854,21 +871,13 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
 
   // Get activities for a specific date
   const getActivitiesForDate = (date: Date) => {
-    return filteredActivities.filter(activity => {
-      const activityDate = new Date(activity.startTime);
-      return (
-        activityDate.getDate() === date.getDate() &&
-        activityDate.getMonth() === date.getMonth() &&
-        activityDate.getFullYear() === date.getFullYear()
-      );
-    });
+    const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    return activitiesByDate.get(dateKey) ?? [];
   };
 
   // Get activities for current day
   const getActivitiesForCurrentDay = () => {
-    return getActivitiesForDate(currentDate).sort((a, b) => 
-      a.startTime.getTime() - b.startTime.getTime()
-    );
+    return getActivitiesForDate(currentDate);
   };
 
   const isToday = (date: Date) => {

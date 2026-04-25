@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -423,27 +423,37 @@ export function CustomerListScreen({ onCustomerClick, shouldOpenAddDialog, setSh
   ];
 
   // Get unique BUs for filter
-  const uniqueBUs = Array.from(new Set(customers.map(c => c.bu)));
+  const uniqueBUs = useMemo(() => Array.from(new Set(customers.map(c => c.bu))), []);
 
-  const filteredCustomers = customers.filter((customer) => {
-    const matchesSearch =
-      customer.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.companyNameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.pic.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesIndustry =
-      filterIndustry === "all" || customer.industry.toLowerCase() === filterIndustry;
-    const matchesBU =
-      filterBU === "all" || customer.bu === filterBU;
-    const matchesOwner =
-      filterOwner === "all" || customer.pic === filterOwner;
-    return matchesSearch && matchesIndustry && matchesBU && matchesOwner;
-  });
+  const filteredCustomers = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    return customers.filter((customer) => {
+      const matchesSearch =
+        customer.companyName.toLowerCase().includes(searchLower) ||
+        customer.companyNameEn.toLowerCase().includes(searchLower) ||
+        customer.pic.toLowerCase().includes(searchLower) ||
+        customer.id.toLowerCase().includes(searchLower);
+      const matchesIndustry =
+        filterIndustry === "all" || customer.industry.toLowerCase() === filterIndustry;
+      const matchesBU =
+        filterBU === "all" || customer.bu === filterBU;
+      const matchesOwner =
+        filterOwner === "all" || customer.pic === filterOwner;
+      return matchesSearch && matchesIndustry && matchesBU && matchesOwner;
+    });
+  }, [searchTerm, filterIndustry, filterBU, filterOwner]);
 
-  // Calculate total revenue
-  const totalRevenue = filteredCustomers.reduce((sum, customer) => {
-    return sum + parseFloat(customer.revenue.replace(/,/g, ''));
-  }, 0);
+  const customerMetrics = useMemo(() => {
+    return filteredCustomers.reduce(
+      (acc, customer) => {
+        acc.totalRevenue += parseFloat(customer.revenue.replace(/,/g, ""));
+        acc.activeCount += customer.status === "Active" ? 1 : 0;
+        acc.totalDeals += customer.activeDeals;
+        return acc;
+      },
+      { totalRevenue: 0, activeCount: 0, totalDeals: 0 }
+    );
+  }, [filteredCustomers]);
 
   const getStatusBadge = (status: string) => {
     if (status === "Active") {
@@ -462,8 +472,12 @@ export function CustomerListScreen({ onCustomerClick, shouldOpenAddDialog, setSh
 
   const getIndustryBadge = (industry: string) => {
     const translationKey = industry.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
-    
-    return null;
+
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+        {t(`masterData.industry.${translationKey}`, industry)}
+      </span>
+    );
   };
 
   const getBusinessGroupBadge = (group: string) => {
@@ -547,7 +561,7 @@ export function CustomerListScreen({ onCustomerClick, shouldOpenAddDialog, setSh
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">ใช้งานอยู่</p>
-                  <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5">{filteredCustomers.filter(c => c.status === "Active").length}</p>
+                  <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5">{customerMetrics.activeCount}</p>
                 </div>
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600" />
@@ -559,7 +573,7 @@ export function CustomerListScreen({ onCustomerClick, shouldOpenAddDialog, setSh
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">ดีลทั้งหมด</p>
-                  <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5">{filteredCustomers.reduce((sum, c) => sum + c.activeDeals, 0)}</p>
+                  <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5">{customerMetrics.totalDeals}</p>
                 </div>
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-orange-600" />
@@ -571,7 +585,7 @@ export function CustomerListScreen({ onCustomerClick, shouldOpenAddDialog, setSh
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
                   <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">มูลค่ารวม</p>
-                  <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5">฿{totalRevenue.toLocaleString()}</p>
+                  <p className="text-lg sm:text-xl font-bold text-gray-900 mt-0.5">฿{customerMetrics.totalRevenue.toLocaleString()}</p>
                 </div>
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-600" />
@@ -738,7 +752,7 @@ export function CustomerListScreen({ onCustomerClick, shouldOpenAddDialog, setSh
 
         {/* Mobile Card View */}
         <div className="lg:hidden space-y-2">
-          {filteredCustomers.map((customer) => (
+          {sortedData.map((customer) => (
             <div
               key={customer.id}
               className="bg-white rounded-lg border border-gray-200 p-2.5 shadow-sm hover:shadow-md transition-shadow cursor-pointer"

@@ -1,4 +1,5 @@
-import { X, MapPin, Briefcase, FileText, CheckSquare, CheckCircle2 } from "lucide-react";
+import { useMemo } from "react";
+import { X, MapPin, Briefcase, CheckSquare, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -28,7 +29,7 @@ export function QuickActionsMenu({
 }: QuickActionsMenuProps) {
   const { t } = useTranslation();
 
-  const actions = [
+  const actions = useMemo(() => [
     {
       icon: MapPin,
       label: "Quick Visit",
@@ -57,10 +58,10 @@ export function QuickActionsMenu({
       onClick: onQuickCreatetask,
       bgColor: "#7BC9A6",
     },
-  ];
+  ], [onQuickVisit, onQuickDeal, onQuickActivity_Visit, onQuickCreatetask]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-sm">
         <DialogHeader className="border-b pb-3 -m-6 px-6 pt-6 mb-4">
           <div className="flex items-center justify-between">
@@ -98,7 +99,7 @@ export function QuickActionsMenu({
                   <Icon className="h-7 w-7 text-white" />
                 </div>
                 <span className="text-sm font-medium text-gray-900">
-                  {action.labelKey ? t(action.labelKey) : action.label}
+                  {action.labelKey ? t(action.labelKey, action.label) : action.label}
                 </span>
               </button>
             );

@@ -28,7 +28,7 @@ import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { advancedMockData } from "../../../data/advancedMockData";
 import { extendedMasterData } from "../../../data/extendedMasterData";
 import { useRoleTheme } from "../../hooks/use-role-theme";
-import { useModuleStore } from "../../store/module-store";
+import { useModuleData } from "../../contexts/module-data-context";
 
 interface ActivitiesScreenProps {
   onActivityClick?: (activityId: string) => void;
@@ -43,18 +43,27 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
   const [showQuickVisitModal, setShowQuickVisitModal] = useState(false);
 
-  const storeTasks = useModuleStore((state) => state.modules.tasks || []);
+  const { taskActivities } = useModuleData();
 
   const activities = useMemo(() => {
     const mockActivities = advancedMockData.activities;
     
     // Map store tasks that are activities
-    const taskActivities = storeTasks
-      .filter(t => t.isActivity)
-      .map(t => {
+    const mappedTaskActivities = taskActivities.map(t => {
         let type = "meeting";
-        if (t.activityType?.includes("เข้าพบลูกค้า")) type = "visit";
-        else if (t.activityType?.includes("นัดหมายลูกค้า")) type = "meeting";
+        const activityType = String(t.activityType || t.titleType || "").toLowerCase();
+        if (activityType.includes("visit") || activityType.includes("เข้าพบ")) type = "visit";
+        else if (activityType.includes("call") || activityType.includes("โทร")) type = "call";
+        else if (activityType.includes("presentation") || activityType.includes("นำเสนอ")) type = "presentation";
+
+        const normalizedStatus =
+          t.status === "completed"
+            ? "completed"
+            : t.status === "in-progress"
+              ? "in_progress"
+              : t.status === "cancelled"
+                ? "cancelled"
+                : "planned";
 
         return {
           id: t.id,
@@ -62,15 +71,16 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
           description: t.description || "",
           customer: t.customer || "N/A",
           type: type as any,
-          status: t.status === "completed" ? "completed" : "planned",
+          status: normalizedStatus as any,
           scheduledDate: t.dueDate || new Date().toISOString().split('T')[0],
           scheduledTime: t.dueTime || "00:00",
           owner: t.assignee || "You",
         };
       });
 
-    return [...taskActivities, ...mockActivities];
-  }, [storeTasks]);
+    // Keep a single canonical record per id; store-backed tasks take precedence.
+    return Array.from(new Map([...mockActivities, ...mappedTaskActivities].map((a) => [a.id, a])).values());
+  }, [taskActivities]);
 
   const getActivityIcon = (type: string) => {
     const iconMap: Record<string, any> = {
@@ -132,27 +142,36 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
     return time;
   };
 
-  const filteredActivities = activities.filter((activity) => {
-    const matchesSearch =
-      activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      activity.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === "all" || activity.type === filterType;
-    const matchesStatus = filterStatus === "all" || activity.status === filterStatus;
-    return matchesSearch && matchesType && matchesStatus;
-  });
+  const filteredActivities = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase();
+    return activities.filter((activity) => {
+      const matchesSearch =
+        activity.title.toLowerCase().includes(searchLower) ||
+        activity.description.toLowerCase().includes(searchLower) ||
+        (activity.customer || "").toLowerCase().includes(searchLower);
+      const matchesType = filterType === "all" || activity.type === filterType;
+      const matchesStatus = filterStatus === "all" || activity.status === filterStatus;
+      return matchesSearch && matchesType && matchesStatus;
+    });
+  }, [activities, searchTerm, filterType, filterStatus]);
 
   // Statistics
-  const stats = {
-    total: activities.length,
-    planned: activities.filter((a) => a.status === "planned").length,
-    completed: activities.filter((a) => a.status === "completed").length,
-    thisWeek: activities.filter((a) => {
-      const actDate = new Date(a.scheduledDate);
-      const today = new Date();
-      const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-      return actDate >= today && actDate <= weekFromNow;
-    }).length,
-  };
+  const stats = useMemo(() => {
+    const today = new Date();
+    const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    return filteredActivities.reduce(
+      (acc, activity) => {
+        acc.total += 1;
+        if (activity.status === "planned") acc.planned += 1;
+        if (activity.status === "completed") acc.completed += 1;
+        const actDate = new Date(activity.scheduledDate);
+        if (actDate >= today && actDate <= weekFromNow) acc.thisWeek += 1;
+        return acc;
+      },
+      { total: 0, planned: 0, completed: 0, thisWeek: 0 }
+    );
+  }, [filteredActivities]);
 
   return (
     <PageContainer>

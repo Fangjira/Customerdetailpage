@@ -49,13 +49,13 @@ export function TransferLeadDemo() {
             </div>
           </div>
 
-          <button
+          <Button
             onClick={() => setIsModalOpen(true)}
             className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3 text-base"
           >
             <ArrowRightLeft className="h-5 w-5" />
             เปิด Transfer Lead Modal
-          </button>
+          </Button>
         </div>
 
         {/* Design Specs */}
