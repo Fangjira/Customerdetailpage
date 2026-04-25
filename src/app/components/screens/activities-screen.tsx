@@ -48,7 +48,7 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
     const mockActivities = advancedMockData.activities;
     
     // Map store tasks that are activities
-    const mappedTaskActivities = taskActivities.map(t => {
+    const taskActivitiesFromStore = taskActivities.map(t => {
         let type = "meeting";
         const activityType = String(t.activityType || t.titleType || "").toLowerCase();
         if (activityType.includes("visit") || activityType.includes("เข้าพบ")) type = "visit";
@@ -78,7 +78,7 @@ export function ActivitiesScreen({ onActivityClick }: ActivitiesScreenProps) {
       });
 
     // Keep a single canonical record per id; store-backed tasks take precedence.
-    return Array.from(new Map([...mockActivities, ...mappedTaskActivities].map((a) => [a.id, a])).values());
+    return Array.from(new Map([...mockActivities, ...taskActivitiesFromStore].map((a) => [a.id, a])).values());
   }, [taskActivities]);
 
   const getActivityIcon = (type: string) => {
