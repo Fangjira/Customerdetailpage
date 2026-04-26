@@ -252,7 +252,7 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
     description: "Discuss contract renewal terms and pricing adjustments. Need to review the current service agreement and propose new pricing structure based on volume increases. Also discuss potential expansion to new routes.",
     priority: "high",
     status: "in-progress",
-    dueDate: "2026-12-19",
+    dueDate: "2024-12-19",
     dueTime: "12:00 PM",
     assignee: "You",
     completed: false,
@@ -281,19 +281,8 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
   const [newComment, setNewComment] = useState("");
 
   const updateTask = (field: keyof Task, value: any) => {
-    setTask((prev) => {
-      const next = { ...prev, [field]: value };
-      if (field === "status") {
-        next.completed = value === "completed";
-      }
-      if (field === "completed" && value === true) {
-        next.status = "completed";
-      }
-      return next;
-    });
+    setTask((prev) => ({ ...prev, [field]: value }));
   };
-
-  const isOverdue = task.status !== "completed" && new Date(task.dueDate) < new Date();
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
@@ -392,7 +381,7 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
             กลับไปหน้างานของฉัน
           </Button>
 
-          <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="flex items-start justify-between gap-4 flex-wrap md:h-auto">
             <div className="flex-1 min-w-0">
               {/* Title */}
               <div className="flex items-center gap-3 mb-2">
@@ -436,15 +425,10 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
                     เสร็จสมบูรณ์
                   </Badge>
                 )}
-                {isOverdue && (
-                  <Badge className="bg-red-100 text-red-700 border-red-200 rounded-md text-xs">
-                    เลยกำหนด
-                  </Badge>
-                )}
               </div>
 
-              <p className={`text-sm ${isOverdue ? "text-red-600 font-medium" : "text-gray-500"}`}>
-                ครบกำหนด {new Date(task.dueDate).toLocaleDateString("th-TH")}
+              <p className="text-sm text-gray-500">
+                สร้างเมื่อ {new Date(task.dueDate).toLocaleDateString("th-TH")}
               </p>
             </div>
 

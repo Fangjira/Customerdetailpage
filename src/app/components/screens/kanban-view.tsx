@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -315,14 +315,14 @@ export function KanbanView() {
     },
   ]);
 
-  const stages = useMemo(() => [
+  const stages = [
     { key: "lead", title: t("deals.stage_lead") },
     { key: "contact", title: t("deals.stage_contact") },
     { key: "needs_analysis", title: t("deals.stage_needs_analysis") },
     { key: "proposal", title: t("deals.stage_proposal") },
     { key: "negotiation", title: t("deals.stage_negotiation") },
     { key: "closed_won", title: t("deals.stage_closed_won") },
-  ], [t]);
+  ];
 
   const handleMove = (dealId: string, newStage: string) => {
     setDeals((prev) =>
@@ -350,26 +350,21 @@ export function KanbanView() {
     return probabilities[stage] || 50;
   };
 
-  const stageMetrics = useMemo(() => {
-    const buckets: Record<string, { deals: Deal[]; totalValue: number }> = {};
-    deals.forEach((deal) => {
-      if (!buckets[deal.stage]) buckets[deal.stage] = { deals: [], totalValue: 0 };
-      buckets[deal.stage].deals.push(deal);
-      buckets[deal.stage].totalValue += deal.value;
-    });
-    return buckets;
-  }, [deals]);
+  const getDealsByStage = (stage: string) => {
+    return deals.filter((deal) => deal.stage === stage);
+  };
 
-  const { totalPipelineValue, weightedValue } = useMemo(() => {
-    return deals.reduce(
-      (acc, deal) => {
-        acc.totalPipelineValue += deal.value;
-        acc.weightedValue += (deal.value * deal.probability) / 100;
-        return acc;
-      },
-      { totalPipelineValue: 0, weightedValue: 0 }
-    );
-  }, [deals]);
+  const getTotalValueByStage = (stage: string) => {
+    return deals
+      .filter((deal) => deal.stage === stage)
+      .reduce((sum, deal) => sum + deal.value, 0);
+  };
+
+  const totalPipelineValue = deals.reduce((sum, deal) => sum + deal.value, 0);
+  const weightedValue = deals.reduce(
+    (sum, deal) => sum + (deal.value * deal.probability) / 100,
+    0
+  );
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -434,8 +429,8 @@ export function KanbanView() {
                   key={stage.key}
                   stage={stage.key}
                   title={stage.title}
-                  deals={stageMetrics[stage.key]?.deals || []}
-                  totalValue={stageMetrics[stage.key]?.totalValue || 0}
+                  deals={getDealsByStage(stage.key)}
+                  totalValue={getTotalValueByStage(stage.key)}
                   onMove={handleMove}
                 />
               ))}

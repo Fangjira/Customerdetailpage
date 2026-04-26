@@ -580,13 +580,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
 
   // Filters (placeholder)
   const filterByBranch = useCallback((branch: string) => {
-    // Branch-level filtering is handled by consumers via selectors.
-    // Keep this API for backward compatibility.
-    void branch;
+    // Implementation would filter all data by branch
+    console.log('Filter by branch:', branch);
   }, []);
 
   const resetFilters = useCallback(() => {
-    // Stateless/no-op reset for backward compatibility with legacy screens.
+    // Reset all filters
+    console.log('Reset filters');
   }, []);
 
   const value: CRMContextType = useMemo(() => ({

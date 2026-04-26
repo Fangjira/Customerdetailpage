@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -36,7 +36,7 @@ export function SalesManagerDashboard({ onNavigate }: SalesManagerDashboardProps
   const [timeRange, setTimeRange] = useState("30");
 
   // Manager KPI Cards
-  const kpiCards = useMemo(() => [
+  const kpiCards = [
     {
       title: "Team Target",
       value: "฿45M",
@@ -90,10 +90,10 @@ export function SalesManagerDashboard({ onNavigate }: SalesManagerDashboardProps
       color: "text-cyan-600",
       bgColor: "bg-cyan-50",
     },
-  ], []);
+  ];
 
   // Team Performance Data
-  const teamPerformance = useMemo(() => [
+  const teamPerformance = [
     {
       name: "Sarah Chen",
       target: 9000000,
@@ -126,26 +126,26 @@ export function SalesManagerDashboard({ onNavigate }: SalesManagerDashboardProps
       winRate: 75,
       status: "exceeding",
     },
-  ], []);
+  ];
 
   // Monthly Performance Chart Data
-  const monthlyData = useMemo(() => [
+  const monthlyData = [
     { month: "Jan", team: 4200000, target: 4500000 },
     { month: "Feb", team: 3800000, target: 4500000 },
     { month: "Mar", team: 5100000, target: 4500000 },
     { month: "Apr", team: 4700000, target: 4500000 },
     { month: "May", team: 5300000, target: 4500000 },
     { month: "Jun", team: 4900000, target: 4500000 },
-  ], []);
+  ];
 
   // Pipeline by Stage
-  const pipelineData = useMemo(() => [
+  const pipelineData = [
     { stage: "Lead", count: 45, value: 15000000 },
     { stage: "Qualified", count: 32, value: 22000000 },
     { stage: "Proposal", count: 18, value: 28000000 },
     { stage: "Negotiation", count: 12, value: 35000000 },
     { stage: "Won", count: 8, value: 42000000 },
-  ], []);
+  ];
 
   // Alerts & Actions
   const alerts = [
@@ -191,51 +191,6 @@ export function SalesManagerDashboard({ onNavigate }: SalesManagerDashboardProps
       urgency: "medium",
     },
   ];
-
-  const dashboardMetrics = useMemo(() => {
-    const teamTarget = teamPerformance.reduce((sum, member) => sum + member.target, 0);
-    const teamActual = teamPerformance.reduce((sum, member) => sum + member.actual, 0);
-    const teamDeals = teamPerformance.reduce((sum, member) => sum + member.deals, 0);
-    const avgWinRate = teamPerformance.length > 0
-      ? teamPerformance.reduce((sum, member) => sum + member.winRate, 0) / teamPerformance.length
-      : 0;
-    const totalPipeline = pipelineData.reduce((sum, stage) => sum + stage.value, 0);
-
-    return {
-      teamTarget,
-      teamActual,
-      teamDeals,
-      avgWinRate,
-      totalPipeline,
-      teamAchievementPct: teamTarget > 0 ? Math.round((teamActual / teamTarget) * 100) : 0,
-    };
-  }, [teamPerformance, pipelineData]);
-
-  const computedKpiCards = useMemo(() => {
-    return kpiCards.map((card) => {
-      if (card.title === "Team Target") {
-        return {
-          ...card,
-          value: `฿${(dashboardMetrics.teamTarget / 1_000_000).toFixed(0)}M`,
-          current: `฿${(dashboardMetrics.teamActual / 1_000_000).toFixed(0)}M`,
-          percentage: dashboardMetrics.teamAchievementPct,
-        };
-      }
-      if (card.title === "Team Members") {
-        return { ...card, value: String(teamPerformance.length) };
-      }
-      if (card.title === "Total Pipeline") {
-        return { ...card, value: `฿${(dashboardMetrics.totalPipeline / 1_000_000).toFixed(0)}M` };
-      }
-      if (card.title === "Team Win Rate") {
-        return { ...card, value: `${dashboardMetrics.avgWinRate.toFixed(1)}%` };
-      }
-      if (card.title === "Active Deals") {
-        return { ...card, value: String(dashboardMetrics.teamDeals) };
-      }
-      return card;
-    });
-  }, [kpiCards, dashboardMetrics, teamPerformance.length]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -298,7 +253,7 @@ export function SalesManagerDashboard({ onNavigate }: SalesManagerDashboardProps
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {computedKpiCards.map((card) => (
+        {kpiCards.map((card) => (
           <Card key={card.title} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">

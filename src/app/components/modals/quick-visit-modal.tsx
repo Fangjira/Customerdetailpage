@@ -75,7 +75,6 @@ export function QuickVisitModal({
   task,
 }: QuickVisitModalProps) {
   const { t } = useTranslation();
-  const isDialogOpen = Boolean(open ?? isOpen);
   
   const source = task || activity;
   const isStandAloneMode = !source; // ถ้าไม่มี source แสดงว่าเปิดมาจากปุ่มลอยในหน้า Calendar
@@ -99,23 +98,22 @@ export function QuickVisitModal({
 
   // Update form when activity changes or modal opens
   useEffect(() => {
-    if (source || prefilledData) {
+    if (activity || prefilledData) {
       setFormData(prev => ({
         ...prev,
-        customer: source?.customer || prefilledData?.customer || prev.customer,
-        topic: source?.title || prefilledData?.topic || prev.topic,
-        location: source?.customerAddress || source?.location || prev.location,
-        siteBranch: source?.siteBranch || prev.siteBranch,
-        visitType: task?.visitType || source?.type || prev.visitType,
+        customer: activity?.customer || prefilledData?.customer || prev.customer,
+        topic: activity?.title || prefilledData?.topic || prev.topic,
+        location: activity?.customerAddress || activity?.location || prev.location,
+        siteBranch: activity?.siteBranch || prev.siteBranch,
+        visitType: activity?.type || prev.visitType,
       }));
-    } else if (isDialogOpen) {
+    } else if (open || isOpen) {
        // Reset form when opened in standalone mode
        setFormData(prev => ({
         ...prev,
         linkedActivityId: "",
         customer: "",
         topic: "",
-        checkInTime: new Date().toISOString().slice(0, 16),
         location: "",
         siteBranch: "",
         visitType: "",
@@ -125,11 +123,11 @@ export function QuickVisitModal({
         gpsLongitude: "",
        }));
     }
-  }, [source, task?.visitType, prefilledData, isDialogOpen]);
+  }, [activity, prefilledData, open, isOpen]);
 
   // Auto-capture GPS when modal opens
   useEffect(() => {
-    if (isDialogOpen) {
+    if (open || isOpen) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -150,7 +148,7 @@ export function QuickVisitModal({
         );
       }
     }
-  }, [isDialogOpen]);
+  }, [open, isOpen]);
 
   // Handle selecting an activity from the dropdown to auto-fill
   const handleSelectActivity = (selectedActivity: typeof mockPlannedActivities[0]) => {
@@ -177,11 +175,11 @@ export function QuickVisitModal({
   const handleCaptureGPS = () => {
     setCapturingGPS(true);
     setTimeout(() => {
-      setFormData((prev) => ({
-        ...prev,
+      setFormData({
+        ...formData,
         gpsLatitude: "13.7563",
         gpsLongitude: "100.5018",
-      }));
+      });
       setCapturingGPS(false);
     }, 1500);
   };
@@ -191,26 +189,26 @@ export function QuickVisitModal({
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
+        setFormData({
+          ...formData,
           photo: file,
           photoPreview: reader.result as string,
-        }));
+        });
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleRemovePhoto = () => {
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       photo: null,
       photoPreview: "",
-    }));
+    });
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
+    <Dialog open={open || isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md h-[100vh] sm:h-auto sm:max-h-[90vh] flex flex-col bg-white p-0 gap-0 rounded-none sm:rounded-3xl shadow-2xl">
         {/* Header - Green */}
         <DialogHeader className="bg-gradient-to-r from-[#00BC7D] to-[#16a34a] px-4 py-4 flex-shrink-0 relative rounded-t-none sm:rounded-t-3xl">

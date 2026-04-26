@@ -1,58 +1,23 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import {
-  Calendar, Users, Lock, Globe, Check, ChevronDown, X, Plus,
-  Link2, CheckCircle2, Briefcase, Building2, UserPlus, Search
+import React, { useState, useMemo, useEffect } from "react";
+import { 
+  Calendar, Users, Lock, Globe, Check, ChevronDown, X, Plus, 
+  Link2, CheckCircle2, Briefcase, Building2, UserPlus, Search 
 } from "lucide-react";
+
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { useModuleStore } from "../store/module-store";
-import { TITLE_TYPES } from "../constants/task-constants";
-import { cn } from "./ui/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { Checkbox } from "./ui/checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Badge } from "./ui/badge";
+import { Checkbox } from "./ui/checkbox";
 import { Combobox } from "./ui/combobox";
-
-// ==========================================
-// 🔴 ส่วนที่ 1: Mock translations
-// ==========================================
-
-// จำลองการแปลภาษา
-const useTranslation = () => {
-  return { t: (key: string) => {
-    const translations: Record<string, string> = {
-      "tasks.create_new_task": "สร้างงานใหม่",
-      "tasks.create_new_task_description": "เพิ่มงานใหม่และมอบหมายให้ทีม",
-      "tasks.task_title": "ประเภทงาน / หัวข้อ",
-      "tasks.select_task_type": "เลือกประเภทงาน",
-      "tasks.description": "รายละเอียด",
-      "tasks.description_placeholder": "เพิ่มรายละเอียด...",
-      "tasks.due_date": "กำหนดส่ง",
-      "tasks.priority": "ความสำคัญ",
-      "tasks.select_priority": "เลือกระดับความสำคัญ",
-      "priority.high": "สูง",
-      "priority.medium": "ปานกลาง",
-      "priority.low": "ต่ำ",
-      "tasks.assignee": "ผู้รับผิดชอบ",
-      "common.you": "คุณ",
-      "common.cancel": "ยกเลิก",
-      "common.save": "บันทึก"
-    };
-    return translations[key] || key;
-  }};
-};
-
-// Event Target สำหรับจำลอง Toast
-const toastEmitter = new EventTarget();
-
-// ==========================================
-// 🔵 ส่วนที่ 3: CORE LOGIC & CONSTANTS
-// (โค้ดสำหรับโปรเจกต์ของคุณเริ่มต้นที่นี่)
-// ==========================================
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
+import { cn } from "./ui/utils";
+import { useModuleStore } from "../store/module-store";
 
 interface LinkedEntity {
   type: "deal" | "customer" | "lead" | "quotation" | "todo";
@@ -66,6 +31,24 @@ const ENTITY_TYPES = [
   { value: "lead", label: "ลีด", icon: "✨" },
   { value: "quotation", label: "ใบเสนอราคา", icon: "📄" },
   { value: "todo", label: "To-Do อื่น", icon: "✅" },
+];
+
+const TASK_TYPES = [
+  { value: "ติดตามลูกค้า", label: "ติดตามลูกค้า - Follow up customer" },
+  { value: "เตรียมใบเสนอราคา", label: "เตรียมใบเสนอราคา - Prepare quotation" },
+  { value: "นัดหมายลูกค้า", label: "📅 นัดหมายลูกค้า - Schedule meeting" },
+  { value: "เข้าพบลูกค้า", label: "📍 เข้าพบลูกค้า - Visit customer" },
+  { value: "ส่งเอกสาร", label: "ส่งเอกสาร - Send documents" },
+  { value: "ตรวจสอบสถานะดีล", label: "ตรวจสอบสถานะดีล - Check deal status" },
+  { value: "โทรติดต่อลูกค้า", label: "โทรติดต่อลูกค้า - Call customer" },
+  { value: "ส่งอีเมล", label: "ส่งอีเมล - Send email" },
+  { value: "ทำสัญญา", label: "ทำสัญญา - Prepare contract" },
+  { value: "ส่งมอบสินค้า/บริการ", label: "ส่งมอบสินค้า/บริการ - Deliver service" },
+  { value: "แก้ไขปัญหา", label: "แก้ไขปัญหา - Resolve issue" },
+  { value: "ประชุมทีม", label: "ประชุมทีม - Team meeting" },
+  { value: "ทำรายงาน", label: "ทำรายงาน - Prepare report" },
+  { value: "อัพเดทข้อมูล", label: "อัพเดทข้อมูล - Update information" },
+  { value: "other", label: "📝 อื่นๆ (กรอกเอง)" },
 ];
 
 const MOCK_ENTITIES = {
@@ -163,9 +146,9 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
   const [leadData, setLeadData] = useState({ email: "", phone: "" });
 
   const teamMembers = [
-    { id: "somchai-wongsakul", name: "สมชาย วงศ์สกุล" }, // Matches TasksScreen currentUser
-    { id: "anucha-srisawat", name: "อนุชา ศรีสวัสดิ์" },
-    { id: "wipawee-chancharoen", name: "วิภาวี จันทร์เจริญ" },
+    { id: "you", name: t("common.you") || "คุณ (You)" },
+    { id: "sarah-chen", name: "Sarah Chen" },
+    { id: "michael-wong", name: "Michael Wong" },
   ];
 
   // เป็นโหมด Activity หากใน Array ของหัวข้องาน มีคำว่า "นัดหมายลูกค้า" หรือ "เข้าพบลูกค้า"
@@ -266,27 +249,6 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
       toast.error("โปรดเลือกพนักงานที่ต้องการ 'มอบหมายให้' อย่างน้อย 1 คน");
       return;
     }
-
-    // New Validations
-    if (!isActivityMode && !formData.dueDate) {
-      toast.error("โปรดระบุวันกำหนดส่งงาน");
-      return;
-    }
-
-    if (isActivityMode) {
-      if (!formData.date) {
-        toast.error("โปรดระบุวันที่ของกิจกรรม");
-        return;
-      }
-      if (!formData.startTime || !formData.endTime) {
-        toast.error("โปรดระบุเวลาเริ่มและสิ้นสุดกิจกรรม");
-        return;
-      }
-      if (!formData.customer) {
-        toast.error("โปรดเลือกลูกค้าหรือลีดที่เกี่ยวข้องกับกิจกรรม");
-        return;
-      }
-    }
     
     if (isActivityMode && formData.attendees.length === 0) {
       toast.error("โปรดเลือก 'ผู้รับผิดชอบ / เข้าร่วม' กิจกรรม อย่างน้อย 1 คน");
@@ -296,46 +258,12 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
     // สร้างชื่อจากหัวข้อหลายๆ อันมารวมกัน
     const selectedLabels = formData.titleType
       .filter(t => t !== "other")
-      .map(t => TITLE_TYPES.find(tt => tt.value === t)?.label.split(' - ')[0]);
+      .map(t => TASK_TYPES.find(tt => tt.value === t)?.label.split(' - ')[0]);
     
     if (formData.titleType.includes("other") && formData.customTitle) {
       selectedLabels.push(formData.customTitle);
     }
     const finalTitle = selectedLabels.join(", ") || "ไม่มีหัวข้อ";
-    const upsertRecord = useModuleStore.getState().upsertRecord;
-
-    let titleType = "";
-    if (formData.titleType.includes("นัดหมายลูกค้า")) {
-      titleType = "นัดหมายลูกค้า - Schedule meeting";
-    } else if (formData.titleType.includes("เข้าพบลูกค้า")) {
-      titleType = "เข้าพบลูกค้า - Visit customer";
-    }
-
-    // Find customer name from ID
-    const customerObj = [...MOCK_ENTITIES.customer, ...MOCK_ENTITIES.lead].find(c => c.id === formData.customer);
-    const customerName = customerObj ? customerObj.name : formData.customer;
-
-    const taskData = {
-      title: finalTitle,
-      description: formData.description,
-      priority: formData.priority,
-      status: 'todo',
-      dueDate: isActivityMode ? formData.date : formData.dueDate,
-      dueTime: isActivityMode ? formData.startTime : '',
-      assignees: formData.assignees,
-      // Map the first assignee ID to the singular name expected by TasksScreen
-      assignee: teamMembers.find(m => m.id === formData.assignees[0])?.name || "สมชาย วงศ์สกุล",
-      attendees: formData.attendees,
-      isActivity: isActivityMode,
-      titleType: titleType,
-      linkedEntities: linkedEntities,
-      customer: customerName,
-      location: formData.location,
-      serviceTopics: formData.services,
-      customerContacts: formData.customerContacts,
-    };
-
-    upsertRecord('tasks', taskData);
 
     if (isActivityMode) {
       // Data Mockup for submission
@@ -391,41 +319,38 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={cn("bg-white border-gray-200 overflow-y-auto max-h-[90vh]", isActivityMode ? 'max-w-3xl' : 'max-w-2xl')}>
+      <DialogContent className={cn("bg-white flex flex-col gap-0 overflow-hidden p-6 sm:p-8 rounded-[14px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] border-none max-h-[90vh]", isActivityMode ? 'sm:w-[600px] sm:max-w-none' : 'sm:w-[506px] sm:max-w-none')}>
         
         {/* Header ส่วนบนสุด */}
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-gray-900">
-            {isActivityMode ? (
-              <>
-                <Calendar className="w-5 h-5 text-emerald-600" strokeWidth={2.5} /> 
-                สร้างงานใหม่ & กิจกรรม
-              </>
-            ) : (
-              "สร้างงานใหม่"
-            )}
-          </DialogTitle>
-          <DialogDescription className="text-gray-500 mt-1">
-            {isActivityMode 
-              ? "สร้างการแจ้งเตือนงาน พร้อมบันทึกรายละเอียดกิจกรรมลงปฏิทิน"
-              : "เพิ่มงานใหม่และมอบหมายให้ทีม"
-            }
-          </DialogDescription>
+        <DialogHeader className="pb-4 shrink-0 text-left">
+          <div className="flex items-center gap-3">
+            <div className="w-[40px] h-[40px] bg-[#F5F3FF] rounded-[14px] flex items-center justify-center shrink-0">
+              <Calendar className="w-5 h-5 text-[#705ADD]" />
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-bold text-[#2D1B69]">
+                {isActivityMode ? "สร้าง To-Do และ กิจกรรม" : "สร้างแบบฟอร์ม To-Do"}
+              </DialogTitle>
+              <DialogDescription className="text-gray-500 mt-0.5 text-sm">
+                ระบุรายละเอียดและมอบหมายงานให้ทีม
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-6 mt-1">
-          
-          {/* ========================================= */}
-          {/* แถวที่ 1: Task Title & Priority */}
-          {/* ========================================= */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="flex-1 overflow-y-auto px-1 py-1 -mx-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <form onSubmit={handleSubmit} className="space-y-5">
             
-            {/* Task Title / ประเภทงาน (Multi-Select) */}
-            <div className="space-y-2">
-              <Label htmlFor="titleType" className="text-gray-900">
-                หัวข้อ To do <span className="text-red-500">*</span>
-              </Label>
-              
+            {/* ========================================= */}
+            {/* Common Information */}
+            {/* ========================================= */}
+          
+          {/* Task Title / ประเภทงาน (Multi-Select) */}
+          <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-4">
+            <Label htmlFor="titleType" className="text-gray-700 font-medium text-sm sm:w-40 sm:pt-2.5 sm:text-right shrink-0">
+              หัวข้อ To do <span className="text-red-500">*</span>
+            </Label>
+            <div className="flex-1 min-w-0 space-y-2">
               <Popover open={openTitle} onOpenChange={setOpenTitle}>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="w-full flex items-center justify-between bg-white border-gray-200 hover:bg-gray-50 font-normal px-3 py-2 shadow-sm text-left h-10">
@@ -433,7 +358,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                       {formData.titleType.length === 0 
                         ? "เลือกประเภทงาน..." 
                         : formData.titleType.length === 1 
-                          ? TITLE_TYPES.find(t => t.value === formData.titleType[0])?.label.split(' - ')[0] 
+                          ? TASK_TYPES.find(t => t.value === formData.titleType[0])?.label.split(' - ')[0] 
                           : `${formData.titleType.length} หัวข้อที่เลือก`}
                     </span>
                     <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
@@ -441,7 +366,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                 </PopoverTrigger>
                 <PopoverContent className="p-2 w-[340px] sm:w-[400px]" align="start">
                   <div className="max-h-[280px] overflow-y-auto space-y-1">
-                    {TITLE_TYPES.map((type) => (
+                    {TASK_TYPES.map((type) => (
                       <div 
                         key={type.value} 
                         className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md text-sm"
@@ -464,10 +389,10 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
 
               {/* แสดง Tags ของหัวข้อที่เลือกไว้ */}
               {formData.titleType.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-2">
+                <div className="flex flex-wrap gap-1.5">
                   {formData.titleType.map((tt) => {
                     if (tt === "other") return null;
-                    const typeObj = TITLE_TYPES.find(t => t.value === tt);
+                    const typeObj = TASK_TYPES.find(t => t.value === tt);
                     return (
                       <Badge key={tt} variant="outline" className="bg-gray-100 text-gray-800 border-gray-200 font-medium rounded-md px-2 py-1">
                         {typeObj ? typeObj.label.split(' - ')[0] : tt}
@@ -482,24 +407,27 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
 
               {/* ช่องกรอกเมื่อเลือก "อื่นๆ" */}
               {formData.titleType.includes("other") && (
-                <div className="mt-2 animate-in fade-in slide-in-from-top-1">
+                <div className="animate-in fade-in slide-in-from-top-1">
                   <Input
                     id="customTitle"
                     value={formData.customTitle}
                     onChange={(e) => updateField("customTitle", e.target.value)}
                     placeholder="โปรดระบุหัวข้องานอื่นๆ..."
                     className="border-gray-200 shadow-sm"
+                    required
                     autoFocus
                   />
                 </div>
               )}
             </div>
+          </div>
 
-            {/* ความสำคัญ (Priority) */}
-            <div className="space-y-2">
-              <Label htmlFor="priority" className="text-gray-900">
-                ความสำคัญ <span className="text-red-500">*</span>
-              </Label>
+          {/* ความสำคัญ (Priority) */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+            <Label htmlFor="priority" className="text-gray-700 font-medium text-sm sm:w-40 sm:text-right shrink-0">
+              ความสำคัญ <span className="text-red-500">*</span>
+            </Label>
+            <div className="flex-1 min-w-0">
               <Combobox
                 options={[
                   { value: "high", label: `🔴 สูง` },
@@ -514,16 +442,12 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
             </div>
           </div>
 
-          {/* ========================================= */}
-          {/* แถวที่ 2: Assignee, Attendees, Due Date */}
-          {/* ========================================= */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            
-            {/* มอบหมายให้ (To-Do) */}
-            <div className="space-y-2">
-              <Label className="text-gray-900">
-                มอบหมายให้ (ผู้รับผิดชอบ) <span className="text-red-500">*</span>
-              </Label>
+          {/* มอบหมายให้ (To-Do) */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+            <Label className="text-gray-700 font-medium text-sm sm:w-40 sm:text-right shrink-0">
+              มอบหมายให้ <span className="text-red-500">*</span>
+            </Label>
+            <div className="flex-1 min-w-0">
               <Popover open={assigneeDropdownOpen} onOpenChange={setAssigneeDropdownOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -552,13 +476,15 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                 </PopoverContent>
               </Popover>
             </div>
+          </div>
 
-            {/* แสดง Attendees (ถ้าโหมด Activity) หรือ Due Date (ถ้าโหมด Task ปกติ) */}
-            {isActivityMode ? (
-              <div className="space-y-2">
-                <Label className="text-gray-900">
-                  ผู้ที่ต้องเข้าร่วม (กิจกรรม) <span className="text-red-500">*</span>
-                </Label>
+          {/* แสดง Attendees (ถ้าโหมด Activity) หรือ Due Date (ถ้าโหมด Task ปกติ) */}
+          {isActivityMode ? (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+              <Label className="text-gray-700 font-medium text-sm sm:w-40 sm:text-right shrink-0">
+                ผู้เข้าร่วม (กิจกรรม) <span className="text-red-500">*</span>
+              </Label>
+              <div className="flex-1 min-w-0">
                 <Popover open={attendeeDropdownOpen} onOpenChange={setAttendeeDropdownOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -593,189 +519,208 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                   </PopoverContent>
                 </Popover>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <Label htmlFor="dueDate" className="text-gray-900">กำหนดส่ง <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <Input
-                    id="dueDate"
-                    type="datetime-local" 
-                    value={formData.dueDate}
-                    onChange={(e) => updateField("dueDate", e.target.value)}
-                    className="border-gray-200 shadow-sm"
-                  />
-                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-                </div>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+              <Label htmlFor="dueDate" className="text-gray-700 font-medium text-sm sm:w-40 sm:text-right shrink-0">
+                กำหนดส่ง <span className="text-red-500">*</span>
+              </Label>
+              <div className="flex-1 min-w-0 relative">
+                <Input
+                  id="dueDate"
+                  type="datetime-local" 
+                  value={formData.dueDate}
+                  onChange={(e) => updateField("dueDate", e.target.value)}
+                  className="border-gray-200 shadow-sm"
+                  required={!isActivityMode}
+                />
+                <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* ========================================= */}
           {/* ข้อมูลโหมด ACTIVITY (กล่องสีเขียวตาม Design) */}
           {/* ========================================= */}
           {isActivityMode && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 bg-[#f4fcf7] p-5 sm:p-6 rounded-2xl border border-[#e6f5ed]">
+            <div className="bg-[#f4fcf7] p-5 sm:p-6 rounded-2xl border border-[#e6f5ed] space-y-5">
               
               {/* Row 1: Date, Start, End */}
-              <div className="grid grid-cols-[1.5fr_1fr_1fr] gap-3 sm:col-span-1 w-full">
-                <div className="space-y-1.5">
-                  <Label className="text-emerald-900 text-xs">วันที่ <span className="text-red-500">*</span></Label>
-                  <Input type="date" value={formData.date} onChange={(e) => updateField("date", e.target.value)} className="h-9 px-2 text-sm border-gray-200" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-emerald-900 text-xs">เริ่ม <span className="text-red-500">*</span></Label>
-                  <Input type="time" value={formData.startTime} onChange={(e) => updateField("startTime", e.target.value)} className="h-9 px-2 text-sm border-gray-200" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-emerald-900 text-xs">สิ้นสุด <span className="text-red-500">*</span></Label>
-                  <Input type="time" value={formData.endTime} onChange={(e) => updateField("endTime", e.target.value)} className="h-9 px-2 text-sm border-gray-200" />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:text-right shrink-0">
+                  วันและเวลา <span className="text-red-500">*</span>
+                </Label>
+                <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 min-w-0">
+                  <Input type="date" value={formData.date} onChange={(e) => updateField("date", e.target.value)} required className="h-9 px-2 text-sm border-emerald-200 focus-visible:ring-emerald-500 w-full sm:w-auto flex-1" />
+                  <span className="text-gray-400 hidden sm:inline">-</span>
+                  <div className="flex items-center gap-2 w-full sm:w-auto flex-1">
+                    <Input type="time" value={formData.startTime} onChange={(e) => updateField("startTime", e.target.value)} required className="h-9 px-2 text-sm border-emerald-200 focus-visible:ring-emerald-500 w-full" />
+                    <span className="text-gray-400">ถึง</span>
+                    <Input type="time" value={formData.endTime} onChange={(e) => updateField("endTime", e.target.value)} required className="h-9 px-2 text-sm border-emerald-200 focus-visible:ring-emerald-500 w-full" />
+                  </div>
                 </div>
               </div>
-              <div className="hidden sm:block"></div> {/* Spacer for right side of Row 1 */}
 
-              {/* Row 2: Interaction Type & Services */}
-              <div className="space-y-1.5">
-                <Label className="text-emerald-900 text-xs">ประเภทกิจกรรมการเข้าพบ <span className="text-red-500">*</span></Label>
-                <Combobox
-                  options={activityTypesList}
-                  value={formData.interactionType}
-                  onValueChange={(val: string) => updateField("interactionType", val)}
-                  placeholder="เลือกรูปแบบ..."
-                  className="h-9 border-gray-200"
-                />
+              {/* Row 2: Interaction Type */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:text-right shrink-0">
+                  รูปแบบการพบ <span className="text-red-500">*</span>
+                </Label>
+                <div className="flex-1 min-w-0">
+                  <Combobox
+                    options={activityTypesList}
+                    value={formData.interactionType}
+                    onValueChange={(val: string) => updateField("interactionType", val)}
+                    placeholder="เลือกรูปแบบ..."
+                    className="h-9 border-emerald-200"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label className="text-emerald-900 text-xs">หัวข้อบริการที่เกี่ยวข้อง</Label>
-                <Popover open={openService} onOpenChange={setOpenService}>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full flex items-center justify-between bg-white border-gray-200 hover:bg-gray-50 font-normal h-9 px-3 text-left">
-                      <span className={cn("flex-1 truncate text-left text-sm", formData.services.length === 0 ? "text-gray-400" : "text-gray-700")}>
-                        <div className="flex items-center">
-                          <Briefcase className="w-4 h-4 mr-2 opacity-40 shrink-0" />
-                          {formData.services.length === 0 ? "เลือกหัวข้อบริการ" : `${formData.services.length} บริการที่เลือก`}
-                        </div>
-                      </span>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-2 w-[280px]" align="start">
-                    <div className="max-h-[200px] overflow-y-auto space-y-1">
-                      {servicesList.map((service) => (
-                        <div 
-                          key={service.value} 
-                          className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md text-sm"
-                          onClick={() => {
-                            const isSelected = formData.services.includes(service.value);
-                            if (isSelected) {
-                              updateField("services", formData.services.filter(s => s !== service.value));
-                            } else {
-                              updateField("services", [...formData.services, service.value]);
-                            }
-                          }}
-                        >
-                          <Checkbox checked={formData.services.includes(service.value)} className="pointer-events-none rounded-[4px]" />
-                          <span className="text-gray-700">{service.label}</span>
-                        </div>
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:pt-2 sm:text-right shrink-0">
+                  หัวข้อบริการที่เกี่ยวข้อง
+                </Label>
+                <div className="flex-1 min-w-0 space-y-2">
+                  <Popover open={openService} onOpenChange={setOpenService}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full flex items-center justify-between bg-white border-emerald-200 hover:bg-emerald-50 font-normal h-9 px-3 text-left">
+                        <span className={cn("flex-1 truncate text-left text-sm", formData.services.length === 0 ? "text-gray-400" : "text-gray-700")}>
+                          <div className="flex items-center">
+                            <Briefcase className="w-4 h-4 mr-2 opacity-40 shrink-0" />
+                            {formData.services.length === 0 ? "เลือกหัวข้อบริการ" : `${formData.services.length} บริการที่เลือก`}
+                          </div>
+                        </span>
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-2 w-[280px]" align="start">
+                      <div className="max-h-[200px] overflow-y-auto space-y-1">
+                        {servicesList.map((service) => (
+                          <div 
+                            key={service.value} 
+                            className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md text-sm"
+                            onClick={() => {
+                              const isSelected = formData.services.includes(service.value);
+                              if (isSelected) {
+                                updateField("services", formData.services.filter(s => s !== service.value));
+                              } else {
+                                updateField("services", [...formData.services, service.value]);
+                              }
+                            }}
+                          >
+                            <Checkbox checked={formData.services.includes(service.value)} className="pointer-events-none rounded-[4px]" />
+                            <span className="text-gray-700">{service.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
+                  {/* Selected Services Tags */}
+                  {formData.services.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {formData.services.map((svc) => (
+                        <Badge key={svc} variant="outline" className="bg-[#ccfbf1] text-emerald-800 border-[#99f6e4] font-medium rounded-md px-2 py-0.5">
+                          {serviceNames[svc as keyof typeof serviceNames]}
+                          <button type="button" onClick={() => updateField("services", formData.services.filter(s => s !== svc))} className="ml-1 hover:text-red-500">
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
                       ))}
                     </div>
-                  </PopoverContent>
-                </Popover>
-                
-                {/* Selected Services Tags */}
-                {formData.services.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {formData.services.map((svc) => (
-                      <Badge key={svc} variant="outline" className="bg-[#ccfbf1] text-emerald-800 border-[#99f6e4] font-medium rounded-md px-2 py-0.5">
-                        {serviceNames[svc as keyof typeof serviceNames]}
-                        <button type="button" onClick={() => updateField("services", formData.services.filter(s => s !== svc))} className="ml-1 hover:text-red-500">
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
-              {/* Row 3: Location & Branch */}
-              <div className="space-y-1.5">
-                <Label className="text-emerald-900 text-xs">สถานที่ / ห้องประชุม</Label>
-                <Input value={formData.location} onChange={(e) => updateField("location", e.target.value)} placeholder="เช่น ห้องประชุม 1" className="h-9 border-gray-200" />
+              {/* Row 3: Location */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:text-right shrink-0">สถานที่ / ห้องประชุม</Label>
+                <div className="flex-1 min-w-0">
+                  <Input value={formData.location} onChange={(e) => updateField("location", e.target.value)} placeholder="เช่น ห้องประชุม 1" className="h-9 border-emerald-200" />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-emerald-900 text-xs">สาขา / ไซด์งาน</Label>
-                <Input value={formData.siteBranch} onChange={(e) => updateField("siteBranch", e.target.value)} placeholder="เช่น สำนักงานใหญ่" className="h-9 border-gray-200" />
+              
+              {/* Row 3.5: Site Branch */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:text-right shrink-0">สาขา / ไซด์งาน</Label>
+                <div className="flex-1 min-w-0">
+                  <Input value={formData.siteBranch} onChange={(e) => updateField("siteBranch", e.target.value)} placeholder="เช่น สำนักงานใหญ่" className="h-9 border-emerald-200" />
+                </div>
               </div>
 
-              {/* Row 4: Customer & Contacts */}
-              <div className="space-y-1.5">
-                <Label className="text-emerald-900 text-xs">ลูกค้า / ลีด ที่เกี่ยวข้อง</Label>
-                <Popover open={openCustomer} onOpenChange={setOpenCustomer}>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full flex items-center justify-between bg-white border-gray-200 hover:bg-gray-50 font-normal px-3 h-9 text-left">
-                      <span className={cn("flex-1 truncate text-left text-sm", !formData.customer && "text-gray-400")}>
-                        {formData.customer ? (
-                          customers.find((c) => c.id === formData.customer)?.name
-                        ) : (
-                          "เลือกหรือค้นหาลูกค้า..."
-                        )}
-                      </span>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-[300px]" align="start">
-                    <div className="p-2 border-b bg-white">
-                      <div className="flex items-center bg-gray-50 border border-gray-200 rounded-md px-2 h-9">
-                        <Search className="w-4 h-4 text-gray-400" />
-                        <input 
-                          placeholder="พิมพ์ชื่อบริษัท..." 
-                          value={customerSearch} 
-                          onChange={e => setCustomerSearch(e.target.value)} 
-                          className="w-full h-full bg-transparent focus:outline-none px-2 text-sm" 
-                        />
-                      </div>
-                    </div>
-                    <div className="max-h-[200px] overflow-y-auto p-1 bg-white">
-                      {filteredCustomers.length > 0 ? (
-                        filteredCustomers.map(c => (
-                          <div 
-                            key={c.id} 
-                            onClick={() => { updateField("customer", c.id); setOpenCustomer(false); }}
-                            className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md text-sm text-gray-700"
-                          >
-                            <span className="flex-1 truncate">{c.name}</span>
-                            {formData.customer === c.id && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="p-3 text-center">
-                          <p className="text-sm text-gray-500 mb-2">ไม่พบลูกค้า "{customerSearch}"</p>
-                          <Button type="button" variant="outline" size="sm" onClick={() => setShowCreateLead(true)} className="w-full">
-                            <UserPlus className="w-4 h-4 mr-2" /> เพิ่มลีดใหม่
-                          </Button>
+              {/* Row 4: Customer */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:text-right shrink-0">ลูกค้า / ลีด</Label>
+                <div className="flex-1 min-w-0">
+                  <Popover open={openCustomer} onOpenChange={setOpenCustomer}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full flex items-center justify-between bg-white border-emerald-200 hover:bg-emerald-50 font-normal px-3 h-9 text-left">
+                        <span className={cn("flex-1 truncate text-left text-sm", !formData.customer && "text-gray-400")}>
+                          {formData.customer ? (
+                            customers.find((c) => c.id === formData.customer)?.name
+                          ) : (
+                            "เลือกหรือค้นหาลูกค้า..."
+                          )}
+                        </span>
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[300px]" align="start">
+                      <div className="p-2 border-b bg-white">
+                        <div className="flex items-center bg-gray-50 border border-gray-200 rounded-md px-2 h-9">
+                          <Search className="w-4 h-4 text-gray-400" />
+                          <input 
+                            placeholder="พิมพ์ชื่อบริษัท..." 
+                            value={customerSearch} 
+                            onChange={e => setCustomerSearch(e.target.value)} 
+                            className="w-full h-full bg-transparent focus:outline-none px-2 text-sm" 
+                          />
                         </div>
-                      )}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                      </div>
+                      <div className="max-h-[200px] overflow-y-auto p-1 bg-white">
+                        {filteredCustomers.length > 0 ? (
+                          filteredCustomers.map(c => (
+                            <div 
+                              key={c.id} 
+                              onClick={() => { updateField("customer", c.id); setOpenCustomer(false); }}
+                              className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer rounded-md text-sm text-gray-700"
+                            >
+                              <span className="flex-1 truncate">{c.name}</span>
+                              {formData.customer === c.id && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-3 text-center">
+                            <p className="text-sm text-gray-500 mb-2">ไม่พบลูกค้า "{customerSearch}"</p>
+                            <Button type="button" variant="outline" size="sm" onClick={() => setShowCreateLead(true)} className="w-full">
+                              <UserPlus className="w-4 h-4 mr-2" /> เพิ่มลีดใหม่
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label className="text-emerald-900 text-xs">รายชื่อผู้ติดต่อฝั่งลูกค้า (พิมพ์ชื่อแล้วกด Enter)</Label>
-                <div className="flex flex-col gap-2">
+              {/* Contacts */}
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-4">
+                <Label className="text-emerald-900 font-medium text-sm sm:w-40 sm:pt-2 sm:text-right shrink-0">รายชื่อผู้ติดต่อ</Label>
+                <div className="flex-1 min-w-0 space-y-2">
                   <Input 
                     value={contactInput} 
                     onChange={(e) => setContactInput(e.target.value)} 
                     onKeyDown={handleAddContact} 
-                    placeholder="ระบุผู้ติดต่อ แล้วกด Enter..." 
-                    className="h-9 border-gray-200" 
+                    placeholder="พิมพ์ชื่อแล้วกด Enter..." 
+                    className="h-9 border-emerald-200" 
                   />
                   {formData.customerContacts.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {formData.customerContacts.map((name, idx) => (
-                        <span key={idx} className="inline-flex items-center bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md text-xs border border-gray-200">
+                        <span key={idx} className="inline-flex items-center bg-white text-gray-700 px-2.5 py-1 rounded-md text-xs border border-emerald-200 shadow-sm">
                           {name}
-                          <button type="button" onClick={() => updateField("customerContacts", formData.customerContacts.filter(c => c !== name))} className="ml-1 hover:text-red-500">
+                          <button type="button" onClick={() => updateField("customerContacts", formData.customerContacts.filter(c => c !== name))} className="ml-1.5 hover:text-red-500">
                             <X className="h-3 w-3" />
                           </button>
                         </span>
@@ -788,26 +733,26 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
           )}
 
           {/* Description (วาระการประชุม / รายละเอียดงาน) */}
-          <div className="space-y-2">
-            <Label htmlFor="description" className="text-gray-900">
-              {isActivityMode ? "วาระการประชุม / รายละเอียดงาน" : "รายละเอียดงาน"}
+          <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-4">
+            <Label htmlFor="description" className="text-gray-700 font-medium text-sm sm:w-40 sm:pt-2.5 sm:text-right shrink-0">
+              {isActivityMode ? "วาระ / รายละเอียด" : "รายละเอียดงาน"}
             </Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => updateField("description", e.target.value)}
-              placeholder="เพิ่มรายละเอียด..."
-              className="border-gray-200 focus:border-emerald-500 min-h-[100px] bg-white shadow-sm"
-              rows={4}
-            />
+            <div className="flex-1 min-w-0">
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => updateField("description", e.target.value)}
+                placeholder="เพิ่มรายละเอียด..."
+                className="border-gray-200 focus:border-emerald-500 min-h-[100px] bg-white shadow-sm"
+                rows={4}
+              />
+            </div>
           </div>
 
-          {/* === ส่วนของการเกี่ยวข้องกับ & Visibility === */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-            {/* Linked Entities (เกี่ยวข้องกับ) */}
-            <div className="space-y-2">
-              <Label className="text-gray-900">เกี่ยวข้องกับ</Label>
+          {/* Linked Entities (เกี่ยวข้องกับ) */}
+          <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-4">
+            <Label className="text-gray-700 font-medium text-sm sm:w-40 sm:pt-2.5 sm:text-right shrink-0">เกี่ยวข้องกับ</Label>
+            <div className="flex-1 min-w-0 space-y-3">
               <Popover open={linkDropdownOpen} onOpenChange={setLinkDropdownOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -815,12 +760,12 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                     className="w-full flex items-center justify-between h-10 border-gray-200 hover:bg-gray-50 font-normal bg-white shadow-sm text-left px-3"
                   >
                     <span className={cn("flex-1 truncate text-left text-sm", linkedEntities.length === 0 ? "text-gray-400" : "text-gray-900")}>
-                      {linkedEntities.length === 0 ? "เลือกลายการที่เกี่ยวข้อง" : `${linkedEntities.length} รายการที่เชื่อมโยง`}
+                      {linkedEntities.length === 0 ? "เลือกรายการที่เกี่ยวข้อง" : `${linkedEntities.length} รายการที่เชื่อมโยง`}
                     </span>
                     <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0 bg-white shadow-xl border border-gray-200" align="start" style={{ width: '420px' }}>
+                <PopoverContent className="p-0 bg-white shadow-xl border border-gray-200" align="start" style={{ width: '420px', maxWidth: '100vw' }}>
                   <div className="p-3 space-y-3">
                     <div className="flex gap-2 flex-wrap">
                       {ENTITY_TYPES.map((type) => (
@@ -878,7 +823,7 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
 
               {/* การแสดงรายการเชื่อมโยงที่เลือกไว้ */}
               {linkedEntities.length > 0 && (
-                <div className="mt-3 space-y-2">
+                <div className="space-y-2">
                   {linkedEntities.map((entity, index) => (
                     <div key={`${entity.type}-${entity.id}-${index}`} className="flex items-center justify-between bg-gray-50 rounded-lg p-2 border border-gray-200">
                       <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -896,62 +841,64 @@ export function QuickCreateTaskDialog({ isOpen, onClose }: QuickCreateTaskDialog
                 </div>
               )}
             </div>
+          </div>
 
-            {/* Visibility / การแชร์งาน */}
-            <div className="space-y-2">
-              <Label htmlFor="visibility" className="text-gray-900">
-                การแชร์งาน (Visibility)
-              </Label>
+          {/* Visibility / การแชร์งาน */}
+          <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-4">
+            <Label htmlFor="visibility" className="text-gray-700 font-medium text-sm sm:w-40 sm:pt-2.5 sm:text-right shrink-0">
+              การแชร์งาน
+            </Label>
+            <div className="flex-1 min-w-0 space-y-3">
               <Combobox
                 options={[
-                  { value: "private", label: "🔒 Private - เฉพาะตัวเองเห็นได้" },
-                  { value: "public", label: "👥 Public - เลือกคนที่ต้องการแชร์" },
-                  { value: "organization", label: "🌐 Public by Organization - ทุกคนเห็นได้" },
+                  { value: "private", label: "🔒 Private - เฉพาะตัวเอง" },
+                  { value: "public", label: "👥 Public - เลือกผู้แชร์" },
+                  { value: "organization", label: "🌐 Organization - ทุกคน" },
                 ]}
                 value={formData.visibility}
                 onValueChange={(value: string) => updateField("visibility", value)}
                 className="border-gray-200 shadow-sm"
               />
-            </div>
-            
-            {/* Share with specifics (Spans full width if shown) */}
-            {formData.visibility === "public" && (
-              <div className="mt-1 p-4 bg-gray-50 rounded-lg border border-gray-200 sm:col-span-2">
-                <Label className="text-xs font-semibold text-gray-700 mb-3 block">เลือกคนที่ต้องการแชร์ (Select people to share with)</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {teamMembers.map((person) => (
-                    <div key={person.id} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`share-${person.id}`}
-                        checked={formData.sharedWith.includes(person.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            updateField("sharedWith", [...formData.sharedWith, person.id]);
-                          } else {
-                            updateField("sharedWith", formData.sharedWith.filter((id) => id !== person.id));
-                          }
-                        }}
-                      />
-                      <label htmlFor={`share-${person.id}`} className="text-sm text-gray-700 cursor-pointer truncate">
-                        {person.name}
-                      </label>
-                    </div>
-                  ))}
+              {/* Share with specifics */}
+              {formData.visibility === "public" && (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 animate-in fade-in slide-in-from-top-1">
+                  <Label className="text-xs font-semibold text-gray-700 mb-3 block">เลือกคนที่ต้องการแชร์</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {teamMembers.map((person) => (
+                      <div key={person.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`share-${person.id}`}
+                          checked={formData.sharedWith.includes(person.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              updateField("sharedWith", [...formData.sharedWith, person.id]);
+                            } else {
+                              updateField("sharedWith", formData.sharedWith.filter((id) => id !== person.id));
+                            }
+                          }}
+                        />
+                        <label htmlFor={`share-${person.id}`} className="text-sm text-gray-700 cursor-pointer truncate">
+                          {person.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-8 mt-4 border-t border-gray-100">
-            <Button type="button" variant="outline" onClick={handleCancel} className="w-full sm:w-auto border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 h-10 px-6 rounded-lg">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-6 pb-2">
+            <Button type="button" variant="outline" onClick={handleCancel} className="w-full sm:w-auto border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 h-10 px-6 rounded-[14px]">
               ยกเลิก
             </Button>
-            <Button type="submit" className="w-full sm:w-auto bg-[#059669] hover:bg-[#047857] text-white font-semibold shadow-sm h-10 px-6 rounded-lg">
+            <Button type="submit" className="w-full sm:w-auto bg-[#705ADD] hover:bg-[#5B21B6] text-white font-semibold shadow-[0px_10px_15px_-3px_rgba(112,90,221,0.2)] h-10 px-6 rounded-[14px]">
               {isActivityMode ? "สร้าง To-Do และบันทึกกิจกรรม" : "บันทึกข้อมูล"}
             </Button>
           </div>
         </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

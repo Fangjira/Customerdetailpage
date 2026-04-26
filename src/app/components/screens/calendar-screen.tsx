@@ -34,7 +34,8 @@ import { QuickActionsMenu } from "../modals/quick-actions-menu";
 import { QuickVisitModal } from "../modals/quick-visit-modal";
 import { useRoleTheme } from "../../hooks/use-role-theme";
 import { useRole } from "../../contexts/role-context";
-import { useModuleData } from "../../contexts/module-data-context";
+import { useModuleStore } from "../../store/module-store";
+import { toast } from "sonner";
 
 type DisplayMode = "month" | "week" | "day" | "list";
 
@@ -96,7 +97,6 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
   const [monthViewType, setMonthViewType] = useState<"grid" | "list">("grid");
   const [showQuickVisitModal, setShowQuickVisitModal] = useState(false);
-  const currentUserAliases = useMemo(() => new Set(["You", "สมชาย วงศ์สกุล", "somchai-wongsakul"]), []);
 
   // Thai Holidays and Important Days
   const holidays: { [key: string]: { name: string; nameEn: string; type: 'holiday' | 'important' } } = {
@@ -129,7 +129,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     return holidays[dateStr];
   };
 
-  const { taskActivities } = useModuleData();
+  const storeTasks = useModuleStore((state) => state.modules.tasks || []);
 
   // Combine Mock activities data with store tasks
   const activities = useMemo(() => {
@@ -662,7 +662,9 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     ];
 
     // Map store tasks that are activities
-    const mappedTaskActivities = taskActivities.map(t => {
+    const taskActivities = storeTasks
+      .filter(t => t.isActivity)
+      .map(t => {
         let type: ActivityType = "sales_meeting";
         if (t.activityType?.includes("เข้าพบลูกค้า")) type = "customer_visit";
         else if (t.activityType?.includes("นัดหมายลูกค้า")) type = "sales_meeting";
@@ -685,8 +687,8 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
         };
       });
 
-    return [...mappedTaskActivities, ...mockActivities];
-  }, [taskActivities]);
+    return [...taskActivities, ...mockActivities];
+  }, [storeTasks]);
 
   useEffect(() => {
     if (shouldOpenActivityModal) {
@@ -794,40 +796,22 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     });
   };
 
-  const filteredActivities = useMemo(() => {
-    const searchLower = searchTerm.trim().toLowerCase();
-
+  const getFilteredActivities = () => {
     return activities.filter((activity) => {
-      if (!isManager) {
-        const isAssignedToMe = currentUserAliases.has(activity.assignedTo);
-        const isAttendee = activity.attendees?.some((attendee) => currentUserAliases.has(attendee));
-        if (!isAssignedToMe && !isAttendee) return false;
+      if (!isManager && activity.assignedTo !== "You") return false;
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          activity.title.toLowerCase().includes(searchLower) ||
+          activity.customer?.toLowerCase().includes(searchLower) ||
+          activity.location?.toLowerCase().includes(searchLower)
+        );
       }
-
-      if (!searchLower) return true;
-
-      return (
-        activity.title.toLowerCase().includes(searchLower) ||
-        activity.customer?.toLowerCase().includes(searchLower) ||
-        activity.location?.toLowerCase().includes(searchLower)
-      );
+      return true;
     });
-  }, [activities, currentUserAliases, isManager, searchTerm]);
+  };
 
-  const activitiesByDate = useMemo(() => {
-    const grouped = new Map<string, Activity[]>();
-    filteredActivities.forEach((activity) => {
-      const activityDate = new Date(activity.startTime);
-      const dateKey = `${activityDate.getFullYear()}-${String(activityDate.getMonth() + 1).padStart(2, "0")}-${String(activityDate.getDate()).padStart(2, "0")}`;
-      if (!grouped.has(dateKey)) grouped.set(dateKey, []);
-      grouped.get(dateKey)!.push(activity);
-    });
-
-    grouped.forEach((dayActivities) => {
-      dayActivities.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    });
-    return grouped;
-  }, [filteredActivities]);
+  const filteredActivities = getFilteredActivities();
 
   // Get days in current month for Month View
   const getDaysInMonth = () => {
@@ -871,13 +855,21 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
 
   // Get activities for a specific date
   const getActivitiesForDate = (date: Date) => {
-    const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-    return activitiesByDate.get(dateKey) ?? [];
+    return filteredActivities.filter(activity => {
+      const activityDate = new Date(activity.startTime);
+      return (
+        activityDate.getDate() === date.getDate() &&
+        activityDate.getMonth() === date.getMonth() &&
+        activityDate.getFullYear() === date.getFullYear()
+      );
+    });
   };
 
   // Get activities for current day
   const getActivitiesForCurrentDay = () => {
-    return getActivitiesForDate(currentDate);
+    return getActivitiesForDate(currentDate).sort((a, b) => 
+      a.startTime.getTime() - b.startTime.getTime()
+    );
   };
 
   const isToday = (date: Date) => {
@@ -1078,46 +1070,30 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
 
   // Month List View
   const renderMonthListView = () => {
-    // Get all days in current month
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
     
-    // Create array of all dates in month
-    const allDates: Date[] = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-      allDates.push(new Date(year, month, day));
-    }
-    
-    // Group activities by date
+    // Group activities by date (only planned activities for the current month)
     const groupedActivities: { [key: string]: { date: Date; activities: Activity[] } } = {};
     
-    // Initialize all dates
-    allDates.forEach(date => {
-      const dateKey = date.toLocaleDateString(i18n.language === "th" ? "th-TH" : "en-US", {
+    const plannedActivitiesInMonth = filteredActivities.filter(activity => 
+      activity.status === 'planned' &&
+      activity.startTime.getMonth() === month && 
+      activity.startTime.getFullYear() === year
+    );
+
+    plannedActivitiesInMonth.forEach(activity => {
+      const dateKey = activity.startTime.toLocaleDateString(i18n.language === "th" ? "th-TH" : "en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
         weekday: "short"
       });
-      groupedActivities[dateKey] = { date, activities: [] };
-    });
-    
-    // Add activities to their dates
-    filteredActivities.forEach(activity => {
-      if (activity.startTime.getMonth() === month && activity.startTime.getFullYear() === year) {
-        const dateKey = activity.startTime.toLocaleDateString(i18n.language === "th" ? "th-TH" : "en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          weekday: "short"
-        });
-        
-        if (groupedActivities[dateKey]) {
-          groupedActivities[dateKey].activities.push(activity);
-        }
+      
+      if (!groupedActivities[dateKey]) {
+        groupedActivities[dateKey] = { date: new Date(activity.startTime), activities: [] };
       }
+      groupedActivities[dateKey].activities.push(activity);
     });
 
     // Sort activities within each group
@@ -1126,10 +1102,26 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
         a.startTime.getTime() - b.startTime.getTime()
       );
     });
+    
+    // Sort dates
+    const sortedDateKeys = Object.keys(groupedActivities).sort((a, b) => {
+      return groupedActivities[a].date.getTime() - groupedActivities[b].date.getTime();
+    });
+
+    if (sortedDateKeys.length === 0) {
+      return (
+        <Card className="border-0 shadow-sm mt-4">
+          <CardContent className="p-12 text-center">
+            <CalendarIcon className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+            <p className="text-gray-500">ไม่มีกิจกรรมที่วางแผนไว้ในเดือนนี้ (No planned activities this month)</p>
+          </CardContent>
+        </Card>
+      );
+    }
 
     return (
       <div className="space-y-4">
-        {Object.keys(groupedActivities).map(dateKey => {
+        {sortedDateKeys.map(dateKey => {
           const { date, activities: activitiesForDate } = groupedActivities[dateKey];
           const isCurrentDay = isToday(date);
           const holiday = getHoliday(date);
@@ -1279,7 +1271,9 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     // Group activities by date
     const groupedActivities: { [key: string]: Activity[] } = {};
     
-    filteredActivities.forEach(activity => {
+    const listActivities = filteredActivities.filter(activity => activity.status === 'planned');
+    
+    listActivities.forEach(activity => {
       const dateKey = activity.startTime.toLocaleDateString(i18n.language === "th" ? "th-TH" : "en-US", {
         year: "numeric",
         month: "short",
@@ -1763,6 +1757,15 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
       <AddActivityModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
+        onSave={(data) => {
+          const upsertRecord = useModuleStore.getState().upsertRecord;
+          upsertRecord('tasks', {
+             ...data,
+             isActivity: true
+          });
+          setShowCreateModal(false);
+          toast.success(t("common.saved_successfully") || "บันทึกข้อมูลเรียบร้อย");
+        }}
       />
 
       {selectedActivity && (
