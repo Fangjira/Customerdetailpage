@@ -6,13 +6,13 @@ import {
 } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
-import {
-  Clock,
-  User,
-  Edit,
-  Plus,
-  Trash2,
-  CheckCircle,
+import { 
+  Clock, 
+  User, 
+  Edit, 
+  Plus, 
+  Trash2, 
+  CheckCircle, 
   XCircle,
   Mail,
   AlertCircle,
@@ -21,7 +21,18 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { HistoryEntry } from "@/types/crm";
+
+export interface HistoryEntry {
+  id: string;
+  action: "created" | "updated" | "deleted" | "approved" | "rejected" | "sent" | "status_changed";
+  entity?: string;
+  field?: string;
+  oldValue?: string;
+  newValue?: string;
+  user: string;
+  timestamp: string;
+  description?: string;
+}
 
 interface HistoryMenuProps {
   entries: HistoryEntry[];

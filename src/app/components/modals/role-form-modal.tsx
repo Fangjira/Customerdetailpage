@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -179,10 +178,7 @@ export function RoleFormModal({ open, onClose, onSave, role }: RoleFormModalProp
             <Shield className="h-5 w-5" style={{ color: roleTheme.primary }} />
             {role ? "Edit Role" : "Create New Role"}
           </DialogTitle>
-        
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}

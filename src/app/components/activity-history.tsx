@@ -3,13 +3,13 @@ import { Badge } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import {
-  Clock,
-  User,
-  Edit,
-  Plus,
-  Trash2,
-  CheckCircle,
+import { 
+  Clock, 
+  User, 
+  Edit, 
+  Plus, 
+  Trash2, 
+  CheckCircle, 
   XCircle,
   FileText,
   DollarSign,
@@ -26,7 +26,18 @@ import {
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useRoleTheme } from "../hooks/use-role-theme";
-import { HistoryEntry } from "@/types/crm";
+
+export interface HistoryEntry {
+  id: string;
+  action: "created" | "updated" | "deleted" | "approved" | "rejected" | "sent" | "status_changed";
+  entity?: string; // e.g., "Deal", "Customer", "Quotation"
+  field?: string; // field that was changed
+  oldValue?: string;
+  newValue?: string;
+  user: string;
+  timestamp: string;
+  description?: string;
+}
 
 interface ActivityHistoryProps {
   entries: HistoryEntry[];

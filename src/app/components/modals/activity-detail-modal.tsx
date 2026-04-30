@@ -141,7 +141,7 @@ type activity_types =
   | "trade_show"
   | "workshop_seminar";
 
-type ActivityStatus = "planned" | "completed" | "cancelled";
+type ActivityStatus = "Planned" | "completed" | "cancelled";
 
 type SubcategoryType =
   | "formal_face_to_face"
@@ -202,7 +202,7 @@ export function ActivityDetailModal({
   const [showQuickVisit, setShowQuickVisit] = useState(false);
 
   const [currentStatus, setCurrentStatus] =
-    useState<ActivityStatus>("planned");
+    useState<ActivityStatus>("Planned");
   const [statusBadgeOpen, setStatusBadgeOpen] = useState(false);
 
   const [shortNote, setShortNote] = useState("");
@@ -462,7 +462,7 @@ export function ActivityDetailModal({
   const getStatusBadge = () => {
     const badgeClass = (() => {
       switch (currentStatus) {
-        case "planned":
+        case "Planned":
           return "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100";
         case "completed":
           return "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100";
@@ -490,16 +490,17 @@ export function ActivityDetailModal({
             <div className="flex items-center gap-1.5 shrink-0">
               <div
                 className={cn(
-                  "h-1.5 w-1.5 rounded-full shrink-0",
-                  currentStatus === "planned"
-                    ? "bg-blue-500"
-                    : currentStatus === "completed"
-                      ? "bg-emerald-500"
-                      : "bg-red-500",
-                )}
+                "h-1.5 w-1.5 rounded-full shrink-0",
+                {
+                  "bg-blue-500": currentStatus === "Planned",
+                  "bg-emerald-500": currentStatus === "completed",
+                  "bg-red-500": currentStatus === "cancelled",
+                  "bg-gray-500": !["Planned", "completed", "cancelled"].includes(currentStatus)
+                }
+              )}
               />
               <span>
-                {t(`calendar.status_${currentStatus}`)}
+                {t(`status.${currentStatus}`)}
               </span>
             </div>
           </Button>
@@ -513,9 +514,9 @@ export function ActivityDetailModal({
             <CommandList>
               <CommandGroup>
                 <CommandItem
-                  value="planned"
+                  value="Planned"
                   onSelect={() => {
-                    setCurrentStatus("planned");
+                    setCurrentStatus("Planned");
                     setStatusBadgeOpen(false);
                   }}
                   className="cursor-pointer py-2 px-2 rounded-sm hover:bg-blue-50"
@@ -523,12 +524,12 @@ export function ActivityDetailModal({
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      currentStatus === "planned"
+                      currentStatus === "Planned"
                         ? "opacity-100"
                         : "opacity-0",
                     )}
                   />
-                  {t("calendar.status_planned") || "วางแผนแล้ว"}
+                  {t("calendar.status_Planned") || "วางแผนแล้ว"}
                 </CommandItem>
 
                 <CommandItem
@@ -978,9 +979,11 @@ export function ActivityDetailModal({
                     className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6"
                   >
                     <Check className="h-4 w-4 mr-2" />{" "}
-                    {t("calendar.mark_complete")}
+                    {t("calendar.status_completed") ||
+                    "เสร็จสมบูรณ์"}
                   </Button>
                 )}
+                
                 {currentStatus !== "completed" && (
                   <Button
                     onClick={handleCheckIn}
@@ -1615,7 +1618,7 @@ export function ActivityDetailModal({
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-[#705add] hover:bg-[#5b21b6] text-white rounded-lg"
+                  className="bg-[#705add] hover:bg-red-50 text-white rounded-lg"
                 >
                   <Save className="h-4 w-4 mr-2" />{" "}
                   {t("common.save")}

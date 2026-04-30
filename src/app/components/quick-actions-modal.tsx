@@ -1,4 +1,4 @@
-import { X, ClipboardList, TrendingUp, Users, MapPinCheck, UserPlus, LayoutList, Telescope } from "lucide-react";
+import { X, ClipboardList, TrendingUp, Users, MapPinCheck, UserPlus , layoutlist ,telescope } from "lucide-react";
 import { useRoleTheme } from "../hooks/use-role-theme";
 
 interface QuickActionsModalProps {
@@ -62,7 +62,7 @@ export function QuickActionsModal({
       id: "Tasks",
       label: "Quick Tasks",
       labelTh: "สร้าง TO-DO",
-      icon: LayoutList,
+      icon: layoutlist,
       gradient: `linear-gradient(135deg, ${roleTheme.gradientFrom}, ${roleTheme.gradientTo})`,
       onClick: () => {
         onNavigate?.("/tasks/create");
@@ -73,7 +73,7 @@ export function QuickActionsModal({
       id: "Acitivity_visit",
       label: "Quick Acitivity_visit",
       labelTh: "สร้างกิจกรรม",
-      icon: Telescope,
+      icon: telescope,
       gradient: "linear-gradient(135deg, #f59e0b, #d97706)",
       onClick: () => {
         onNavigate?.("/calendar/add");
@@ -102,7 +102,7 @@ export function QuickActionsModal({
       />
 
       {/* Modal */}
-      <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl w-[90%] max-w-md animate-slide-up">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl animate-slide-up">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>

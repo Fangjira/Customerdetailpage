@@ -339,3 +339,7 @@
     opacity: 1;
   }
 }
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}

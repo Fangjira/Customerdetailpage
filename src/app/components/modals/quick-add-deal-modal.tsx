@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -498,10 +497,7 @@ export function QuickAddDealModal({ isOpen, onClose, onSave }: QuickAddDealModal
         <DialogContent className="max-w-3xl max-h-[96vh] md:max-h-[96vh] h-full md:h-auto w-full md:w-auto p-0 gap-0">
           <DialogHeader className="sr-only">
             <DialogTitle>สร้างดีลใหม่</DialogTitle>
-          
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+          </DialogHeader>
           
           {/* Header with Progress */}
           <div className="bg-gradient-to-r from-[#7BC9A6] to-[#6AB896] px-4 md:px-6 py-3 md:py-2.5 text-white flex-shrink-0">

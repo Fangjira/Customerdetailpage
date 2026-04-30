@@ -4,7 +4,13 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/dialog";
 
 interface AddTagInterestDialogProps {
   isOpen: boolean;
@@ -95,10 +101,7 @@ export function AddTagInterestDialog({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">จัดการ Tags & Interest</DialogTitle>
-        
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+        </DialogHeader>
 
         <div className="space-y-6">
           {/* Tags Section */}

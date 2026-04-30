@@ -243,29 +243,12 @@ export const extendedMasterData = {
       description: { en: "Sales team management", th: "จัดการทีมขาย" }
     },
     { 
-      value: "sales_rep", 
-      label: { en: "Sales Representative", th: "พนักงานขาย" },
+      value: "sales_support", 
+      label: { en: "Sales support", th: "พนักงานขาย" },
       permissions: ["view_own", "edit_own", "create_lead", "create_deal", "create_quote"],
       description: { en: "Sales activities", th: "กิจกรรมการขาย" }
     },
-    { 
-      value: "operations_manager", 
-      label: { en: "Operations Manager", th: "ผู้จัดการฝ่ายปฏิบัติการ" },
-      permissions: ["view_all_operations", "edit_operations", "manage_documents", "manage_contracts"],
-      description: { en: "Operations management", th: "จัดการปฏิบัติการ" }
-    },
-    { 
-      value: "account_manager", 
-      label: { en: "Account Manager", th: "ผู้จัดการบัญชีลูกค้า" },
-      permissions: ["view_assigned_accounts", "edit_assigned_accounts", "create_activities"],
-      description: { en: "Account management", th: "จัดการบัญชีลูกค้า" }
-    },
-    { 
-      value: "finance", 
-      label: { en: "Finance", th: "ฝ่ายการเงิน" },
-      permissions: ["view_all_financial", "manage_invoices", "manage_payments", "view_reports"],
-      description: { en: "Financial management", th: "จัดการการเงิน" }
-    },
+    
     { 
       value: "viewer", 
       label: { en: "Viewer", th: "ผู้ดู" },

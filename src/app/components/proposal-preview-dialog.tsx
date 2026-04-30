@@ -1,5 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import { Button } from "./ui/button";
 import { X, Download, Send, ChevronLeft, FileText, Building2, DollarSign } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
@@ -60,10 +65,7 @@ export function ProposalPreviewDialog({
       <DialogContent className="max-w-[95vw] h-[95vh] p-0 gap-0">
         <DialogHeader className="sr-only">
           <DialogTitle>Proposal Preview</DialogTitle>
-        
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+        </DialogHeader>
         
         {/* Mobile Header */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-4 flex-shrink-0">

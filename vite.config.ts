@@ -28,16 +28,6 @@ export default defineConfig({
     alias: {
       // Alias @ to the src directory
       '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './src/app/components'),
-      '@/contexts': path.resolve(__dirname, './src/app/contexts'),
-      '@/hooks': path.resolve(__dirname, './src/app/hooks'),
-      '@/utils': path.resolve(__dirname, './src/utils'),
-      '@/app-utils': path.resolve(__dirname, './src/app/utils'),
-      '@/data': path.resolve(__dirname, './src/data'),
-      '@/types': path.resolve(__dirname, './src/types'),
-      '@/constants': path.resolve(__dirname, './src/app/constants'),
-      '@/store': path.resolve(__dirname, './src/app/store'),
-      '@/i18n': path.resolve(__dirname, './src/i18n'),
     },
   },
 })

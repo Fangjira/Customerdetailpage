@@ -197,11 +197,11 @@ export interface QuotationFormData {
   
   // International Freight - Rate Tables
   airFreightExportRateData?: string; // JSON stringified AirFreightRateTableData
-  airFreightImportRateData?: string; // JSON stringified RateTableData for AIR FREIGHT RATE (IMPORT)
-  seaFreightExportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (EXPORT)
-  seaFreightImportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (IMPORT)
+  airFreightImportRateData?: string; // JSON stringified AirFreightRateTableData (optional)
+  seaFreightExportRateData?: string; // JSON stringified AirFreightRateTableData
+  seaFreightImportRateData?: string; // JSON stringified AirFreightRateTableData (optional)
   freightRateRemarks?: string; // Combined remarks for rate section
-
+  
   // International Freight SCOPE OF WORK - New Fields
   internationalServices?: string[]; // Array of selected services
   internationalWarehouseSite?: string;
@@ -217,6 +217,9 @@ export interface QuotationFormData {
   internationalSeaFreightIncoterm?: string;
   internationalCustomServices?: { name: string; details: string; }[]; // Dynamic custom services
   internationalRateData?: string; // JSON stringified RateTableData for AIR FREIGHT RATE (EXPORT)
+  airFreightImportRateData?: string; // JSON stringified RateTableData for AIR FREIGHT RATE (IMPORT)
+  seaFreightExportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (EXPORT)
+  seaFreightImportRateData?: string; // JSON stringified RateTableData for SEA FREIGHT RATE (IMPORT)
   internationalCustomsRateData?: string; // JSON stringified RateTableData for CUSTOMS RATE
   internationalLicenseRateData?: string; // JSON stringified RateTableData for LICENSE RATE
   internationalTermsAndConditions?: string; // Terms & Conditions for International Freight
@@ -1664,7 +1667,8 @@ export function CreateQuotationFormModal({
   if (!isOpen) return null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center gap-3">
@@ -1948,11 +1952,11 @@ export function CreateQuotationFormModal({
                       
                       {showCompanySuggestions && filteredCompanies.length > 0 && (
                         <>
-                          <div
-                            className="fixed inset-0 z-10"
+                          <div 
+                            className="fixed inset-0 z-10" 
                             onClick={() => setShowCompanySuggestions(false)}
                           />
-
+                          
                           <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-20 max-h-64 overflow-y-auto">
                             {filteredCompanies.map((customer) => (
                               <button
@@ -2135,5 +2139,6 @@ export function CreateQuotationFormModal({
           </div>
         </div>
       </div>
+    </div>
   );
 }

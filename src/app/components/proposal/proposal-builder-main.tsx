@@ -53,7 +53,7 @@ export function ProposalBuilderMain({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
+      <DialogContent 
         className="max-w-4xl w-full max-h-[90vh] overflow-hidden p-0"
         onPointerDownOutside={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
@@ -66,7 +66,7 @@ export function ProposalBuilderMain({
         <DialogTitle className="sr-only">
           {selectedTemplate ? "กรอกข้อมูลข้อเสนอทางธุรกิจ" : "เลือกแบบฟอร์มข้อเสนอ"}
         </DialogTitle>
-
+        
         <ProposalCreatorScreen
           templateType={selectedTemplate}
           onBack={handleClose}

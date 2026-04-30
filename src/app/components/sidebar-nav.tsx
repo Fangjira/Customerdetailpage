@@ -44,7 +44,7 @@ import { useTranslation } from "react-i18next";
 import { useRole, UserRole } from "../contexts/role-context";
 import { useState, useEffect } from "react";
 import { useRoleTheme, getRoleLabel } from "../hooks/use-role-theme";
-import { useLanguage } from "../contexts/language-context";
+import { useLanguage } from "../../contexts/language-context";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 
 interface NavItem {
@@ -116,6 +116,12 @@ const mainNavItems: NavItem[] = [
     roles: ["Sales Support", "Sales Manager" , "Admin" ],
     submenu: [
       {
+        translationKey: "nav.leads_list",
+        iconType: "Sparkles",
+        href: "/leads",
+        roles: ["Sales Support", "Sales Manager" , "Admin"],
+      },
+      {
         translationKey: "nav.customers_list",
         iconType: "Building2",
         href: "/customers",
@@ -125,12 +131,6 @@ const mainNavItems: NavItem[] = [
         translationKey: "nav.my_customers",
         iconType: "User",
         href: "/customers/my",
-        roles: ["Sales Support", "Sales Manager" , "Admin"],
-      },
-      {
-        translationKey: "nav.leads_list",
-        iconType: "Sparkles",
-        href: "/leads",
         roles: ["Sales Support", "Sales Manager" , "Admin"],
       },
     ],
@@ -534,7 +534,7 @@ export function SidebarNav({ currentPath = "/tasks", onNavigate }: SidebarNavPro
           );
         })}
       </nav>
-
+      
       {/* User Profile Section */}
       <div 
         className="border-t-2 p-4"
@@ -543,38 +543,8 @@ export function SidebarNav({ currentPath = "/tasks", onNavigate }: SidebarNavPro
           backgroundColor: roleTheme.lightest 
         }}
       >
-        <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 flex-shrink-0 shadow-md">
-            <AvatarFallback 
-              className="text-white text-base font-bold"
-              style={{
-                background: `linear-gradient(to bottom right, ${roleTheme.gradientFrom}, ${roleTheme.gradientTo})`
-              }}
-            >
-              {getInitials("Tom Cook")}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-[15px] text-[#1a1a2e] truncate font-semibold">Tom Cook</p>
-            <p className="text-xs truncate font-medium" style={{ color: roleTheme.textColor }}>
-              {getRoleLabel(role)}
-            </p>
-          </div>
-          <button
-            onClick={handleSettingsClick}
-            className="flex-shrink-0 p-2 rounded-xl transition-all duration-200"
-            style={{ color: roleTheme.primary }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = roleTheme.lighter;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-            aria-label={t("nav.settings")}
-          >
-            <Settings className="h-5 w-5" />
-          </button>
-        </div>
+        
+        
       </div>
     </aside>
   );

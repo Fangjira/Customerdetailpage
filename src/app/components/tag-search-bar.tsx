@@ -136,7 +136,7 @@ export function TagSearchBar({
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
             placeholder={selectedTags.length === 0 ? placeholder : ''}
-            className="flex-1 min-w-[120px] outline-none bg-transparent text-sm"
+            className="flex-1 min-w-[100px] outline-none bg-transparent text-sm"
           />
         </div>
 
@@ -152,7 +152,9 @@ export function TagSearchBar({
           >
             <X className="h-4 w-4 text-gray-400" />
           </button>
+
         )}
+        
       </div>
 
       {/* Tag Suggestions Dropdown */}

@@ -38,7 +38,8 @@ export function FloatingAddContactModal({
   if (!show) return null;
 
   return (
-    <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <button
@@ -198,5 +199,6 @@ export function FloatingAddContactModal({
           </div>
         </div>
       </div>
+    </div>
   );
 }

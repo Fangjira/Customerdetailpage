@@ -18,7 +18,12 @@ import {
   CheckCircle2,
   Briefcase,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -86,7 +91,12 @@ const mockLeads: Lead[] = [
     estimatedValue: "$850,000",
     stage: "contact",
     priority: "High",
-    services: { warehouse: true, transport: true, freightAir: true, customs: true },
+    services: {
+      warehouse: true,
+      transport: true,
+      freightAir: true,
+      customs: true,
+    },
     tags: ["VIP", "Hot Lead"],
   },
   {
@@ -101,7 +111,12 @@ const mockLeads: Lead[] = [
     estimatedValue: "$1,200,000",
     stage: "needs_analysis",
     priority: "High",
-    services: { freightSea: true, crossBorder: true, customs: true, license: true },
+    services: {
+      freightSea: true,
+      crossBorder: true,
+      customs: true,
+      license: true,
+    },
     tags: ["KA"],
   },
   {
@@ -116,7 +131,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$650,000",
     stage: "contact",
     priority: "Medium",
-    services: { warehouse: true, transport: true, license: true },
+    services: {
+      warehouse: true,
+      transport: true,
+      license: true,
+    },
     tags: [],
   },
   {
@@ -131,7 +150,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$420,000",
     stage: "lead",
     priority: "Medium",
-    services: { freightSea: true, customs: true, warehouse: true },
+    services: {
+      freightSea: true,
+      customs: true,
+      warehouse: true,
+    },
     tags: [],
   },
   {
@@ -146,7 +169,12 @@ const mockLeads: Lead[] = [
     estimatedValue: "$980,000",
     stage: "needs_analysis",
     priority: "High",
-    services: { warehouse: true, crossBorder: true, freightSea: true, transport: true },
+    services: {
+      warehouse: true,
+      crossBorder: true,
+      freightSea: true,
+      transport: true,
+    },
     tags: ["Hot Lead"],
   },
   {
@@ -161,7 +189,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$310,000",
     stage: "lead",
     priority: "Low",
-    services: { freightAir: true, customs: true, transport: true },
+    services: {
+      freightAir: true,
+      customs: true,
+      transport: true,
+    },
     tags: [],
   },
   {
@@ -176,7 +208,13 @@ const mockLeads: Lead[] = [
     estimatedValue: "$1,500,000",
     stage: "contact",
     priority: "High",
-    services: { warehouse: true, freightAir: true, crossBorder: true, customs: true, other: true },
+    services: {
+      warehouse: true,
+      freightAir: true,
+      crossBorder: true,
+      customs: true,
+      other: true,
+    },
     tags: ["VIP", "KA"],
   },
   {
@@ -191,7 +229,13 @@ const mockLeads: Lead[] = [
     estimatedValue: "$2,100,000",
     stage: "proposal",
     priority: "High",
-    services: { warehouse: true, transport: true, freightAir: true, customs: true, license: true },
+    services: {
+      warehouse: true,
+      transport: true,
+      freightAir: true,
+      customs: true,
+      license: true,
+    },
     tags: ["KA", "VIP"],
   },
   {
@@ -206,7 +250,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$540,000",
     stage: "needs_analysis",
     priority: "Medium",
-    services: { warehouse: true, freightSea: true, crossBorder: true },
+    services: {
+      warehouse: true,
+      freightSea: true,
+      crossBorder: true,
+    },
     tags: [],
   },
   {
@@ -236,7 +284,12 @@ const mockLeads: Lead[] = [
     estimatedValue: "$890,000",
     stage: "contact",
     priority: "High",
-    services: { freightAir: true, customs: true, license: true, warehouse: true },
+    services: {
+      freightAir: true,
+      customs: true,
+      license: true,
+      warehouse: true,
+    },
     tags: ["VIP"],
   },
   {
@@ -251,7 +304,13 @@ const mockLeads: Lead[] = [
     estimatedValue: "$1,350,000",
     stage: "needs_analysis",
     priority: "High",
-    services: { freightSea: true, crossBorder: true, customs: true, warehouse: true, transport: true },
+    services: {
+      freightSea: true,
+      crossBorder: true,
+      customs: true,
+      warehouse: true,
+      transport: true,
+    },
     tags: ["Hot Lead"],
   },
   {
@@ -266,7 +325,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$480,000",
     stage: "contact",
     priority: "Medium",
-    services: { warehouse: true, transport: true, license: true },
+    services: {
+      warehouse: true,
+      transport: true,
+      license: true,
+    },
     tags: [],
   },
   {
@@ -281,7 +344,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$950,000",
     stage: "lead",
     priority: "Medium",
-    services: { warehouse: true, transport: true, freightSea: true },
+    services: {
+      warehouse: true,
+      transport: true,
+      freightSea: true,
+    },
     tags: [],
   },
   {
@@ -296,7 +363,13 @@ const mockLeads: Lead[] = [
     estimatedValue: "$1,800,000",
     stage: "proposal",
     priority: "High",
-    services: { freightAir: true, customs: true, license: true, warehouse: true, other: true },
+    services: {
+      freightAir: true,
+      customs: true,
+      license: true,
+      warehouse: true,
+      other: true,
+    },
     tags: ["KA", "VIP"],
   },
   {
@@ -311,7 +384,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$670,000",
     stage: "lead",
     priority: "Low",
-    services: { freightSea: true, crossBorder: true, warehouse: true },
+    services: {
+      freightSea: true,
+      crossBorder: true,
+      warehouse: true,
+    },
     tags: [],
   },
   {
@@ -326,7 +403,11 @@ const mockLeads: Lead[] = [
     estimatedValue: "$380,000",
     stage: "contact",
     priority: "Medium",
-    services: { freightSea: true, customs: true, license: true },
+    services: {
+      freightSea: true,
+      customs: true,
+      license: true,
+    },
     tags: [],
   },
   {
@@ -341,7 +422,12 @@ const mockLeads: Lead[] = [
     estimatedValue: "$1,100,000",
     stage: "needs_analysis",
     priority: "High",
-    services: { warehouse: true, transport: true, freightSea: true, crossBorder: true },
+    services: {
+      warehouse: true,
+      transport: true,
+      freightSea: true,
+      crossBorder: true,
+    },
     tags: ["Hot Lead"],
   },
   {
@@ -356,7 +442,12 @@ const mockLeads: Lead[] = [
     estimatedValue: "$820,000",
     stage: "contact",
     priority: "Medium",
-    services: { warehouse: true, freightSea: true, customs: true, crossBorder: true },
+    services: {
+      warehouse: true,
+      freightSea: true,
+      customs: true,
+      crossBorder: true,
+    },
     tags: [],
   },
   {
@@ -377,21 +468,43 @@ const mockLeads: Lead[] = [
 ];
 
 const availableTags = [
-  { id: "ka", name: "KA", color: "bg-purple-100 text-purple-700 border-purple-300" },
-  { id: "vip", name: "VIP", color: "bg-yellow-100 text-yellow-700 border-yellow-300" },
-  { id: "hot-lead", name: "Hot Lead", color: "bg-red-100 text-red-700 border-red-300" },
-  { id: "new", name: "New", color: "bg-green-100 text-green-700 border-green-300" },
+  {
+    id: "ka",
+    name: "KA",
+    color: "text-purple-700 border-purple-300",
+  },
+  {
+    id: "vip",
+    name: "VIP",
+    color: "text-yellow-700 border-yellow-300",
+  },
+  {
+    id: "hot-lead",
+    name: "Hot Lead",
+    color: "text-red-700 border-red-300",
+  },
+  {
+    id: "new",
+    name: "New",
+    color: "text-green-700 border-green-300",
+  },
 ];
 
-export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpenAddDialog }: LeadListScreenProps) {
+export function LeadListScreen({
+  onLeadClick,
+  shouldOpenAddDialog,
+  setShouldOpenAddDialog,
+}: LeadListScreenProps) {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [filterStage, setFilterStage] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterIndustry, setFilterIndustry] = useState("all");
-  const [isBulkImportDialogOpen, setIsBulkImportDialogOpen] = useState(false);
-  const [isAddLeadDialogOpen, setIsAddLeadDialogOpen] = useState(false);
+  const [isBulkImportDialogOpen, setIsBulkImportDialogOpen] =
+    useState(false);
+  const [isAddLeadDialogOpen, setIsAddLeadDialogOpen] =
+    useState(false);
 
   useEffect(() => {
     if (shouldOpenAddDialog) {
@@ -405,95 +518,185 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
   const filteredLeads = useMemo(() => {
     return mockLeads.filter((lead) => {
       const matchesSearch =
-        lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+        lead.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        lead.id
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        lead.email
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
       const matchesTags =
         selectedTags.length === 0 ||
-        selectedTags.some(tag => lead.tags?.includes(tag.name));
+        selectedTags.some((tag) =>
+          lead.tags?.includes(tag.name),
+        );
 
       const matchesStage =
         filterStage === "all" || lead.stage === filterStage;
-      
-      const matchesPriority =
-        filterPriority === "all" || lead.priority === filterPriority;
-      
-      const matchesIndustry =
-        filterIndustry === "all" || lead.industry === filterIndustry;
 
-      return matchesSearch && matchesTags && matchesStage && matchesPriority && matchesIndustry;
+      const matchesPriority =
+        filterPriority === "all" ||
+        lead.priority === filterPriority;
+
+      const matchesIndustry =
+        filterIndustry === "all" ||
+        lead.industry === filterIndustry;
+
+      return (
+        matchesSearch &&
+        matchesTags &&
+        matchesStage &&
+        matchesPriority &&
+        matchesIndustry
+      );
     });
-  }, [searchTerm, selectedTags, filterStage, filterPriority, filterIndustry]);
+  }, [
+    searchTerm,
+    selectedTags,
+    filterStage,
+    filterPriority,
+    filterIndustry,
+  ]);
 
   // Apply sorting
-  const { sortedData, sortState, handleSort } = useTableSort(filteredLeads);
+  const { sortedData, sortState, handleSort } =
+    useTableSort(filteredLeads);
 
   const getIndustryBadge = (industry: string) => {
-    const translationKey = industry.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
-    
+    const translationKey = industry.replace(/_([a-z])/g, (g) =>
+      g[1].toUpperCase(),
+    );
+
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium text-gray-700  ">
-        {t(`masterData.industry.${translationKey}`)}
+      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-normal text-gray-700  ">
+        {t(`${translationKey}`)}
       </span>
     );
   };
 
   const getStageBadge = (stage: string) => {
-    const stageMap: Record<string, { label: string; color: string }> = {
-      lead: { label: t("deals.stages.lead"), color: " text-indigo-700 " },
-      contact: { label: t("deals.stages.contact"), color: " text-blue-700 " },
-      needs_analysis: { label: t("deals.stages.needs_analysis"), color: " text-amber-700 " },
-      proposal: { label: t("deals.stages.proposal"), color: "text-emerald-700 " },
+    const stageMap: Record<
+      string,
+      { label: string; color: string }
+    > = {
+      lead: {
+        label: t("deals.stages.lead"),
+        color: " text-indigo-700 ",
+      },
+      contact: {
+        label: t("deals.stages.contact"),
+        color: " text-blue-700 ",
+      },
+      needs_analysis: {
+        label: t("deals.stages.needs_analysis"),
+        color: " text-amber-700 ",
+      },
+      proposal: {
+        label: t("deals.stages.proposal"),
+        color: "text-emerald-700 ",
+      },
     };
 
-    const config = stageMap[stage] || { label: stage, color: "bg-gray-50 text-gray-700 border-gray-200" };
+    const config = stageMap[stage] || {
+      label: stage,
+      color: "bg-gray-50 text-gray-700 border-gray-200",
+    };
 
     return (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs text-gray-700 font-medium `}>
+      <span
+        className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs text-gray-700 font-normal `}
+      >
         {config.label}
       </span>
     );
   };
 
   const getPriorityBadge = (priority: string) => {
-    const priorityMap: Record<string, { label: string; color: string }> = {
-      High: { label: "High", color: "bg-red-50 text-red-700 border-red-200" },
-      Medium: { label: "Medium", color: "bg-orange-50 text-orange-700 border-orange-200" },
-      Low: { label: "Low", color: "bg-blue-50 text-blue-700 border-blue-200" },
+    const priorityMap: Record<
+      string,
+      { label: string; color: string }
+    > = {
+      High: {
+        label: "High",
+        color: "bg-red-50 text-red-700 border-red-200",
+      },
+      Medium: {
+        label: "Medium",
+        color: "bg-orange-50 text-orange-700 border-orange-200",
+      },
+      Low: {
+        label: "Low",
+        color: "bg-blue-50 text-blue-700 border-blue-200",
+      },
     };
 
-    const config = priorityMap[priority] || { label: priority, color: "bg-gray-50 text-gray-700 border-gray-200" };
+    const config = priorityMap[priority] || {
+      label: priority,
+      color: "bg-gray-50 text-gray-700 border-gray-200",
+    };
 
     return (
-      <span className={`inline-flex items-center px-2 py-0.5  text-xs font-medium `}>
+      <span
+        className={`inline-flex items-center px-2 py-0.5  text-xs font-medium `}
+      >
         {config.label}
       </span>
     );
   };
 
   const getLeadTypeBadge = (leadType: string) => {
-    const leadTypeMap: Record<string, { label: string; color: string }> = {
-      coldCall: { label: "Cold Call", color: "bg-gray-50 text-gray-700 border-gray-200" },
-      existingCustomer: { label: "Existing Customer", color: "bg-gray-50 text-gray-700 border-gray-200" },
-      marketingGroup: { label: "Marketing Group", color: "bg-gray-50 text-gray-700 border-gray-200" },
-      management: { label: "Management", color: "bg-gray-50 text-gray-700 border-gray-200" },
-      other: { label: "Other", color: "bg-gray-50 text-gray-700 border-gray-200" },
+    const leadTypeMap: Record<
+      string,
+      { label: string; color: string }
+    > = {
+      coldCall: {
+        label: "Cold Call",
+        color: "bg-gray-50 text-gray-700 border-gray-200",
+      },
+      existingCustomer: {
+        label: "Existing Customer",
+        color: "bg-gray-50 text-gray-700 border-gray-200",
+      },
+      marketingGroup: {
+        label: "Marketing Group",
+        color: "bg-gray-50 text-gray-700 border-gray-200",
+      },
+      management: {
+        label: "Management",
+        color: "bg-gray-50 text-gray-700 border-gray-200",
+      },
+      other: {
+        label: "Other",
+        color: "bg-gray-50 text-gray-700 border-gray-200",
+      },
     };
 
-    const config = leadTypeMap[leadType] || { label: leadType, color: "bg-gray-50 text-gray-700 border-gray-200" };
+    const config = leadTypeMap[leadType] || {
+      label: leadType,
+      color: "bg-gray-50 text-gray-700 border-gray-200",
+    };
 
     return (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium`}>
+      <span
+        className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium`}
+      >
         {config.label}
       </span>
     );
   };
 
-  const totalEstimatedValue = filteredLeads.reduce((sum, lead) => {
-    const value = parseFloat(lead.estimatedValue.replace(/[$,]/g, ""));
-    return sum + value;
-  }, 0);
+  const totalEstimatedValue = filteredLeads.reduce(
+    (sum, lead) => {
+      const value = parseFloat(
+        lead.estimatedValue.replace(/[$,]/g, ""),
+      );
+      return sum + value;
+    },
+    0,
+  );
 
   const handleExport = () => {
     toast.success("ส่งออกข้อมูลสำเร็จ");
@@ -502,37 +705,30 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
   return (
     <div className="p-2 sm:p-3 lg:p-4 bg-gray-50 min-h-screen">
       <div className="max-w-[1600px] mx-auto space-y-2 sm:space-y-3">
-
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900">{t("leads.all_leads")}</h1>
-            <p className="text-[10px] sm:text-xs text-gray-500">{t("leads.subtitle")}</p>
-          </div>
-          <div className="flex gap-1.5 flex-shrink-0">
-            <Button
-              size="sm"
-              className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white shadow-sm text-sm font-medium rounded-full"
-              onClick={() => {
-                if (setShouldOpenAddDialog) {
-                  setShouldOpenAddDialog(true);
-                }
-              }}
-            >
-              <Plus className="h-4 w-4 mr-1.5" />
-              เพิ่ม Lead
-            </Button>
+            <h1 className="text-sm sm:text-base lg:text-xl font-semibold text-gray-900">
+              {t("leads.all_leads")}
+            </h1>
+            <p className="text-[10px] sm:text-xs text-gray-500">
+              {t("leads.subtitle")}
+            </p>
           </div>
         </div>
 
         {/* Stats */}
         {filteredLeads.length > 0 && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
             <div className="bg-white rounded-lg border border-gray-200 p-2 sm:p-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
-                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">Leads ทั้งหมด</p>
-                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">{filteredLeads.length}</p>
+                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">
+                    Leads ทั้งหมด
+                  </p>
+                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">
+                    {filteredLeads.length}
+                  </p>
                 </div>
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
@@ -543,20 +739,18 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
             <div className="bg-white rounded-lg border border-gray-200 p-2 sm:p-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
-                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">ความสำคัญสูง</p>
-                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">{filteredLeads.filter(l => l.priority === "High").length}</p>
-                </div>
-                <div className="h-7 w-7 sm:h-8 sm:w-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-600" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg border border-gray-200 p-2 sm:p-2.5 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0">
-                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">กำลังติดต่อ</p>
-                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">{filteredLeads.filter(l => l.stage === "contact" || l.stage === "needs_analysis").length}</p>
+                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">
+                    กำลังติดต่อ
+                  </p>
+                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">
+                    {
+                      filteredLeads.filter(
+                        (l) =>
+                          l.stage === "contact" ||
+                          l.stage === "needs_analysis",
+                      ).length
+                    }
+                  </p>
                 </div>
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-orange-600" />
@@ -567,8 +761,14 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
             <div className="bg-white rounded-lg border border-gray-200 p-2 sm:p-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="min-w-0">
-                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">มูลค่าโอกาส</p>
-                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">${(totalEstimatedValue / 1000000).toFixed(2)}M</p>
+                  <p className="text-[9px] sm:text-[10px] font-medium text-gray-500 uppercase tracking-wide truncate">
+                    มูลค่าโอกาส
+                  </p>
+                  <p className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">
+                    $
+                    {(totalEstimatedValue / 1000000).toFixed(2)}
+                    M
+                  </p>
                 </div>
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-600" />
@@ -579,8 +779,8 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
         )}
 
         {/* Search with Tag Filter */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5">
-          <div className="flex-1 sm:max-w-lg">
+        <div className="flex justify-between flex-col  sm:flex-row sm:flex-col-3 items-stretch sm:items-center gap-1.5">
+          <div className="flex-1 sm:max-w-sm">
             <TagSearchBar
               value={searchTerm}
               onValueChange={setSearchTerm}
@@ -590,38 +790,59 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
               placeholder="ค้นหา Lead... (พิมพ์ KA, VIP เพื่อกรองตาม tag)"
             />
           </div>
-
           <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
-            <Select value={filterIndustry} onValueChange={setFilterIndustry}>
-              <SelectTrigger className="h-10 w-auto min-w-[200px] text-xs border-gray-300 bg-white gap-1.5 rounded-lg px-[30px] py-[8px]">
-                <Briefcase className="h-5 w-5 text-gray-600 flex-shrink-0" />
+            {/* Industry */}
+            <Select
+              value={filterIndustry}
+              onValueChange={setFilterIndustry}
+            >
+              <SelectTrigger className="h-10 w-29 text-xs border-gray-300 bg-white gap-1.5 rounded-lg px-3">
                 <span className="truncate">อุตสาหกรรม</span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">ทั้งหมด</SelectItem>
-                {INDUSTRIES.map(industry => (
-                  <SelectItem key={industry.value} value={industry.value}>
+                {INDUSTRIES.map((industry) => (
+                  <SelectItem
+                    key={industry.value}
+                    value={industry.value}
+                  >
                     {t(industry.labelKey)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            <Select value={filterStage} onValueChange={setFilterStage}>
-              <SelectTrigger className="h-10 w-auto min-w-[100px] px-3 text-xs border-gray-300 bg-white gap-1.5 rounded-lg">
-                <span className="truncate">ขั้นตอน</span>
+            {/* Stage */}
+            <Select
+              value={filterStage}
+              onValueChange={setFilterStage}
+            >
+              <SelectTrigger className="h-10 w-23 px-3 text-xs border-gray-300 bg-white gap-1.5 rounded-lg">
+                <span className="truncate">สถานะ</span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">ทั้งหมด</SelectItem>
-                <SelectItem value="lead">{t("deals.stages.lead")}</SelectItem>
-                <SelectItem value="contact">{t("deals.stages.contact")}</SelectItem>
-                <SelectItem value="needs_analysis">{t("deals.stages.needs_analysis")}</SelectItem>
-                <SelectItem value="proposal">{t("deals.stages.proposal")}</SelectItem>
+                <SelectItem value="lead">
+                  {t("deals.stages.lead")}
+                </SelectItem>
+                <SelectItem value="contact">
+                  {t("deals.stages.contact")}
+                </SelectItem>
+                <SelectItem value="needs_analysis">
+                  {t("deals.stages.needs_analysis")}
+                </SelectItem>
+                <SelectItem value="proposal">
+                  {t("deals.stages.proposal")}
+                </SelectItem>
               </SelectContent>
             </Select>
 
-            <Select value={filterPriority} onValueChange={setFilterPriority}>
-              <SelectTrigger className="h-10 w-auto min-w-[150px] px-3 text-xs border-gray-300 bg-white gap-1.5 rounded-lg">
+            {/* Priority */}
+            <Select
+              value={filterPriority}
+              onValueChange={setFilterPriority}
+            >
+              <SelectTrigger className="h-10 w-[110px] px-3 text-xs border-gray-300 bg-white gap-1.5 rounded-lg">
                 <span className="truncate">ความสำคัญ</span>
               </SelectTrigger>
               <SelectContent>
@@ -632,14 +853,25 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
               </SelectContent>
             </Select>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-10 px-3 text-xs border-gray-300 bg-white hover:bg-gray-50 gap-1.5 rounded-lg" 
+            {/* Export */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-10 px-3 text-xs border-gray-300 bg-white hover:bg-gray-50 gap-1.5 rounded-lg"
               onClick={handleExport}
             >
               <Download className="h-4 w-4 text-gray-600" />
-              <span className="hidden sm:inline">ส่งออก</span>
+              <span>ส่งออก</span>
+            </Button>
+
+            {/* Add Lead */}
+            <Button
+              size="sm"
+              className="h-10 px-4 bg-green-600 hover:bg-green-700 text-white shadow-sm text-sm font-medium rounded-full"
+              onClick={() => setIsAddLeadDialogOpen(true)}
+            >
+              <Plus className="h-4 w-4 mr-1.5" />
+              เพิ่ม Lead
             </Button>
           </div>
         </div>
@@ -650,30 +882,44 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-gray-200">
-                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50" rowSpan={2}>
+                  <th
+                    className=" text-left px-4 py-3.5 text-[13px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50"
+                    rowSpan={2}
+                  >
                     ชื่อ Lead
                   </th>
-                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50" rowSpan={2}>
+                  <th
+                    className="text-left px-4 py-3.5 text-[13px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50"
+                    rowSpan={2}
+                  >
                     ผู้ติดต่อ
                   </th>
-                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50" rowSpan={2}>
+                  <th
+                    className="text-left px-4 py-3.5 text-[13px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50"
+                    rowSpan={2}
+                  >
                     อุตสาหกรรม
                   </th>
-                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50" rowSpan={2}>
+                  <th
+                    className="text-left px-4 py-3.5 text-[13px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50"
+                    rowSpan={2}
+                  >
                     สถานะ
                   </th>
-                  <th className="text-center px-4 py-3.5 text-[11px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50" colSpan={9}>
+                  <th
+                    className="text-center px-4 py-3.5 text-[13px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50"
+                    colSpan={8}
+                  >
                     บริการที่สนใจ
-                  </th>
-                  <th className="text-right px-4 py-3.5 text-[11px] font-semibold text-gray-600 uppercase tracking-wide bg-gray-50/50" rowSpan={2}>
-                    
                   </th>
                 </tr>
                 <tr className="border-b border-gray-200">
                   <th className="text-center px-4 py-2.5 text-[10px] font-medium text-gray-600 bg-gray-50/50 border-l border-r border-gray-200 min-w-[80px]">
                     Freight
                   </th>
-                  <th className="text-center px-4 py-2.5 text-[10px] font-medium text-gray-600 bg-gray-50/50 border-r border-gray-200 min-w-[80px]">Customs</th>
+                  <th className="text-center px-4 py-2.5 text-[10px] font-medium text-gray-600 bg-gray-50/50 border-r border-gray-200 min-w-[80px]">
+                    Customs
+                  </th>
                   <th className="text-center px-4 py-2.5 text-[10px] font-medium text-gray-600 bg-gray-50/50 border-r border-gray-200 min-w-[90px]">
                     Warehouse
                   </th>
@@ -704,16 +950,24 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
                     className="hover:bg-gray-50 transition-colors cursor-pointer group"
                     onClick={() => onLeadClick(lead.id)}
                   >
-                    <td className="px-4 py-3">
+                    <td className="px-2 py-3 w-20">
                       <div>
-                        <p className="font-10px text-gray-900 text-[11px]">{lead.name}</p>
+                        <p className="font-normal text-gray-900 text-xs">
+                          {lead.name}
+                        </p>
                         {lead.tags && lead.tags.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {lead.tags.map(tag => {
-                              const tagConfig = availableTags.find(t => t.name === tag);
+                            {lead.tags.map((tag) => {
+                              const tagConfig =
+                                availableTags.find(
+                                  (t) => t.name === tag,
+                                );
                               return tagConfig ? (
-                                <span key={tag} className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${tagConfig.color}`}>
-                                  {tag}
+                                <span
+                                  key={tag}
+                                  className={`flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${tagConfig.color}`}
+                                >
+                                  #{tag}
                                 </span>
                               ) : null;
                             })}
@@ -724,67 +978,85 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
                     <td className="px-4 py-3">
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2 text-xs text-gray-700">
-                          <Mail className="h-3.5 w-3.5 text-gray-700 flex-shrink-0" />
-                          <span className="gray max-w-[200px]">{lead.email}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-600">
-                          <Phone className="h-3.5 w-3.5 text-gray-700 flex-shrink-0" />
-                          <span>{lead.phone}</span>
+                          <span className="gray max-w-[200px]">
+                            {lead.email}
+                          </span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{getIndustryBadge(lead.industry)}</td>
-                    <td className="px-4 py-3">{getStageBadge(lead.stage)}</td>
-                    
+                    <td className="px-4 py-3">
+                      {getIndustryBadge(lead.industry)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {getStageBadge(lead.stage)}
+                    </td>
+
                     {/* Services Columns */}
                     <td className="px-3 py-3 text-center border-l border-r border-gray-200 bg-gray-50/30">
                       {lead.services.warehouse && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.transport && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.freightAir && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.freightSea && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.crossBorder && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.customs && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.license && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.other && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center border-r border-gray-200 bg-gray-50/30">
                       {lead.services.unknown && (
-                        <span className="text-[#10b981] text-xs">✓</span>
+                        <span className="text-[#10b981] text-xs">
+                          ✓
+                        </span>
                       )}
                     </td>
 
-                    <td className="px-4 py-3 text-right">
-                    </td>
+                    <td className="px-4 py-3 text-right"></td>
                   </tr>
                 ))}
               </tbody>
@@ -802,13 +1074,20 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-gray-900 truncate">{lead.name}</h3>
+                  <h3 className="text-sm font-medium text-gray-900 truncate">
+                    {lead.name}
+                  </h3>
                   {lead.tags && lead.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {lead.tags.map(tag => {
-                        const tagConfig = availableTags.find(t => t.name === tag);
+                      {lead.tags.map((tag) => {
+                        const tagConfig = availableTags.find(
+                          (t) => t.name === tag,
+                        );
                         return tagConfig ? (
-                          <span key={tag} className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${tagConfig.color}`}>
+                          <span
+                            key={tag}
+                            className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${tagConfig.color}`}
+                          >
                             {tag}
                           </span>
                         ) : null;
@@ -832,7 +1111,9 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
 
               {/* Services Grid */}
               <div className="mb-3">
-                <p className="text-xs text-gray-500 mb-1.5">บริการที่สนใจ:</p>
+                <p className="text-xs text-gray-500 mb-1.5">
+                  บริการที่สนใจ:
+                </p>
                 <div className="grid grid-cols-3 gap-1.5">
                   {lead.services.warehouse && (
                     <div className="flex items-center gap-1 text-[10px] text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200">
@@ -891,7 +1172,9 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                <span className="text-xs font-medium text-gray-900">{lead.estimatedValue}</span>
+                <span className="text-xs font-medium text-gray-900">
+                  {lead.estimatedValue}
+                </span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -908,7 +1191,6 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
             </div>
           ))}
         </div>
-
       </div>
 
       {/* Add Lead Dialog */}
@@ -939,7 +1221,9 @@ export function LeadListScreen({ onLeadClick, shouldOpenAddDialog, setShouldOpen
         onClose={() => setIsBulkImportDialogOpen(false)}
         onImport={(data) => {
           console.log("Imported lead data:", data);
-          toast.success(`นำเข้าข้อมูล Lead ${data.length} รายการสำเร็จ`);
+          toast.success(
+            `นำเข้าข้อมูล Lead ${data.length} รายการสำเร็จ`,
+          );
         }}
         mode="lead"
       />

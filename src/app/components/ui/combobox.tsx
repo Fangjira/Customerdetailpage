@@ -51,7 +51,20 @@ export function Combobox({
   const isExistingOption = options.some(
     (option) => option.value.toLowerCase() === searchValue.toLowerCase()
   );
+  
+const ActivityTypeCombobox = ({ field, label }: any) => (
+  <div className="space-y-1.5">
+    <p className="text-[10px] font-bold text-gray-400 uppercase">{label}</p>
+    <Combobox options={ACTIVITY_TYPES} placeholder="เลือกประเภท..." />
+  </div>
+);
 
+const CustomerCombobox = ({ field, label }: any) => (
+  <div className="space-y-1.5">
+    <p className="text-[10px] font-bold text-gray-400 uppercase">{label}</p>
+    <Combobox options={CUSTOMERS} placeholder="เลือกลูกค้า..." />
+  </div>
+);
   const handleCreateNew = () => {
     if (searchValue.trim() && onCreate) {
       onCreate(searchValue.trim());

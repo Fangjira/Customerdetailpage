@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -209,10 +208,7 @@ export function QuickAddLeadModal({ isOpen, onClose, onSave }: QuickAddLeadModal
           <p className="text-base text-gray-600 mt-2 ml-[52px]">
             เพิ่มข้อมูลลูกค้าเป้าหมายใหม่เพื่อติดตามและพัฒนาเป็นดีล
           </p>
-        
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+        </DialogHeader>
 
         <div className="space-y-6 py-6">
           {/* Required Information Section */}

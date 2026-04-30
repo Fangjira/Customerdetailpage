@@ -27,7 +27,7 @@ interface Task {
   completed: boolean;
   customer?: string;
   relatedTo?: string;
-  titleType?: string;
+  activityType?: string;
 }
 
 interface TasksSummaryViewProps {

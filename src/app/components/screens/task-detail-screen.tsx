@@ -381,7 +381,7 @@ export function TaskDetailScreen({ taskId, onNavigate, onEdit }: TaskDetailScree
             กลับไปหน้างานของฉัน
           </Button>
 
-          <div className="flex items-start justify-between gap-4 flex-wrap md:h-auto">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex-1 min-w-0">
               {/* Title */}
               <div className="flex items-center gap-3 mb-2">

@@ -1,29 +1,29 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
-import {
-  Customer,
-  Lead,
-  Deal,
-  Quotation,
-  Contract,
-  Ticket,
-  Task,
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { 
+  Customer, 
+  Lead, 
+  Deal, 
+  Quotation, 
+  Contract, 
+  Ticket, 
+  Task, 
   Approval,
   HistoryEntry,
   User,
   Notification
-} from '../../types/crm';
-import {
-  mockCustomers,
-  mockLeads,
-  mockDeals,
-  mockQuotations,
-  mockContracts,
-  mockTickets,
-  mockTasks,
+} from '../types/crm';
+import { 
+  mockCustomers, 
+  mockLeads, 
+  mockDeals, 
+  mockQuotations, 
+  mockContracts, 
+  mockTickets, 
+  mockTasks, 
   mockApprovals,
-  mockHistory
-} from '../../data/mockData';
-import { loadFromLocalStorage, saveToLocalStorage, generateId } from '../../utils/helpers';
+  mockHistory 
+} from '../data/mockData';
+import { loadFromLocalStorage, saveToLocalStorage, generateId } from '../utils/helpers';
 
 interface CRMContextType {
   // Data
@@ -136,22 +136,49 @@ export function CRMProvider({ children }: { children: ReactNode }) {
     notifications: true,
   });
 
-  // Save to localStorage when data changes (consolidated)
+  // Save to localStorage when data changes
   useEffect(() => {
     saveToLocalStorage('crm_customers', customers);
+  }, [customers]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_leads', leads);
+  }, [leads]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_deals', deals);
+  }, [deals]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_quotations', quotations);
+  }, [quotations]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_contracts', contracts);
+  }, [contracts]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_tickets', tickets);
+  }, [tickets]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_tasks', tasks);
+  }, [tasks]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_approvals', approvals);
+  }, [approvals]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_history', history);
+  }, [history]);
+
+  useEffect(() => {
     saveToLocalStorage('crm_notifications', notifications);
-  }, [customers, leads, deals, quotations, contracts, tickets, tasks, approvals, history, notifications]);
+  }, [notifications]);
 
   // History helper
-  const addHistory = useCallback((entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => {
+  const addHistory = (entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => {
     const newEntry: HistoryEntry = {
       ...entry,
       id: generateId('hist'),
@@ -159,14 +186,14 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       user: currentUser.name,
     };
     setHistory(prev => [newEntry, ...prev]);
-  }, [currentUser.name]);
+  };
 
-  const getEntityHistory = useCallback((entityId: string): HistoryEntry[] => {
+  const getEntityHistory = (entityId: string): HistoryEntry[] => {
     return history.filter(h => h.entityId === entityId);
-  }, [history]);
+  };
 
   // Customer actions
-  const addCustomer = useCallback((customer: Customer) => {
+  const addCustomer = (customer: Customer) => {
     setCustomers(prev => [...prev, customer]);
     addHistory({
       action: 'created',
@@ -174,13 +201,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: customer.id,
       description: `Created customer ${customer.name}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateCustomer = useCallback((id: string, updates: Partial<Customer>) => {
-    setCustomers(prev => prev.map(c =>
+  const updateCustomer = (id: string, updates: Partial<Customer>) => {
+    setCustomers(prev => prev.map(c => 
       c.id === id ? { ...c, ...updates, updatedAt: new Date().toISOString() } : c
     ));
-
+    
     const customer = customers.find(c => c.id === id);
     if (customer) {
       Object.keys(updates).forEach(key => {
@@ -198,9 +225,9 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         }
       });
     }
-  }, [customers, addHistory]);
+  };
 
-  const deleteCustomer = useCallback((id: string) => {
+  const deleteCustomer = (id: string) => {
     const customer = customers.find(c => c.id === id);
     setCustomers(prev => prev.filter(c => c.id !== id));
     if (customer) {
@@ -211,10 +238,10 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Deleted customer ${customer.name}`,
       });
     }
-  }, [customers, addHistory]);
+  };
 
   // Lead actions
-  const addLead = useCallback((lead: Lead) => {
+  const addLead = (lead: Lead) => {
     setLeads(prev => [...prev, lead]);
     addHistory({
       action: 'created',
@@ -222,13 +249,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: lead.id,
       description: `Created lead ${lead.name}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateLead = useCallback((id: string, updates: Partial<Lead>) => {
-    setLeads(prev => prev.map(l =>
+  const updateLead = (id: string, updates: Partial<Lead>) => {
+    setLeads(prev => prev.map(l => 
       l.id === id ? { ...l, ...updates, updatedAt: new Date().toISOString() } : l
     ));
-
+    
     const lead = leads.find(l => l.id === id);
     if (lead) {
       addHistory({
@@ -238,33 +265,33 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Updated lead ${lead.name}`,
       });
     }
-  }, [leads, addHistory]);
+  };
 
-  const convertLeadToCustomer = useCallback((leadId: string): Customer => {
+  const convertLeadToCustomer = (leadId: string): Customer => {
     const lead = leads.find(l => l.id === leadId);
     if (!lead) throw new Error('Lead not found');
-
+    
     const customer: Customer = {
       ...lead,
       id: generateId('CUST-2024'),
       status: 'existing',
     };
-
+    
     addCustomer(customer);
     setLeads(prev => prev.filter(l => l.id !== leadId));
-
+    
     addHistory({
       action: 'updated',
       entity: 'Lead',
       entityId: leadId,
       description: `Converted lead ${lead.name} to customer`,
     });
-
+    
     return customer;
-  }, [leads, addCustomer, addHistory]);
+  };
 
   // Deal actions
-  const addDeal = useCallback((deal: Deal) => {
+  const addDeal = (deal: Deal) => {
     setDeals(prev => [...prev, deal]);
     addHistory({
       action: 'created',
@@ -272,13 +299,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: deal.id,
       description: `Created deal ${deal.name}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateDeal = useCallback((id: string, updates: Partial<Deal>) => {
-    setDeals(prev => prev.map(d =>
+  const updateDeal = (id: string, updates: Partial<Deal>) => {
+    setDeals(prev => prev.map(d => 
       d.id === id ? { ...d, ...updates, updatedAt: new Date().toISOString() } : d
     ));
-
+    
     const deal = deals.find(d => d.id === id);
     if (deal && updates.stage && deal.stage !== updates.stage) {
       addHistory({
@@ -291,9 +318,9 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Moved deal to ${updates.stage}`,
       });
     }
-  }, [deals, addHistory]);
+  };
 
-  const deleteDeal = useCallback((id: string) => {
+  const deleteDeal = (id: string) => {
     const deal = deals.find(d => d.id === id);
     setDeals(prev => prev.filter(d => d.id !== id));
     if (deal) {
@@ -304,10 +331,10 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Deleted deal ${deal.name}`,
       });
     }
-  }, [deals, addHistory]);
+  };
 
   // Quotation actions
-  const addQuotation = useCallback((quotation: Quotation) => {
+  const addQuotation = (quotation: Quotation) => {
     setQuotations(prev => [...prev, quotation]);
     addHistory({
       action: 'created',
@@ -315,13 +342,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: quotation.id,
       description: `Created quotation ${quotation.quotationNumber}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateQuotation = useCallback((id: string, updates: Partial<Quotation>) => {
-    setQuotations(prev => prev.map(q =>
+  const updateQuotation = (id: string, updates: Partial<Quotation>) => {
+    setQuotations(prev => prev.map(q => 
       q.id === id ? { ...q, ...updates } : q
     ));
-
+    
     const quotation = quotations.find(q => q.id === id);
     if (quotation && updates.status && quotation.status !== updates.status) {
       addHistory({
@@ -334,9 +361,9 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Quotation status changed to ${updates.status}`,
       });
     }
-  }, [quotations, addHistory]);
+  };
 
-  const deleteQuotation = useCallback((id: string) => {
+  const deleteQuotation = (id: string) => {
     const quotation = quotations.find(q => q.id === id);
     setQuotations(prev => prev.filter(q => q.id !== id));
     if (quotation) {
@@ -347,10 +374,10 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Deleted quotation ${quotation.quotationNumber}`,
       });
     }
-  }, [quotations, addHistory]);
+  };
 
   // Contract actions
-  const addContract = useCallback((contract: Contract) => {
+  const addContract = (contract: Contract) => {
     setContracts(prev => [...prev, contract]);
     addHistory({
       action: 'created',
@@ -358,13 +385,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: contract.id,
       description: `Created contract ${contract.contractNumber}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateContract = useCallback((id: string, updates: Partial<Contract>) => {
-    setContracts(prev => prev.map(c =>
+  const updateContract = (id: string, updates: Partial<Contract>) => {
+    setContracts(prev => prev.map(c => 
       c.id === id ? { ...c, ...updates } : c
     ));
-
+    
     const contract = contracts.find(c => c.id === id);
     if (contract) {
       addHistory({
@@ -374,35 +401,10 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Updated contract ${contract.contractNumber}`,
       });
     }
-  }, [contracts, addHistory]);
-
-  // Notification actions (must be declared before addTicket uses it)
-  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: generateId('notif'),
-      createdAt: new Date().toISOString(),
-      read: false,
-    };
-    setNotifications(prev => [newNotification, ...prev]);
-  }, []);
-
-  const markNotificationRead = useCallback((id: string) => {
-    setNotifications(prev => prev.map(n =>
-      n.id === id ? { ...n, read: true, readAt: new Date().toISOString() } : n
-    ));
-  }, []);
-
-  const markAllNotificationsRead = useCallback(() => {
-    setNotifications(prev => prev.map(n => ({
-      ...n,
-      read: true,
-      readAt: new Date().toISOString()
-    })));
-  }, []);
+  };
 
   // Ticket actions
-  const addTicket = useCallback((ticket: Ticket) => {
+  const addTicket = (ticket: Ticket) => {
     setTickets(prev => [...prev, ticket]);
     addHistory({
       action: 'created',
@@ -410,7 +412,7 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: ticket.id,
       description: `Created ticket ${ticket.ticketNumber}`,
     });
-
+    
     // Create notification for assigned user
     if (ticket.assignedTo) {
       addNotification({
@@ -425,13 +427,13 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         relatedType: 'ticket',
       });
     }
-  }, [addHistory, addNotification]);
+  };
 
-  const updateTicket = useCallback((id: string, updates: Partial<Ticket>) => {
-    setTickets(prev => prev.map(t =>
+  const updateTicket = (id: string, updates: Partial<Ticket>) => {
+    setTickets(prev => prev.map(t => 
       t.id === id ? { ...t, ...updates, updatedAt: new Date().toISOString() } : t
     ));
-
+    
     const ticket = tickets.find(t => t.id === id);
     if (ticket && updates.status && ticket.status !== updates.status) {
       addHistory({
@@ -444,9 +446,9 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Ticket status changed to ${updates.status}`,
       });
     }
-  }, [tickets, addHistory]);
+  };
 
-  const deleteTicket = useCallback((id: string) => {
+  const deleteTicket = (id: string) => {
     const ticket = tickets.find(t => t.id === id);
     setTickets(prev => prev.filter(t => t.id !== id));
     if (ticket) {
@@ -457,10 +459,10 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Deleted ticket ${ticket.ticketNumber}`,
       });
     }
-  }, [tickets, addHistory]);
+  };
 
   // Task actions
-  const addTask = useCallback((task: Task) => {
+  const addTask = (task: Task) => {
     setTasks(prev => [...prev, task]);
     addHistory({
       action: 'created',
@@ -468,24 +470,24 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: task.id,
       description: `Created task: ${task.title}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateTask = useCallback((id: string, updates: Partial<Task>) => {
-    setTasks(prev => prev.map(t =>
+  const updateTask = (id: string, updates: Partial<Task>) => {
+    setTasks(prev => prev.map(t => 
       t.id === id ? { ...t, ...updates } : t
     ));
-  }, []);
+  };
 
-  const deleteTask = useCallback((id: string) => {
+  const deleteTask = (id: string) => {
     setTasks(prev => prev.filter(t => t.id !== id));
-  }, []);
+  };
 
-  const completeTask = useCallback((id: string) => {
-    updateTask(id, {
-      status: 'completed',
-      completedAt: new Date().toISOString()
+  const completeTask = (id: string) => {
+    updateTask(id, { 
+      status: 'completed', 
+      completedAt: new Date().toISOString() 
     });
-
+    
     const task = tasks.find(t => t.id === id);
     if (task) {
       addHistory({
@@ -495,10 +497,10 @@ export function CRMProvider({ children }: { children: ReactNode }) {
         description: `Completed task: ${task.title}`,
       });
     }
-  }, [tasks, updateTask, addHistory]);
+  };
 
   // Approval actions
-  const addApproval = useCallback((approval: Approval) => {
+  const addApproval = (approval: Approval) => {
     setApprovals(prev => [...prev, approval]);
     addHistory({
       action: 'created',
@@ -506,18 +508,18 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       entityId: approval.id,
       description: `Created approval request: ${approval.title}`,
     });
-  }, [addHistory]);
+  };
 
-  const updateApproval = useCallback((id: string, updates: Partial<Approval>) => {
-    setApprovals(prev => prev.map(a =>
+  const updateApproval = (id: string, updates: Partial<Approval>) => {
+    setApprovals(prev => prev.map(a => 
       a.id === id ? { ...a, ...updates } : a
     ));
-  }, []);
+  };
 
-  const approveWorkflowStage = useCallback((approvalId: string, stageId: string, comment?: string) => {
+  const approveWorkflowStage = (approvalId: string, stageId: string, comment?: string) => {
     const approval = approvals.find(a => a.id === approvalId);
     if (!approval) return;
-
+    
     const updatedWorkflow = approval.workflow.map(stage => {
       if (stage.id === stageId) {
         return {
@@ -529,27 +531,27 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       }
       return stage;
     });
-
+    
     const allApproved = updatedWorkflow.every(s => s.status === 'approved');
-
+    
     updateApproval(approvalId, {
       workflow: updatedWorkflow,
       status: allApproved ? 'approved' : 'pending',
       progress: (updatedWorkflow.filter(s => s.status === 'approved').length / updatedWorkflow.length) * 100,
     });
-
+    
     addHistory({
       action: 'approved',
       entity: 'Approval',
       entityId: approvalId,
       description: `Approved stage: ${updatedWorkflow.find(s => s.id === stageId)?.name}`,
     });
-  }, [approvals, updateApproval, addHistory]);
+  };
 
-  const rejectWorkflowStage = useCallback((approvalId: string, stageId: string, reason: string) => {
+  const rejectWorkflowStage = (approvalId: string, stageId: string, reason: string) => {
     const approval = approvals.find(a => a.id === approvalId);
     if (!approval) return;
-
+    
     const updatedWorkflow = approval.workflow.map(stage => {
       if (stage.id === stageId) {
         return {
@@ -561,7 +563,7 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       }
       return stage;
     });
-
+    
     updateApproval(approvalId, {
       workflow: updatedWorkflow,
       status: 'rejected',
@@ -569,27 +571,52 @@ export function CRMProvider({ children }: { children: ReactNode }) {
       rejectedAt: new Date().toISOString(),
       rejectionReason: reason,
     });
-
+    
     addHistory({
       action: 'rejected',
       entity: 'Approval',
       entityId: approvalId,
       description: `Rejected at stage: ${updatedWorkflow.find(s => s.id === stageId)?.name}`,
     });
-  }, [approvals, updateApproval, currentUser.name, addHistory]);
+  };
+
+  // Notification actions
+  const addNotification = (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
+    const newNotification: Notification = {
+      ...notification,
+      id: generateId('notif'),
+      createdAt: new Date().toISOString(),
+      read: false,
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+
+  const markNotificationRead = (id: string) => {
+    setNotifications(prev => prev.map(n => 
+      n.id === id ? { ...n, read: true, readAt: new Date().toISOString() } : n
+    ));
+  };
+
+  const markAllNotificationsRead = () => {
+    setNotifications(prev => prev.map(n => ({ 
+      ...n, 
+      read: true, 
+      readAt: new Date().toISOString() 
+    })));
+  };
 
   // Filters (placeholder)
-  const filterByBranch = useCallback((branch: string) => {
+  const filterByBranch = (branch: string) => {
     // Implementation would filter all data by branch
     console.log('Filter by branch:', branch);
-  }, []);
+  };
 
-  const resetFilters = useCallback(() => {
+  const resetFilters = () => {
     // Reset all filters
     console.log('Reset filters');
-  }, []);
+  };
 
-  const value: CRMContextType = useMemo(() => ({
+  const value: CRMContextType = {
     customers,
     leads,
     deals,
@@ -633,15 +660,7 @@ export function CRMProvider({ children }: { children: ReactNode }) {
     markAllNotificationsRead,
     filterByBranch,
     resetFilters,
-  }), [
-    customers, leads, deals, quotations, contracts, tickets, tasks, approvals, history, notifications, currentUser,
-    addCustomer, updateCustomer, deleteCustomer, addLead, updateLead, convertLeadToCustomer,
-    addDeal, updateDeal, deleteDeal, addQuotation, updateQuotation, deleteQuotation,
-    addContract, updateContract, addTicket, updateTicket, deleteTicket,
-    addTask, updateTask, deleteTask, completeTask, addApproval, updateApproval,
-    approveWorkflowStage, rejectWorkflowStage, addHistory, getEntityHistory,
-    addNotification, markNotificationRead, markAllNotificationsRead, filterByBranch, resetFilters
-  ]);
+  };
 
   return <CRMContext.Provider value={value}>{children}</CRMContext.Provider>;
 }

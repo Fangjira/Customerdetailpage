@@ -679,7 +679,7 @@ export function AddCustomerDialog({ isOpen, onClose, onSave, mode = "customer" }
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 p-[12px]">
+        <form onSubmit={handleSubmit} className="space-y-4 py-3">
           {/* Data Source Tabs */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold text-gray-900 uppercase tracking-wide">

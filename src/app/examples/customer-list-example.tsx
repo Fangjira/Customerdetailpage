@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useModuleManager } from '../hooks/use-module-manager';
-import { Customer } from '@/types/crm';
+import { Customer } from '../store/mock-data-initializer';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
 import { Building2, Mail, Phone, Edit2, Trash2, UserPlus } from 'lucide-react';
 
 /**
@@ -172,10 +172,7 @@ export function CustomerListExample() {
             <DialogTitle>
               {editingCustomer ? 'Edit Customer' : 'Create New Customer'}
             </DialogTitle>
-          
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+          </DialogHeader>
 
           <div className="space-y-4">
             <div>

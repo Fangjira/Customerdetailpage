@@ -63,7 +63,6 @@ import {
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useModuleStore } from "../../store/module-store";
-import { HistoryEntry } from "@/types/crm";
 
 interface Task {
   id: string;
@@ -82,7 +81,7 @@ interface Task {
   contactPerson?: string;
   contactPhone?: string;
   contactEmail?: string;
-  titleType?: string;
+  activityType?: string;
   isActivity?: boolean;
   visibility?: "private" | "public" | "organization";
   sharedWith?: string[];
@@ -95,6 +94,18 @@ interface TasksScreenProps {
   onNavigateWithActivity?: (path: string, activityId: string) => void;
   shouldOpenCreateDialog?: boolean;
   userMode?: 'sales' | 'customer';
+}
+
+interface HistoryEntry {
+  id: string;
+  action: string;
+  entity: string;
+  user: string;
+  timestamp: string;
+  description?: string;
+  field?: string;
+  oldValue?: string;
+  newValue?: string;
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -178,7 +189,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
           assignee: "สมชาย วงศ์สกุล",
           completed: false,
           customer: "SCGJWD Logistics",
-          titleType: "customer_visit",
+          activityType: "customer_visit",
           isActivity: true,
         },
         {
@@ -191,7 +202,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
           dueTime: "04:00 PM",
           assignee: "สมชาย วงศ์สกุล",
           completed: false,
-          titleType: "meeting",
+          activityType: "meeting",
           isActivity: true,
         }
       ];
@@ -250,7 +261,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
         customer: "SCGJWD Logistics",
-        titleType: "customer_visit",
+        activityType: "customer_visit",
         isActivity: true,
       },
       {
@@ -264,7 +275,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
         customer: "CP All Public Company",
-        titleType: "meeting",
+        activityType: "meeting",
         isActivity: true,
       },
       {
@@ -279,7 +290,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         attendees: ["คุณจีรพุธ (Jiraputh)", "สมชาย วงศ์สกุล"],
         completed: false,
         customer: "PTT Public Company Limited",
-        titleType: "customer_visit",
+        activityType: "customer_visit",
         isActivity: true,
         createdBy: { id: "jiraputh-id", name: "คุณจีรพุธ (Jiraputh)" }
       },
@@ -294,7 +305,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
         assignee: "สมชาย วงศ์สกุล",
         completed: false,
         customers: ["Amata Corp", "WHA Group", "Thai Factory Ltd"],
-        titleType: "meeting",
+        activityType: "meeting",
         isActivity: true,
       }
     ];
@@ -396,13 +407,13 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
       customerAddress: task.location,
       title: task.title,
       notes: task.description,
-      purpose: task.titleType === "customer_visit" ? "เยี่ยมลูกค้า" : 
-               task.titleType === "meeting" ? "การประชุม/พูดคุย" :
-               task.titleType === "follow_up" ? "ติดตามงาน" : "",
-      visitType: task.titleType === "customer_visit" ? "เยี่ยมลูกค้า" :
-                  task.titleType === "meeting" ? "นัดหมาย" :
-                  task.titleType === "site_survey" ? "สำรวจ" :
-                  task.titleType === "follow_up" ? "งานบริการ" : "",
+      purpose: task.activityType === "customer_visit" ? "เยี่ยมลูกค้า" : 
+               task.activityType === "meeting" ? "การประชุม/พูดคุย" :
+               task.activityType === "follow_up" ? "ติดตามงาน" : "",
+      visitType: task.activityType === "customer_visit" ? "เยี่ยมลูกค้า" :
+                  task.activityType === "meeting" ? "นัดหมาย" :
+                  task.activityType === "site_survey" ? "สำรวจ" :
+                  task.activityType === "follow_up" ? "งานบริการ" : "",
     });
     setIsQuickVisitModalOpen(true);
   };
@@ -416,7 +427,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
       contactPerson: task.contactPerson,
       contactPhone: task.contactPhone,
       contactEmail: task.contactEmail,
-      titleType: task.titleType,
+      activityType: task.activityType,
     });
     setIsQuickVisitModalOpen(true);
   };
@@ -541,7 +552,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
 
     // Filter by activity type
     if (filterActivityType !== "all") {
-      filtered = filtered.filter(t => t.titleType === filterActivityType);
+      filtered = filtered.filter(t => t.activityType === filterActivityType);
     }
 
     // Filter by date range
@@ -601,7 +612,7 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   }, [filteredTasks]);
 
   // Activity type config
-  const titleTypeConfig: Record<string, { label: string; color: string }> = {
+  const activityTypeConfig: Record<string, { label: string; color: string }> = {
     customer_visit: { label: t("tasks.activity_types.customer_visit", "เยี่ยมลูกค้า"), color: "blue" },
     meeting: { label: t("tasks.activity_types.meeting", "ประชุม"), color: "purple" },
     site_survey: { label: t("tasks.activity_types.site_survey", "สำรวจสถานที่"), color: "orange" },
@@ -676,8 +687,8 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto p-3 sm:p-4">
+    <div className="max-h-screen bg-gray-60">
+      <div className="max-w-7xl mx-Xl p-3 sm:p-4">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex flex-col gap-1.5">
@@ -926,12 +937,12 @@ export function TasksScreen({ onNavigate, onNavigateWithActivity, shouldOpenCrea
                       <div className="flex items-center gap-1.5 overflow-hidden">
                         <List className="h-4 w-4 text-gray-600 flex-shrink-0" />
                         {/* ใช้ SelectValue แทน span เดิม เพื่อให้มันเปลี่ยนข้อความตามที่เลือกอัตโนมัติ */}
-                        <SelectValue placeholder={t('tasks.filters.titleType')} />
+                        <SelectValue placeholder={t('tasks.filters.activityType')} />
                       </div>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('ทั้งหมด')}</SelectItem>
-                      {Object.entries(titleTypeConfig).map(([type, config]) => (
+                      {Object.entries(activityTypeConfig).map(([type, config]) => (
                         <SelectItem key={type} value={type}>
                           {config.label}
                         </SelectItem>

@@ -63,6 +63,7 @@
     "on_hold": "พักการดำเนินการ",
     "high": "สูง",
     "medium": "กลาง",
+    "planned": "วางแผนแล้ว",
     "low": "ต่ำ"
   },
   "dealStage": {
@@ -162,8 +163,8 @@
     "no_visits_found": "ไม่พบข้อมูลการเข้าเยี่ยม",
     "try_different_filter": "ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น",
     "status_completed": "เสร็จสิ้น",
-    "status_in_progress": "กำลังดำเนินการ",
-    "status_follow_up": "ต้องติดตาม",
+    "status_planned": "วางแผนแล้ว",
+    "status_follow_up_required": "ต้องติดตาม",
     "serviceNames": "ประเภทบริการ"
   },
   "checkin": {
@@ -180,9 +181,9 @@
     "upload_photo": "อัพโหลดรูปภาพ",
     "cancel": "ยกเลิก",
     "checkin_now": "เช็คอินทันที",
-    "status_in_progress": "กำลังดำเนินการ",
     "status_completed": "เสร็จสิ้น",
-    "status_pending": "รอดำเนินการ",
+    "status_planned": "วางแผนแล้ว",
+    "status_follow_up_required": "ต้องติดตาม",
     "status_follow_up_required": "ต้องติดตาม"
   },
   "customers": {

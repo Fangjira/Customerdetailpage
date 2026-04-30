@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Auto-login for development mode
       const defaultUser: User = {
         email: "staff@onelink.com",
-        name: "Sarah Chen",
+        name: "จิราพัชร",
         role: "Sales Support",
         mode: "staff",
       };
@@ -41,10 +41,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Mock authentication - in real app, this would call an API
     const mockUser: User = {
       email,
-      name: mode === "staff" ? "Sarah Chen" : "คุณสมชาย ใจดี",
-      role: mode === "staff" ? "Sales Manager" : "Customer",
+      name: mode === "staff" ? "จิราพัชร" : "จิราพัชร",
+      role: mode === "staff" ? "Sales Support" : "Customer",
       mode,
     };
+    
     
     setUser(mockUser);
     localStorage.setItem("user", JSON.stringify(mockUser));

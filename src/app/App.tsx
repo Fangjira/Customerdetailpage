@@ -1,5 +1,5 @@
 // v2.3.0 - AdminSidebarNav removed, using unified SidebarNav with role-based menus
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { APP_VERSION } from "./build-info";
 // Core navigation components
 import { SidebarNav } from "./components/sidebar-nav";
@@ -105,6 +105,7 @@ import { OneLinkCRMDemo } from "./components/screens/onelink-crm-demo";
 import { OneLinkDashboard } from "./components/screens/onelink-dashboard";
 import { OneLinkDealsScreen } from "./components/screens/onelink-deals-screen";
 import { OneLinkWelcome } from "./components/screens/onelink-welcome";
+import { TaskDetailDemo } from "./components/crm-tasks-module/task-detail-demo";
 import { Button } from "./components/ui/button";
 import { 
   LogOut, Search, Menu, Plus, Key, Settings, UserCircle, 
@@ -118,8 +119,8 @@ import { Toaster } from "sonner";
 import { cn } from "./components/ui/utils";
 import { RoleProvider, useRole } from "./contexts/role-context";
 import { ThemeProvider, useTheme } from "./contexts/theme-context";
-import { CRMProvider } from "./contexts/CRMContext";
-import { LanguageProvider } from "./contexts/language-context";
+import { CRMProvider } from "../context/CRMContext";
+import { LanguageProvider } from "../contexts/language-context";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { useTranslation } from "react-i18next";
 import { useRoleTheme } from "./hooks/use-role-theme";
@@ -333,7 +334,7 @@ function UserProfile({ email, onLogout }: { email?: string; onLogout?: () => voi
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 border-2 border-white overflow-hidden relative z-30"
+        className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 border-2 border-white overflow-hidden relative z-50"
         style={{ background: `linear-gradient(to bottom right, ${roleTheme.gradientFrom}, ${roleTheme.gradientTo})` }}
         aria-label="User Profile"
       >
@@ -342,7 +343,9 @@ function UserProfile({ email, onLogout }: { email?: string; onLogout?: () => voi
       
       {isOpen && (
         <>
-          <div className="absolute right-0 mt-3 w-72 sm:w-85 bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden z-30 animate-in fade-in zoom-in duration-200 origin-top-right">
+          <div className="fixed inset-0 z-40 bg-transparent" onClick={resetAndClose} />
+          
+          <div className="absolute right-0 mt-3 w-72 sm:w-85 bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in zoom-in duration-200 origin-top-right">
             
             {/* View 1: Main Home Menu */}
             {activeView === 'home' && (
@@ -503,7 +506,7 @@ function MenuButton({ icon, label, subLabel, onClick }: any) {
 // =========================================
 // MainApp Component
 // =========================================
-const MainApp = React.memo<any>(function MainApp({
+function MainApp({
   userMode,
   userRole,
   userEmail,
@@ -551,7 +554,7 @@ const MainApp = React.memo<any>(function MainApp({
   setVisitPreviousPath,
   proposalPreviousPath,
   setProposalPreviousPath,
-}) {
+}: any) {
   console.log("[MainApp] Rendering - currentPath:", currentPath);
   
   const { t } = useTranslation();
@@ -564,7 +567,7 @@ const MainApp = React.memo<any>(function MainApp({
     if (role === "Sales Manager" && currentPath === "/tasks") {
       setCurrentPath("/reports");
     }
-  }, [role]); // Only depend on role to prevent infinite loop
+  }, [role, currentPath, setCurrentPath]);
 
   // FAB dragging state
   const [fabPosition, setFabPosition] = useState(() => {
@@ -581,42 +584,42 @@ const MainApp = React.memo<any>(function MainApp({
   }, [fabPosition]);
 
   // Handle FAB drag
-  const handleFabDragStart = useCallback((clientX: number, clientY: number) => {
+  const handleFabDragStart = (clientX: number, clientY: number) => {
     setIsDragging(true);
     setHasMoved(false);
     setDragStart({ x: clientX, y: clientY });
-  }, []);
+  };
 
-  const handleFabDragMove = useCallback((clientX: number, clientY: number) => {
+  const handleFabDragMove = (clientX: number, clientY: number) => {
     if (!isDragging) return;
-
+    
     const dx = clientX - dragStart.x;
     const dy = dragStart.y - clientY;
-
+    
     // Mark as moved if dragged more than 5px
     if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
       setHasMoved(true);
     }
-
+    
     if (hasMoved) {
       setFabPosition(prev => {
         const newBottom = Math.max(16, Math.min(window.innerHeight - 70, prev.bottom + dy));
         const newRight = Math.max(16, Math.min(window.innerWidth - 70, prev.right - dx));
         return { bottom: newBottom, right: newRight };
       });
-
+      
       setDragStart({ x: clientX, y: clientY });
     }
-  }, [isDragging, dragStart, hasMoved]);
+  };
 
-  const handleFabDragEnd = useCallback(() => {
+  const handleFabDragEnd = () => {
     if (isDragging && hasMoved) {
       // Snap to nearest edge (left or right)
       setFabPosition(prev => {
         const screenWidth = window.innerWidth;
         const buttonCenterX = screenWidth - prev.right - 28;
         const snapToRight = buttonCenterX > screenWidth / 2;
-
+        
         return {
           bottom: prev.bottom,
           right: snapToRight ? 24 : screenWidth - 80,
@@ -625,11 +628,11 @@ const MainApp = React.memo<any>(function MainApp({
     }
     setIsDragging(false);
     setHasMoved(false);
-  }, [isDragging, hasMoved]);
+  };
 
-  const handleNavigation = useCallback((path: string, action?: string) => {
+  const handleNavigation = (path: string, action?: string) => {
     console.log("handleNavigation called with:", { path, action });
-
+    
     // Handle proposal navigation with ID
     if (path === "/proposal-preview" && action) {
       setSelectedProposalId(action); // action is actually the ID here
@@ -786,9 +789,9 @@ const MainApp = React.memo<any>(function MainApp({
     setSelectedNDAId(null);
     setSelectedTaskId(null);
     setShouldOpenActivityModal(false);
-  }, [setCurrentPath, setSelectedDealId, setSelectedCustomerId, setSelectedApprovalId, setSelectedContractId, setSelectedActivityId, setSelectedVisitId, setSelectedQuotationId, setSelectedProposalId, setSelectedNDAId, setSelectedTaskId, setShouldOpenActivityModal]);
+  };
 
-  const handleNavigationWithActivity = useCallback((path: string, activityId: string) => {
+  const handleNavigationWithActivity = (path: string, activityId: string) => {
     setCurrentPath(path);
     setSelectedActivityId(activityId);
     setSelectedDealId(null);
@@ -800,17 +803,17 @@ const MainApp = React.memo<any>(function MainApp({
     setSelectedProposalId(null);
     setSelectedNDAId(null);
     setSelectedTaskId(null);
-  }, [setCurrentPath, setSelectedActivityId, setSelectedDealId, setSelectedCustomerId, setSelectedApprovalId, setSelectedContractId, setSelectedVisitId, setSelectedQuotationId, setSelectedProposalId, setSelectedNDAId, setSelectedTaskId]);
+  };
 
-  const handleDealClick = useCallback((dealId: string) => {
+  const handleDealClick = (dealId: string) => {
     setSelectedDealId(dealId);
     setCurrentPath("/deal-detail");
-  }, [setSelectedDealId, setCurrentPath]);
+  };
 
-  const handleBackFromDeal = useCallback(() => {
+  const handleBackFromDeal = () => {
     setSelectedDealId(null);
     setCurrentPath("/deals");
-  }, [setSelectedDealId, setCurrentPath]);
+  };
 
   // Handle customer click navigation
   const handleCustomerClick = useCallback((customerId: string) => {
@@ -818,52 +821,52 @@ const MainApp = React.memo<any>(function MainApp({
     setCurrentPath("/customer-detail");
   }, [setSelectedCustomerId, setCurrentPath]);
 
-  const handleBackFromCustomer = useCallback(() => {
+  const handleBackFromCustomer = () => {
     setSelectedCustomerId(null);
     setCurrentPath("/customers");
-  }, [setSelectedCustomerId, setCurrentPath]);
+  };
 
-  const handleMyCustomerClick = useCallback((customerId: string) => {
+  const handleMyCustomerClick = (customerId: string) => {
     setSelectedCustomerId(customerId);
     setCurrentPath("/my-customer-detail");
-  }, [setSelectedCustomerId, setCurrentPath]);
+  };
 
-  const handleBackFromMyCustomer = useCallback(() => {
+  const handleBackFromMyCustomer = () => {
     setSelectedCustomerId(null);
     setCurrentPath("/customers/my");
-  }, [setSelectedCustomerId, setCurrentPath]);
+  };
 
-  const handleApprovalClick = useCallback((approvalId: string) => {
+  const handleApprovalClick = (approvalId: string) => {
     setSelectedApprovalId(approvalId);
     setCurrentPath("/approval-detail");
-  }, [setSelectedApprovalId, setCurrentPath]);
+  };
 
-  const handleBackFromApproval = useCallback(() => {
+  const handleBackFromApproval = () => {
     setSelectedApprovalId(null);
     setCurrentPath("/approvals");
-  }, [setSelectedApprovalId, setCurrentPath]);
+  };
 
-  const handleContractClick = useCallback((contractId: string) => {
+  const handleContractClick = (contractId: string) => {
     setSelectedContractId(contractId);
     setCurrentPath("/contract-detail");
-  }, [setSelectedContractId, setCurrentPath]);
+  };
 
-  const handleContractPreview = useCallback((contractId: string) => {
+  const handleContractPreview = (contractId: string) => {
     setSelectedContractId(contractId);
     setCurrentPath("/contract-preview");
-  }, [setSelectedContractId, setCurrentPath]);
+  };
 
-  const handleBackFromContract = useCallback(() => {
+  const handleBackFromContract = () => {
     setSelectedContractId(null);
     setCurrentPath("/overall");
-  }, [setSelectedContractId, setCurrentPath]);
+  };
 
-  const handleBackFromContractPreview = useCallback(() => {
+  const handleBackFromContractPreview = () => {
     // Don't reset selectedContractId, just navigate back to editor
     setCurrentPath("/contract-editor");
-  }, [setCurrentPath]);
+  };
 
-  const handleQuotationClick = useCallback((quotationId: string) => {
+  const handleQuotationClick = (quotationId: string) => {
     setSelectedQuotationId(quotationId);
     // Check quotation type and navigate to appropriate screen
     // For now, check if it's QT-2024-008 (uploaded type)
@@ -872,14 +875,14 @@ const MainApp = React.memo<any>(function MainApp({
     } else {
       setCurrentPath("/quotation-detail");
     }
-  }, [setSelectedQuotationId, setCurrentPath]);
+  };
 
-  const handleViewQuotationUploadDetail = useCallback((quotationId: string) => {
+  const handleViewQuotationUploadDetail = (quotationId: string) => {
     setSelectedQuotationId(quotationId);
     setCurrentPath("/quotation-upload-detail");
-  }, [setSelectedQuotationId, setCurrentPath]);
+  };
 
-  const handleQuotationPreview = useCallback((quotationId: string, templateType?: string) => {
+  const handleQuotationPreview = (quotationId: string, templateType?: string) => {
     console.log("handleQuotationPreview called with:", { quotationId, templateType });
     setSelectedQuotationId(quotationId);
     if (templateType) {
@@ -889,83 +892,83 @@ const MainApp = React.memo<any>(function MainApp({
       console.log("No templateType provided, using default:", selectedQuotationTemplate);
     }
     setCurrentPath("/quotation-preview");
-  }, [setSelectedQuotationId, setSelectedQuotationTemplate, selectedQuotationTemplate, setCurrentPath]);
+  };
 
-  const handleBackFromQuotation = useCallback(() => {
+  const handleBackFromQuotation = () => {
     setSelectedQuotationId(null);
     setCurrentPath("/quotations");
-  }, [setSelectedQuotationId, setCurrentPath]);
+  };
 
-  const handleBackFromQuotationPreview = useCallback(() => {
+  const handleBackFromQuotationPreview = () => {
     setSelectedQuotationId(null);
     setCurrentPath("/quotations");  // กลับไปหน้ารายการทั้งหมด
-  }, [setSelectedQuotationId, setCurrentPath]);
+  };
 
-  const handleProposalClick = useCallback((proposalId: string) => {
+  const handleProposalClick = (proposalId: string) => {
     setSelectedProposalId(proposalId);
     // Save the current path so we can return to it later
     setProposalPreviousPath(currentPath);
     setCurrentPath("/proposal-detail");
-  }, [setSelectedProposalId, setProposalPreviousPath, currentPath, setCurrentPath]);
+  };
 
-  const handleBackFromProposal = useCallback(() => {
+  const handleBackFromProposal = () => {
     setSelectedProposalId(null);
     const pathToReturn = proposalPreviousPath;
     // Reset to default after using
     setProposalPreviousPath("/proposals-contracts");
     setCurrentPath(pathToReturn);
-  }, [setSelectedProposalId, proposalPreviousPath, setProposalPreviousPath, setCurrentPath]);
+  };
 
-  const handleNDAClick = useCallback((ndaId: string) => {
+  const handleNDAClick = (ndaId: string) => {
     setSelectedNDAId(ndaId);
     setCurrentPath("/nda-preview");
-  }, [setSelectedNDAId, setCurrentPath]);
+  };
 
-  const handleBackFromNDA = useCallback(() => {
+  const handleBackFromNDA = () => {
     setSelectedNDAId(null);
     setCurrentPath("/proposals-contracts");
-  }, [setSelectedNDAId, setCurrentPath]);
+  };
 
-  const handleTaskClick = useCallback((taskId: string) => {
+  const handleTaskClick = (taskId: string) => {
     setSelectedTaskId(taskId);
     setCurrentPath("/task-detail");
-  }, [setSelectedTaskId, setCurrentPath]);
+  };
 
-  const handleBackFromTask = useCallback(() => {
+  const handleBackFromTask = () => {
     setSelectedTaskId(null);
     setCurrentPath("/tasks");
-  }, [setSelectedTaskId, setCurrentPath]);
+  };
 
-  const handleUserClick = useCallback((userId: string) => {
+  const handleUserClick = (userId: string) => {
     setSelectedUserId(userId);
     setCurrentPath("/admin/user-detail");
-  }, [setSelectedUserId, setCurrentPath]);
+  };
 
-  const handleBackFromUser = useCallback(() => {
+  const handleBackFromUser = () => {
     setSelectedUserId(null);
     setCurrentPath("/admin/users");
-  }, [setSelectedUserId, setCurrentPath]);
+  };
 
-  const handleVisitClick = useCallback((visitId: string) => {
+  const handleVisitClick = (visitId: string) => {
     setSelectedVisitId(visitId);
     // Save the current path so we can return to it later
     setVisitPreviousPath(currentPath);
     setCurrentPath("/visit-detail");
-  }, [setSelectedVisitId, setVisitPreviousPath, currentPath, setCurrentPath]);
+  };
 
-  const handleBackFromVisit = useCallback(() => {
+  const handleBackFromVisit = () => {
     setSelectedVisitId(null);
     const pathToReturn = visitPreviousPath;
     // Reset to default after using
     setVisitPreviousPath("/customer-detail");
     setCurrentPath(pathToReturn);
-  }, [setSelectedVisitId, visitPreviousPath, setVisitPreviousPath, setCurrentPath]);
+  };
 
-  const handleBackToMain = useCallback(() => {
+  const handleBackToMain = () => {
     setCurrentPath("/dashboard");
-  }, [setCurrentPath]);
+  };
 
-  const handleSearchNavigate = useCallback((type: string, id: string) => {
+  const handleSearchNavigate = (type: string, id: string) => {
     // Navigate based on search result type
     switch (type) {
       case "deal":
@@ -990,11 +993,11 @@ const MainApp = React.memo<any>(function MainApp({
         break;
     }
     setIsSearchOpen(false);
-  }, [handleDealClick, handleCustomerClick, handleQuotationClick, handleContractClick, handleApprovalClick, setCurrentPath, setIsSearchOpen]);
+  };
 
-  const content = useMemo(() => {
+  const renderContent = () => {
     console.log("[renderContent] Called with currentPath:", currentPath, "userMode:", userMode);
-
+    
     // Sales Mode - existing logic
     // Deal detail view
     if (currentPath === "/deal-detail" && selectedDealId) {
@@ -1382,19 +1385,7 @@ const MainApp = React.memo<any>(function MainApp({
         console.log("[renderContent] No route matched, rendering TasksScreen");
         return <TasksScreen onNavigate={handleNavigation} onNavigateWithActivity={handleNavigationWithActivity} shouldOpenCreateDialog={shouldOpenActivityModal} userMode={userMode} />;
     }
-  }, [
-    currentPath, userMode, selectedDealId, selectedCustomerId, selectedApprovalId,
-    selectedContractId, selectedQuotationId, selectedQuotationTemplate, selectedProposalId,
-    selectedNDAId, selectedTaskId, selectedVisitId, selectedActivityId, selectedLeadId,
-    shouldOpenActivityModal, handleDealClick, handleCustomerClick, handleQuotationClick,
-    handleContractClick, handleApprovalClick, handleProposalClick, handleNDAClick,
-    handleTaskClick, handleVisitClick, handleLeadClick, handleNavigation, handleNavigationWithActivity,
-    handleBackFromDeal, handleBackFromCustomer, handleBackFromMyCustomer, handleBackFromApproval,
-    handleBackFromContract, handleBackFromQuotation, handleBackFromQuotationPreview,
-    handleBackFromProposal, handleBackFromNDA, handleBackFromTask, handleBackFromVisit,
-    handleQuotationPreview, handleContractPreview, handleViewQuotationUploadDetail,
-    setCurrentPath, setSelectedDealId, setSelectedQuotationId
-  ]);
+  };
 
   const getPageTitle = () => {
     if (currentPath === "/deal-detail") return t("deals.deal_details");
@@ -1489,15 +1480,15 @@ const MainApp = React.memo<any>(function MainApp({
 
           {/* Mobile Sidebar Overlay */}
           {isMobileSidebarOpen && (
-            <div className="fixed inset-0 z-40 md:hidden">
+            <div className="fixed inset-0 z-50 md:hidden">
               {/* Backdrop */}
-              <div
-                className="absolute inset-0 bg-black/50"
+              <div 
+                className="absolute inset-0 bg-black/50" 
                 onClick={() => setIsMobileSidebarOpen(false)}
               />
-
+              
               {/* Sidebar */}
-              <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl z-50">
+              <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl">
                 <SidebarNav currentPath={currentPath} onNavigate={(path, action) => {
                   handleNavigation(path, action);
                   setIsMobileSidebarOpen(false);
@@ -1509,7 +1500,7 @@ const MainApp = React.memo<any>(function MainApp({
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 max-h-dvh overflow-y-auto">
         {/* Top Header */}
         <header className="border-b-2 border-gray-200 bg-white sticky top-0 z-10 shadow-md">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3.5">
@@ -1560,16 +1551,7 @@ const MainApp = React.memo<any>(function MainApp({
                   </Button>
 
                   {/* Tasks Menu - Hide on small mobile */}
-                  <button
-                    onClick={() => handleNavigation('/tasks')}
-                    className={`hidden sm:block px-4 py-2 text-[15px] font-semibold transition-colors rounded-lg ${
-                      currentPath === '/tasks' || currentPath.startsWith('/tasks')
-                        ? 'text-gray-900'
-                        : 'text-[#1a1a2e] hover:bg-gray-50'
-                    }`}
-                  >
-                    Tasks
-                  </button>
+                  
 
                   {/* Search - Icon only on mobile */}
                   <button
@@ -1579,18 +1561,15 @@ const MainApp = React.memo<any>(function MainApp({
                     <Search className="h-4 w-4" />
                     <span className="hidden sm:inline">Search</span>
                   </button>
+                  {/* Global Search Dialog */}
+                  <GlobalSearch 
+                    isOpen={isSearchOpen} 
+                    onClose={() => setIsSearchOpen(false)} 
+                    onNavigate={handleSearchNavigate}
+                  />
                 </>
               )}
             </div>
-
-            {/* Global Search Dialog - Outside of fragment but still in sales mode */}
-            {userMode === 'sales' && (
-              <GlobalSearch
-                isOpen={isSearchOpen}
-                onClose={() => setIsSearchOpen(false)}
-                onNavigate={handleSearchNavigate}
-              />
-            )}
 
             {/* Right Side: Notifications + Controls + User */}
             <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
@@ -1642,23 +1621,20 @@ const MainApp = React.memo<any>(function MainApp({
             </div>
           }
         >
-          {content}
+          {renderContent()}
         </ErrorBoundary>
 
         {/* Quick Actions FAB - Show in all pages for Sales Mode */}
         {userMode === 'sales' && (
           <>
-            <div
-              className="fixed z-40"
+            <div 
+              className="fixed z-50 touch-none select-none"
               style={{
                 bottom: `${fabPosition.bottom}px`,
                 right: `${fabPosition.right}px`,
                 cursor: isDragging ? 'grabbing' : 'grab',
                 transition: hasMoved ? 'none' : 'all 300ms ease-out',
                 willChange: isDragging ? 'bottom, right' : 'auto',
-                touchAction: 'none',
-                userSelect: 'none',
-                pointerEvents: 'auto',
               }}
               onMouseDown={(e) => {
                 e.preventDefault();
@@ -1701,19 +1677,15 @@ const MainApp = React.memo<any>(function MainApp({
               onClose={() => setShowQuickActionsMenu(false)}
               onQuickVisit={() => {
                 setShowQuickActionsMenu(false);
-                // Delay to let QuickActionsMenu close animation finish
-                setTimeout(() => setShowQuickVisitModal(true), 150);
+                setShowQuickVisitModal(true);
               }}
               onQuickDeal={() => {
-                setShowQuickActionsMenu(false);
                 handleNavigation("/deals", "add");
               }}
               onQuickActivity_Visit={() => {
-                setShowQuickActionsMenu(false);
                 handleNavigation('/calendar', 'add');
               }}
               onQuickCreatetask={() => {
-                setShowQuickActionsMenu(false);
                 handleNavigation('/tasks', 'add');
               }}
               />
@@ -1732,7 +1704,7 @@ const MainApp = React.memo<any>(function MainApp({
       </main>
     </div>
   );
-});
+}
 
 export default function App() {
   console.log("[APP-ROOT] App component rendering - v2.3.1");

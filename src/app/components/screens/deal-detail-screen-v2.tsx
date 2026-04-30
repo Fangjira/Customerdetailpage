@@ -69,7 +69,14 @@ const TEMPLATE_NAMES: Record<string, string> = {
   "cross-border": "ขนส่งข้ามพรมแดน (CLMV)",
 };
 
-import { HistoryEntry } from "@/types/crm";
+interface HistoryEntry {
+  id: string;
+  action: string;
+  entity: string;
+  user: string;
+  timestamp: string;
+  details?: string;
+}
 
 export function DealDetailScreen({ 
   dealId, 

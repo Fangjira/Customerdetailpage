@@ -29,7 +29,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import {
@@ -351,10 +350,7 @@ export function AdminUserManagement() {
                 ? (i18n.language === "th" ? "แก้ไขผู้ใช้" : "Edit User")
                 : (i18n.language === "th" ? "สร้างผู้ใช้ใหม่" : "Create New User")}
             </DialogTitle>
-          
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+          </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

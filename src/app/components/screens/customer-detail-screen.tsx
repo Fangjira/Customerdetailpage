@@ -29,7 +29,18 @@ import { EditCustomerDialog } from "../edit-customer-dialog";
 import { CreateJobCardDialog } from "../create-job-card-dialog";
 import { HistoryDialog } from "../history-dialog";
 import { useRole } from "../../contexts/role-context";
-import { HistoryEntry } from "@/types/crm";
+
+interface HistoryEntry {
+  id: string;
+  action: string;
+  entity: string;
+  user: string;
+  timestamp: string;
+  description?: string;
+  field?: string;
+  oldValue?: string;
+  newValue?: string;
+}
 
 export function CustomerDetailScreen({ onBack }: { onBack: () => void }) {
   const { t } = useTranslation();

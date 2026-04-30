@@ -1541,7 +1541,7 @@
       "marketing_outreach": "Marketing, Outreach",
       "education_engagement": "Education, Engagement"
     },
-    "status_planned": "วางแผนแล้ว",
+    "status_Planned": "วางแผนแล้ว",
     "status_completed": "เสร็จสมบูรณ์",
     "status_cancelled": "ยกเลิก",
     "mark_complete": "ยกเลิก",
@@ -1712,7 +1712,7 @@
     "follow_up_date": "วันที่ติดตามผล",
     "visit_photo": "รูปภาพจากการเยี่ยมชม",
     "status_completed": "เสร็จสิ้น",
-    "status_in_progress": "กำลังดำเนินการ",
+    "status_planned": "วางแผนแล้ว",
     "status_pending": "รอดำเนินการ",
     "status_follow_up_required": "ต้องติดตามผล",
     "job_card_id": "รหัส Job Card",
@@ -1784,7 +1784,7 @@
     "training": "อบรม",
     "presentation": "นำเสนอ",
     "review": "ทบทวน",
-    "planning": "วางแผน",
+    "Planned": "วางแผน",
     "no_meetings_found": "ไม่พบการประชุม",
     "try_adjusting_filters": "ลองปรับการค้นหาหรือตัวกรอง",
     "meeting_details": "รายละเอียดการประชุม",
@@ -2075,7 +2075,7 @@
     "supplyChainRoleInfo": "เลือกบทบาทของลูกค้าในห่วงโซ่อุปทาน"
   },
   "roles": {
-    "sales": "Sales",
+    "sales_support": "Sales",
     "sales_manager": "Sales Manager",
     "admin": "Admin",
     "sales_desc": "พนักงานขาย - เข้าถึงเฉพาะงานขาย",

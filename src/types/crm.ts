@@ -468,75 +468,22 @@ export interface ApprovalComment {
   type: "comment" | "approval" | "rejection" | "request_change";
 }
 
-export interface Activity {
-  id: string;
-  title: string;
-  type: string;
-  status: "planned" | "completed" | "cancelled" | "in_progress";
-  interactionType?: string;
-
-  // Timing
-  startTime: Date | string;
-  endTime: Date | string;
-  activityDate?: string;
-  dueDate?: string;
-
-  // Location
-  location?: string;
-  siteBranch?: string;
-
-  // Customer
-  customer?: string;
-  customerContacts?: string[];
-  customerContact?: string;
-  customerAddress?: string;
-  customerPhone?: string;
-  relatedCustomer?: string;
-
-  // Assignment
-  assignedTo?: string;
-  createdBy?: { id: string; name: string };
-  attendees?: Array<{ id: string; name: string; role?: string }>;
-
-  // Details
-  notes?: string;
-  agenda?: string;
-  description?: string;
-
-  // Related
-  relatedDeal?: string;
-  relatedContract?: string;
-  linkedEntities?: Array<{ type: string; id: string }>;
-
-  // Services
-  services?: string[];
-
-  // Metadata
-  createdAt?: string;
-  updatedAt?: string;
-  isReceived?: boolean;
-  isMixedMode?: boolean;
-}
-
 export interface HistoryEntry {
   id: string;
   action: "created" | "updated" | "deleted" | "status_changed" | "assigned" | "approved" | "rejected" | "sent" | "viewed" | "signed";
-  entity?: string;
-  entityId?: string;
-  user?: string;
+  entity: string;
+  entityId: string;
+  user: string;
   timestamp: string;
   description?: string;
-
+  
   // Field changes
   field?: string;
   oldValue?: any;
   newValue?: any;
-
+  
   // Additional context
   metadata?: Record<string, any>;
-
-  // Backward compatibility
-  details?: string;
 }
 
 export interface Integration {

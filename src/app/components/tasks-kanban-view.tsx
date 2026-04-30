@@ -50,7 +50,7 @@ interface Task {
   contactPerson?: string;
   contactPhone?: string;
   contactEmail?: string;
-  titleType?: string;
+  activityType?: string;
 }
 
 interface TaskCardProps {

@@ -37,7 +37,7 @@ import { useRole } from "../../contexts/role-context";
 import { useModuleStore } from "../../store/module-store";
 import { toast } from "sonner";
 
-type DisplayMode = "month" | "week" | "day" | "list";
+type DisplayMode = "month:grid" | "week" | "day" | "list";
 
 type ActivityType =
   | "customer_visit"
@@ -88,14 +88,13 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
   const isManager = role === "Sales Manager" || role === "Admin";
   
   const [currentDate, setCurrentDate] = useState(new Date(2026, 3, 21));
-  const [displayMode, setDisplayMode] = useState<DisplayMode>("month");
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("month:grid"); 
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [showQuickActionsMenu, setShowQuickActionsMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
-  const [monthViewType, setMonthViewType] = useState<"grid" | "list">("grid");
   const [showQuickVisitModal, setShowQuickVisitModal] = useState(false);
 
   // Thai Holidays and Important Days
@@ -668,10 +667,10 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
         let type: ActivityType = "sales_meeting";
         if (t.activityType?.includes("เข้าพบลูกค้า")) type = "customer_visit";
         else if (t.activityType?.includes("นัดหมายลูกค้า")) type = "sales_meeting";
-
+          
         const start = t.dueDate ? new Date(`${t.dueDate}T${t.dueTime || '09:00:00'}`) : new Date();
         const end = new Date(start.getTime() + 60 * 60 * 1000); // Default to 1 hour
-
+        
         return {
           id: t.id,
           title: t.title,
@@ -955,51 +954,13 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
 
     return (
       <>
-        <Card className="border-0 shadow-sm mb-4">
-          <CardHeader className="pb-3 border-b">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">
-                {monthViewType === "grid" ? "Calendar Grid" : "Calendar List"}
-              </CardTitle>
-              <div className="flex items-center gap-1 border border-gray-200 rounded-lg p-0.5 bg-white">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`h-7 px-2 ${
-                    monthViewType === "grid"
-                      ? "bg-[#7BC9A6] text-white hover:bg-[#6CB88A]"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                  onClick={() => setMonthViewType("grid")}
-                >
-                  <LayoutGrid className="h-3.5 w-3.5 mr-1" />
-                  <span className="text-xs">Grid</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`h-7 px-2 ${
-                    monthViewType === "list"
-                      ? "bg-[#7BC9A6] text-white hover:bg-[#6CB88A]"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                  onClick={() => setMonthViewType("list")}
-                >
-                  <List className="h-3.5 w-3.5 mr-1" />
-                  <span className="text-xs">List</span>
-                </Button>
-                
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-              {/* Bottom Row: View Mode Toggle + Search + Add Button */}
+                 {/* Bottom Row: View Mode Toggle + Search + Add Button */}
               <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                 {/* View Mode Toggle */}
                      
-        {monthViewType === "grid" ? (
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4">
+        {displayMode === "month:grid" ? (
+          <Card className="border-0 shadow-sm max-h-auto gap-5">
+            <CardContent className="p-4 gap-5">
               {/* Week Day Headers */}
               <div className="grid grid-cols-7 gap-2 mb-2">
                 {weekDays.map(day => (
@@ -1013,7 +974,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
               <div className="grid grid-cols-7 gap-2">
                 {days.map((date, index) => {
                   if (!date) {
-                    return <div key={`empty-${index}`} className="min-h-[120px] bg-gray-50 rounded-lg" />;
+                    return <div key={`empty-${index}`} className="min-h-[100px] bg-gray-50 rounded-lg" />;
                   }
 
                   const activitiesForDay = getActivitiesForDate(date);
@@ -1024,7 +985,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                   return (
                     <div
                       key={date.toISOString()}
-                      className={`min-h-[120px] p-2 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${
+                      className={`min-h-[100px] p-2 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${
                         isCurrentDay
                           ? 'border-[#7BC9A6] bg-[#7BC9A6]/5'
                           : isCurrentMonthDay
@@ -1061,7 +1022,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
             </CardContent>
           </Card>
         ) : (
-          renderMonthListView()
+          renderMonthView()
         )}
               </div>
       </>
@@ -1070,7 +1031,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
 
   // Month List View
   const renderMonthListView = () => {
-    const year = currentDate.getFullYear();
+    //const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     
     // Group activities by date (only planned activities for the current month)
@@ -1078,8 +1039,8 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     
     const plannedActivitiesInMonth = filteredActivities.filter(activity => 
       activity.status === 'planned' &&
-      activity.startTime.getMonth() === month && 
-      activity.startTime.getFullYear() === year
+      activity.startTime.getMonth() === month //&& 
+      //activity.startTime.getFullYear() === year
     );
 
     plannedActivitiesInMonth.forEach(activity => {
@@ -1112,7 +1073,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
       return (
         <Card className="border-0 shadow-sm mt-4">
           <CardContent className="p-12 text-center">
-            <CalendarIcon className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+            <CalendarIcon className="h-10 w-10 mx-auto mb-4 text-gray-300" />
             <p className="text-gray-500">ไม่มีกิจกรรมที่วางแผนไว้ในเดือนนี้ (No planned activities this month)</p>
           </CardContent>
         </Card>
@@ -1120,7 +1081,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
     }
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-2 flex-1 ">
         {sortedDateKeys.map(dateKey => {
           const { date, activities: activitiesForDate } = groupedActivities[dateKey];
           const isCurrentDay = isToday(date);
@@ -1159,14 +1120,14 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
               {/* Activities List - Always Visible */}
               <CardContent className="p-0">
                 {activitiesForDate.length === 0 ? (
-                  <div className="px-4 py-6 text-center text-gray-400 text-sm">
+                  <div className="px-2 py-3 text-center text-gray-400 text-sm">
                     No activities scheduled
                   </div>
                 ) : (
                   activitiesForDate.map((activity, index) => (
                     <div
                       key={activity.id}
-                      className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer ${
+                      className={`p-1 hover:bg-gray-50 transition-colors cursor-pointer ${
                         index !== activitiesForDate.length - 1 ? 'border-b' : ''
                       }`}
                       onClick={() => {
@@ -1190,7 +1151,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                           {/* Title + Badge */}
                           <div className="flex items-start gap-2 mb-2">
                             <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 text-sm inline">
+                              <h4 className="flex font-semibold text-gray-900 text-sm inline">
                                 {activity.title}
                               </h4>
                             </div>
@@ -1227,7 +1188,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                           </div>
 
                           {/* Details */}
-                          <div className="space-y-1 text-xs text-gray-600">
+                          <div className="flex-1 space-y-1 text-xs text-gray-600">
                             {activity.customer && (
                               <div className="flex items-center gap-1.5">
                                 <User className="h-3.5 w-3.5 text-gray-400" />
@@ -1319,7 +1280,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
             const activitiesForDate = groupedActivities[dateKey];
 
             return (
-              <Card key={dateKey} className="border-0 shadow-sm overflow-hidden">
+              <Card key={dateKey} className="border-0 shadow-sm //overflow-hidden">
                 {/* Date Header */}
                 <button
                   onClick={() => toggleDate(dateKey)}
@@ -1613,8 +1574,8 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto p-4">
+    <div className="max-h-screen bg-white-60">
+      <div className="max-w-7xl mx-xl p-5">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -1627,8 +1588,8 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
 
         {/* Controls */}
         <Card className="mb-4 border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="space-y-4">
+          <CardContent className="p-3">
+            <div className="space-y-2">
               {/* Top Row: Navigation + Title */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -1636,11 +1597,12 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      if (displayMode === 'month') goToPreviousMonth();
+                      if (displayMode === 'month:grid') goToPreviousMonth();
                       else if (displayMode === 'week') goToPreviousWeek();
                       else if (displayMode === 'day') goToPreviousDay();
+                      else if (displayMode === 'list') renderListView();
                     }}
-                    className="h-9 w-9 p-0"
+                    className="h-4 w-4 p-0"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -1656,9 +1618,10 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      if (displayMode === 'month') goToNextMonth();
+                      if (displayMode === 'month:grid') goToNextMonth();
                       else if (displayMode === 'week') goToNextWeek();
                       else if (displayMode === 'day') goToNextDay();
+                      else if (displayMode === 'list') renderListView();
                     }}
                     className="h-9 w-9 p-0"
                   >
@@ -1666,14 +1629,6 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                   </Button>
                 </div>
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={goToToday}
-                  className="px-4 h-9 border-[#7BC9A6] text-[#7BC9A6] hover:bg-[#7BC9A6] hover:text-white font-medium"
-                >
-                  Today
-                </Button>
               </div>
 
               {/* Bottom Row: View Mode Toggle + Search + Add Button */}
@@ -1684,11 +1639,11 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                     variant="ghost"
                     size="sm"
                     className={`h-8 flex-1 sm:flex-initial sm:px-3 ${
-                      displayMode === "month"
+                      displayMode === "month:grid"
                         ? "bg-[#7BC9A6] text-white hover:bg-[#6CB88A]"
                         : "text-gray-600 hover:bg-gray-100"
                     }`}
-                    onClick={() => setDisplayMode("month")}
+                    onClick={() => setDisplayMode("month:grid")}
                   >
                     <LayoutGrid className="h-4 w-4 sm:mr-1.5" />
                     <span className="text-xs font-medium">Month</span>
@@ -1719,6 +1674,20 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
                     <Square className="h-4 w-4 sm:mr-1.5" />
                     <span className="text-xs font-medium">Day</span>
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`h-8 flex-1 sm:flex-initial sm:px-3 ${
+                      displayMode === "list"
+                      ? "bg-[#7BC9A6] text-white hover:bg-[#6CB88A]"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                  onClick={() => setDisplayMode("list")}
+                >
+                  <List className="h-3.5 w-3.5 mr-1" />
+                  <span className="text-xs">List</span>
+                </Button>
+                
                 </div>
 
                 {/* Search Bar */}
@@ -1747,7 +1716,7 @@ export function CalendarScreen({ onNavigate, selectedActivityId, shouldOpenActiv
         </Card>
 
         {/* Calendar Views */}
-        {displayMode === 'month' && renderMonthView()}
+        {displayMode === 'month:grid' && renderMonthView()}
         {displayMode === 'week' && renderWeekView()}
         {displayMode === 'day' && renderDayView()}
         {displayMode === 'list' && renderListView()}

@@ -912,7 +912,8 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
 
       {/* Add Tag Modal */}
       {showAddTagModal && (
-        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.6742)] bg-opacity-30 z-[60] flex items-center justify-center p- bg-[rgba(0,0,0,0.61)]4 bg-[rgba(0,0,0,0.56)]" role="dialog" aria-modal="true" aria-labelledby="add-tag-title" aria-describedby="add-tag-description">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
             {/* Header */}
             <div className="p-6 pb-4 text-center border-b border-gray-100">
               <h2 id="add-tag-title" className="text-xl font-bold text-gray-900 mb-2">
@@ -1036,11 +1037,13 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
+        </div>
       )}
 
       {/* Add Service Modal */}
       {showAddServiceModal && (
-        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.61)] bg-opacity-50 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="add-service-title" aria-describedby="add-service-description">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <button
@@ -1153,11 +1156,13 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
+        </div>
       )}
 
       {/* Add Contact Modal */}
       {showAddContactModal && (
-        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.55)] bg-opacity-30 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="add-contact-title" aria-describedby="add-contact-description">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
             {/* Header */}
             <div className="p-6 pb-4 text-center border-b border-gray-100">
               <h2 id="add-contact-title" className="text-xl font-bold text-gray-900 mb-2">เพิ่มผู้ติดต่อ</h2>
@@ -1307,11 +1312,13 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
+        </div>
       )}
 
       {/* Edit Info Modal */}
       {showEditInfoModal && (
-        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.49)] bg-opacity-30 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="edit-info-title" aria-describedby="edit-info-description">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
             {/* Header */}
             <div className="p-6 pb-4 text-center border-b border-gray-100">
               <h2 id="edit-info-title" className="text-xl font-bold text-gray-900 mb-2">แก้ไขข้อมูลพื้นฐาน</h2>
@@ -1441,11 +1448,13 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
+        </div>
       )}
 
       {/* Edit Customer Insight Modal */}
       {showEditInsightModal && (
-        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.58)] bg-opacity-30 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="edit-insight-title" aria-describedby="edit-insight-description">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl">
             {/* Header */}
             <div className="p-6 pb-4 text-center border-b border-gray-100">
               <h2 id="edit-insight-title" className="text-xl font-bold text-gray-900 mb-2">แก้ไข Customer Insight</h2>
@@ -1488,11 +1497,13 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </div>
             </div>
           </div>
+        </div>
       )}
 
       {/* Confirm Modal */}
       {showConfirmModal && (
-        <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
             {/* Icon */}
             <div className="flex justify-center pt-8 pb-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -1518,6 +1529,7 @@ export function CustomerDetailUltraSimple({ onBack, onVisitClick }: {
               </button>
             </div>
           </div>
+        </div>
       )}
     </div>
   );

@@ -35,7 +35,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
       date: '2026-02-10',
       startTime: '14:30',
       endTime: '16:30',
-      salesPerson: 'ทะมากัท รัฐเจริญ',
+      salesPerson: 'จิราพัขร',
       attendees: ['คุณวิชัย', 'คุณ สมพร'],
       customer: 'องค์การเภสัชกรรม',
       customerCode: 'CUST-001',
@@ -74,7 +74,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
       id: "note_mock_01",
       text: "ลูกค้ารีเควสขอให้เราปรับ Proposal โดยเพิ่ม Option การรับประกันสินค้าระหว่างขนส่งเข้าไปด้วยครับ รบกวนทีม Sales Support ช่วยประเมินราคาให้ใหม่ตามไฟล์ Requirement ที่แนบมานี้ครับ",
       timestamp: new Date("2026-02-10T17:15:00"),
-      author: "ทะมากัท รัฐเจริญ",
+      author: "จิราพัขร",
       attachments: [
         { name: "Customer_Requirement_U", url: "#", size: "1.2 MB" },
         { name: "Warehouse_Layout_Plan.p", url: "#", size: "850 KB" }
@@ -114,7 +114,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
       id: Date.now().toString(),
       text: newShortNoteText,
       timestamp: new Date(),
-      author: "ทะมากัท รัฐเจริญ",
+      author: "จิราพัขร",
       attachments: selectedFiles.map(file => ({
         name: file.name,
         url: URL.createObjectURL(file),
@@ -145,17 +145,17 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
         <button onClick={onBack} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
           <ChevronLeft className="w-6 h-6 text-blue-600" />
         </button>
-        <h1 className="text-lg font-bold text-gray-900">รายละเอียดการเข้าพบ</h1>
+        <h1 className="text-lg font-semibold text-gray-900">รายละเอียดการเข้าพบ</h1>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <main className="flex-1 max-w-5xl mx-5xl w-full p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gray">
         
         {/* Left Column */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-3 flex-1">
           
           {/* Main Info Card */}
-          <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 space-y-8">
+          <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 space-y-2">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded uppercase border border-gray-100 block w-fit mb-2">
@@ -163,7 +163,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                 </span>
                 <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">ลูกค้า</p>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-bold text-gray-900">{visitData.customer}</h2>
+                  <h2 className="text-xs font-semi text-gray-900">{visitData.customer}</h2>
                   <span className="text-xs text-gray-400">{visitData.customerCode}</span>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
 
             <div className="space-y-1">
               <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">หัวข้อกิจกรรม</p>
-              <p className="text-base font-bold text-gray-900 leading-tight">{visitData.topic}</p>
+              <p className="text-xs font-semi text-gray-900 leading-tight">{visitData.topic}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -194,36 +194,33 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
             </div>
 
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-[#705add]">
+              <div className="flex items-center gap-2 text-gray-900">
                 <Building2 className="w-5 h-5" />
-                <h3 className="font-bold text-sm">ผู้ติดต่อฝั่งลูกค้า</h3>
+                <h3 className="font-semi text-xs">ผู้ติดต่อฝั่งลูกค้า</h3>
               </div>
               <div className="space-y-1">
                 <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">ชื่อผู้ติดต่อ</p>
-                <p className="text-sm font-bold text-gray-900">{visitData.contactPerson}</p>
+                <p className="text-xs font-semi text-gray-900">{visitData.contactPerson}</p>
               </div>
             </div>
 
             <div className="space-y-4 pt-2">
-              <div className="flex items-center gap-2 text-[#705add]">
+              <div className="flex items-center gap-2 text-gray-900">
                 <Users className="w-5 h-5" />
-                <h3 className="font-bold text-sm">ผู้รับผิดชอบและผู้เข้าร่วม</h3>
+                <h3 className="font-semi text-xs">ผู้รับผิดชอบและผู้เข้าร่วม</h3>
               </div>
               <div className="space-y-3">
                 <div className="space-y-1.5">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">ผู้รับผิดชอบ</p>
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                      {visitData.salesPerson.substring(0, 2)}
-                    </div>
-                    <span className="text-sm font-bold text-gray-900">{visitData.salesPerson}</span>
+                    <span className="text-xs font-semi text-gray-900">{visitData.salesPerson}</span>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">ผู้เข้าร่วมที่จำเป็น</p>
                   <div className="flex flex-wrap gap-2">
                     {visitData.attendees.map((a: string, i: number) => (
-                      <Badge key={i} className="bg-[#f0edff] text-[#705add] border-none rounded-lg px-3 py-1.5 text-xs font-medium">
+                      <Badge key={i} className="bg-[#f0edff] text-gray-900 border-none rounded-lg px-3 py-1.5 text-xs font-medium">
                         {a}
                       </Badge>
                     ))}
@@ -234,45 +231,45 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
           </section>
 
           {/* Location & Time Card */}
-          <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 space-y-8">
+          <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 space-y-2">
             <div className="space-y-6">
-              <div className="flex items-center gap-2 text-[#705add]">
+              <div className="flex items-center gap-2 text-gray-900">
                 <Clock className="w-5 h-5" />
-                <h3 className="font-bold text-sm">วันเวลาและการเข้าพื้นที่</h3>
+                <h3 className="font-semi text-xs">วันเวลาและการเข้าพื้นที่</h3>
               </div>
               <div className="grid grid-cols-4 gap-4">
                 <div className="space-y-1">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">วันที่</p>
-                  <p className="text-sm font-bold text-gray-900">10 ก.พ. 2569</p>
+                  <p className="text-xs font-semi text-gray-900">10 ก.พ. 2569</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">เวลาเริ่มต้น</p>
-                  <p className="text-sm font-bold text-gray-900">{visitData.startTime} น.</p>
+                  <p className="text-xs font-semi text-gray-900">{visitData.startTime} น.</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">เวลาสิ้นสุด</p>
-                  <p className="text-sm font-bold text-gray-900">{visitData.endTime} น.</p>
+                  <p className="text-xs font-semi text-gray-900">{visitData.endTime} น.</p>
                 </div>
                 <div className="space-y-1">
                 <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">CHECK-IN</p>
-                <p className="text-sm font-bold text-green-500">{visitData.checkInTime}</p>
+                <p className="text-xs font-semi text-green-500">{visitData.checkInTime}</p>
               </div>
               </div>
             </div>
 
             <div className="space-y-6 pt-2">
-              <div className="flex items-center gap-2 text-[#705add]">
+              <div className="flex items-center gap-2 text-gray-900">
                 <MapPin className="w-5 h-5" />
-                <h3 className="font-bold text-sm">สถานที่และสาขา</h3>
+                <h3 className="font-semi text-xs">สถานที่และสาขา</h3>
               </div>
               <div className="space-y-4">
                 <div className="space-y-1">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">สถานที่</p>
-                  <p className="text-sm font-medium text-gray-700">{visitData.location}</p>
+                  <p className="text-xs font-medium text-gray-700">{visitData.location}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">สาขา/ไซด์งาน</p>
-                  <p className="text-sm font-bold text-gray-900">{visitData.siteBranch}</p>
+                  <p className="text-xs font-semi text-gray-900">{visitData.siteBranch}</p>
                 </div>
                </div>
              </div> 
@@ -280,16 +277,16 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
         </div>
 
         {/* Right Column */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-3">
           
           {/* Visit Details Card */}
           <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8">
             <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-2 text-[#705add]">
+              <div className="flex items-center gap-2 text-gray-900">
                 <FileText className="w-5 h-5" />
-                <h3 className="font-bold text-sm">รายละเอียด</h3>
+                <h3 className="font-semi text-xs">รายละเอียด</h3>
               </div>
-              <button onClick={() => setEditingNotes(true)} className="text-blue-500 text-sm font-bold hover:underline">แก้ไข</button>
+              <button onClick={() => setEditingNotes(true)} className="text-blue-500 text-xs font-semi hover:underline">แก้ไข</button>
             </div>
             
             {editingNotes ? (
@@ -297,30 +294,30 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                 <Textarea 
                   value={newNotes} 
                   onChange={(e) => setNewNotes(e.target.value)}
-                  className="min-h-[120px] rounded-xl border-gray-200 focus:ring-[#705add]"
+                  className="min-h-[120px] rounded-xl border-gray-200 focus:ring-gray-900"
                 />
                 <div className="flex justify-end gap-3">
                   <Button variant="outline" onClick={() => setEditingNotes(false)} className="rounded-full px-6">ยกเลิก</Button>
-                  <Button onClick={handleSaveNotes} className="bg-[#705add] hover:bg-[#5b46c2] text-white rounded-full px-6">บันทึก</Button>
+                  <Button onClick={handleSaveNotes} className="bg-gray-900 hover:bg-[#5b46c2] text-white rounded-full px-6">บันทึก</Button>
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-gray-600 leading-relaxed font-medium">
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">
                 {visitData.notes}
               </p>
             )}
           </section>
 
           {/* Short Notes Card */}
-          <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8">
+          <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 space-y-3">
             <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-2 text-[#705add]">
+              <div className="flex items-center gap-2 text-gray-900">
                 <MessageSquare className="w-5 h-5" />
-                <h3 className="font-bold text-sm">บันทึกย่อ (Short Notes)</h3>
+                <h3 className="font-semi text-xs">บันทึกย่อ (Short Notes)</h3>
               </div>
               <button 
                 onClick={() => setIsAddingNote(true)} 
-                className="text-blue-500 text-sm font-bold hover:underline"
+                className="text-blue-500 text-xs font-semi hover:underline"
               >
                 เพิ่มบันทึก
               </button>
@@ -333,7 +330,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                     value={newShortNoteText} 
                     onChange={(e) => setNewShortNoteText(e.target.value)}
                     placeholder="พิมพ์บันทึกย่อที่นี่..."
-                    className="min-h-[100px] rounded-xl border-gray-200 focus:ring-[#705add]"
+                    className="min-h-[100px] rounded-xl border-gray-200 focus:ring-gray-900"
                   />
                   
                   {/* Selected Files Preview */}
@@ -354,7 +351,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                   <div className="flex justify-between items-center">
                     <button 
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-2 text-blue-500 text-xs font-bold hover:underline"
+                      className="flex items-center gap-2 text-blue-500 text-xs font-semi hover:underline"
                     >
                       <Paperclip className="w-4 h-4" />
                       แนบไฟล์
@@ -368,7 +365,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                     />
                     <div className="flex gap-3">
                       <Button variant="outline" size="sm" onClick={() => { setIsAddingNote(false); setSelectedFiles([]); }} className="rounded-full px-4">ยกเลิก</Button>
-                      <Button size="sm" onClick={handleAddShortNote} className="bg-[#705add] hover:bg-[#5b46c2] text-white rounded-full px-4">บันทึก</Button>
+                      <Button size="sm" onClick={handleAddShortNote} className="bg-gray-900 hover:bg-[#5b46c2] text-white rounded-full px-4">บันทึก</Button>
                     </div>
                   </div>
                 </div>
@@ -381,22 +378,22 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                       <Textarea 
                         value={editShortNoteText} 
                         onChange={(e) => setEditShortNoteText(e.target.value)}
-                        className="min-h-[100px] rounded-xl border-gray-200 focus:ring-[#705add]"
+                        className="min-h-[100px] rounded-xl border-gray-200 focus:ring-gray-900"
                       />
                       <div className="flex justify-end gap-3">
                         <Button variant="outline" size="sm" onClick={() => setEditingShortNoteId(null)} className="rounded-full px-4">ยกเลิก</Button>
-                        <Button size="sm" onClick={() => handleSaveShortNote(note.id)} className="bg-[#705add] hover:bg-[#5b46c2] text-white rounded-full px-4">บันทึก</Button>
+                        <Button size="sm" onClick={() => handleSaveShortNote(note.id)} className="bg-gray-900 hover:bg-[#5b46c2] text-white rounded-full px-4">บันทึก</Button>
                       </div>
                     </div>
                   ) : (
                     <>
                       <div className="flex justify-between items-start gap-4">
-                        <p className="text-sm text-gray-700 leading-relaxed font-medium flex-1">
+                        <p className="text-xs text-gray-700 leading-relaxed font-medium flex-1">
                           {note.text}
                         </p>
                         <button 
                           onClick={() => handleStartEditShortNote(note.id, note.text)}
-                          className="text-blue-500 text-xs font-bold hover:underline shrink-0"
+                          className="text-blue-500 text-xs font-semi hover:underline shrink-0"
                         >
                           แก้ไข
                         </button>
@@ -412,7 +409,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
                           ))}
                         </div>
                       )}
-                      <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                      <p className="text-[11px] text-gray-400 font-semi uppercase tracking-wider">
                         {note.author} • {note.timestamp.toLocaleString('th-TH', { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                       </p>
                     </>
@@ -424,7 +421,7 @@ export function VisitDetailScreen({ visitId = 'V001', onBack = () => {} }: Visit
 
           {/* Photos Card */}
           <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8">
-            <p className="text-sm font-bold text-gray-500 mb-6">รูปภาพแนบ ({visitData.images.length})</p>
+            <p className="text-xs font-semi text-gray-500 mb-6">รูปภาพแนบ ({visitData.images.length})</p>
             <div className="grid grid-cols-2 gap-4">
               {visitData.images.map((img: string, i: number) => (
                 <div key={i} className="aspect-[4/3] rounded-2xl overflow-hidden border border-gray-100">

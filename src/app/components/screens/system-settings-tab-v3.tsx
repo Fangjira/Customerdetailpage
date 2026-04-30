@@ -1389,10 +1389,7 @@ export function SystemSettingsTabV3() {
               <Edit2 className="h-6 w-6 text-[#7BC9A6]" />
               แก้ไข{masterDataConfig[editDialogType]?.label || "รายการ"}
             </DialogTitle>
-          
-          <DialogDescription className="sr-only">
-            Dialog description
-          </DialogDescription></DialogHeader>
+          </DialogHeader>
           <div className="space-y-4 mt-4">
             <div className="space-y-3">
               <Label className="text-base font-semibold text-gray-900">ชื่อ *</Label>
